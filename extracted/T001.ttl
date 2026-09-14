@@ -1,0 +1,81 @@
+@prefix crm: <https://example.org/sales-kg/> .
+@prefix res: <https://example.org/sales-kg/resource/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+res:Transcript_T001 a crm:Transcript ;
+    crm:identifier "T001" ;
+    crm:transcriptText "Sarah (Sales): Last time you mentioned that you were considering deployment across three factories. Is that still the plan? Anna Keller: Yes. The first factory is basically approved internally. The main question is whether we can justify expanding to all three this year. Sarah: What's preventing that decision? Anna Keller: Mostly pricing. If we deploy at all three locations, procurement expects a better price than what is currently in the proposal. Markus Vogel: From my side, I also still need confirmation regarding SSO and data residency. Sarah: If we solve those security questions and restructure the pricing for three factories, would there be anything else blocking approval? Anna Keller: Probably not. I think we could take it to procurement after that. Sarah: Great. I'll send a three-year pricing option and the security documentation. Can we review it together next Tuesday? Anna Keller: Yes, that works." .
+
+res:Call_T001 a crm:Call ;
+    crm:interactionDate "2026-09-10"^^xsd:date ;
+    crm:hasTranscript res:Transcript_T001 ;
+    crm:aboutDeal res:Deal_D001 ;
+    crm:hasParticipant res:Contact_C001 ;
+    crm:hasParticipant res:Contact_C002 ;
+    crm:hasParticipant res:SalesRep_S017 .
+
+res:Blocker_D001_pricing a crm:Blocker ;
+    crm:name "Pricing" ;
+    crm:supportedBy res:Evidence_T001_001 .
+
+res:Blocker_D001_security a crm:Blocker ;
+    crm:name "SSO and data residency confirmation" ;
+    crm:supportedBy res:Evidence_T001_002 .
+
+res:BuyingSignal_D001_first_factory_approved a crm:BuyingSignal ;
+    crm:name "First factory approved internally" ;
+    crm:supportedBy res:Evidence_T001_003 .
+
+res:BuyingSignal_D001_procurement_ready a crm:BuyingSignal ;
+    crm:name "Ready to move to procurement after pricing/security resolved" ;
+    crm:supportedBy res:Evidence_T001_004 .
+
+res:SalesAction_T001_send_docs a crm:SalesAction ;
+    crm:name "Send three-year pricing option and security documentation" ;
+    crm:supportedBy res:Evidence_T001_005 .
+
+res:Evidence_T001_001 a crm:Evidence ;
+    crm:sourceTranscript res:Transcript_T001 ;
+    crm:sourceInteraction res:Call_T001 ;
+    crm:speakerName "Anna Keller" ;
+    crm:evidenceText "procurement expects a better price than what is currently in the proposal" ;
+    crm:evidenceTimestamp "2026-09-10T00:00:00"^^xsd:dateTime .
+
+res:Evidence_T001_002 a crm:Evidence ;
+    crm:sourceTranscript res:Transcript_T001 ;
+    crm:sourceInteraction res:Call_T001 ;
+    crm:speakerName "Markus Vogel" ;
+    crm:evidenceText "From my side, I also still need confirmation regarding SSO and data residency" ;
+    crm:evidenceTimestamp "2026-09-10T00:00:00"^^xsd:dateTime .
+
+res:Evidence_T001_003 a crm:Evidence ;
+    crm:sourceTranscript res:Transcript_T001 ;
+    crm:sourceInteraction res:Call_T001 ;
+    crm:speakerName "Anna Keller" ;
+    crm:evidenceText "The first factory is basically approved internally" ;
+    crm:evidenceTimestamp "2026-09-10T00:00:00"^^xsd:dateTime .
+
+res:Evidence_T001_004 a crm:Evidence ;
+    crm:sourceTranscript res:Transcript_T001 ;
+    crm:sourceInteraction res:Call_T001 ;
+    crm:speakerName "Anna Keller" ;
+    crm:evidenceText "Probably not. I think we could take it to procurement after that" ;
+    crm:evidenceTimestamp "2026-09-10T00:00:00"^^xsd:dateTime .
+
+res:Evidence_T001_005 a crm:Evidence ;
+    crm:sourceTranscript res:Transcript_T001 ;
+    crm:sourceInteraction res:Call_T001 ;
+    crm:speakerName "Sarah" ;
+    crm:evidenceText "I'll send a three-year pricing option and the security documentation" ;
+    crm:evidenceTimestamp "2026-09-10T00:00:00"^^xsd:dateTime .
+
+res:Deal_D001
+    crm:hasBlocker res:Blocker_D001_pricing ;
+    crm:hasBlocker res:Blocker_D001_security ;
+    crm:hasBuyingSignal res:BuyingSignal_D001_first_factory_approved ;
+    crm:hasBuyingSignal res:BuyingSignal_D001_procurement_ready ;
+    crm:hasAction res:SalesAction_T001_send_docs .
+
+res:SalesAction_T001_send_docs
+    crm:addresses res:Blocker_D001_pricing ;
+    crm:addresses res:Blocker_D001_security .

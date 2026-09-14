@@ -1,0 +1,318 @@
+@prefix crm:  <https://example.org/sales-kg/> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+crm:SalesKnowledgeGraphOntology
+    a owl:Ontology ;
+    rdfs:label "Sales CRM Knowledge Graph Ontology" ;
+    rdfs:comment "V1 ontology for CRM data, sales transcripts, deal intelligence and LLM-assisted recommendations." .
+
+#################################################################
+# Core CRM classes
+#################################################################
+
+crm:Account a owl:Class .
+crm:Industry a owl:Class .
+crm:Person a owl:Class .
+
+crm:CustomerContact
+    a owl:Class ;
+    rdfs:subClassOf crm:Person .
+
+crm:SalesRep
+    a owl:Class ;
+    rdfs:subClassOf crm:Person .
+
+crm:Deal a owl:Class .
+crm:Product a owl:Class .
+
+crm:Interaction a owl:Class .
+
+crm:Call
+    a owl:Class ;
+    rdfs:subClassOf crm:Interaction .
+
+crm:Meeting
+    a owl:Class ;
+    rdfs:subClassOf crm:Interaction .
+
+crm:Email
+    a owl:Class ;
+    rdfs:subClassOf crm:Interaction .
+
+crm:Transcript a owl:Class .
+
+#################################################################
+# Sales intelligence classes
+#################################################################
+
+crm:CustomerNeed a owl:Class .
+
+crm:BusinessGoal
+    a owl:Class ;
+    rdfs:subClassOf crm:CustomerNeed .
+
+crm:PainPoint
+    a owl:Class ;
+    rdfs:subClassOf crm:CustomerNeed .
+
+crm:Objection a owl:Class .
+crm:Blocker a owl:Class .
+crm:Risk a owl:Class .
+crm:DecisionCriterion a owl:Class .
+crm:BuyingSignal a owl:Class .
+crm:Competitor a owl:Class .
+crm:SalesAction a owl:Class .
+
+crm:ExpansionOpportunity a owl:Class .
+
+crm:UpsellOpportunity
+    a owl:Class ;
+    rdfs:subClassOf crm:ExpansionOpportunity .
+
+crm:CrossSellOpportunity
+    a owl:Class ;
+    rdfs:subClassOf crm:ExpansionOpportunity .
+
+crm:ScopeExpansion
+    a owl:Class ;
+    rdfs:subClassOf crm:ExpansionOpportunity .
+
+crm:ContractExpansion
+    a owl:Class ;
+    rdfs:subClassOf crm:ExpansionOpportunity .
+
+crm:DealOutcome a owl:Class .
+crm:Evidence a owl:Class .
+
+#################################################################
+# Core CRM object properties
+#################################################################
+
+crm:forAccount
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range crm:Account .
+
+crm:involvesProduct
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range crm:Product .
+
+crm:ownedBy
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range crm:SalesRep .
+
+crm:worksFor
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Person ;
+    rdfs:range crm:Account .
+
+crm:decisionMakerFor
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Person ;
+    rdfs:range crm:Deal .
+
+crm:influencerFor
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Person ;
+    rdfs:range crm:Deal .
+
+crm:championFor
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Person ;
+    rdfs:range crm:Deal .
+
+crm:aboutDeal
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Interaction ;
+    rdfs:range crm:Deal .
+
+crm:hasParticipant
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Interaction ;
+    rdfs:range crm:Person .
+
+crm:hasTranscript
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Interaction ;
+    rdfs:range crm:Transcript .
+
+#################################################################
+# Sales intelligence object properties
+#################################################################
+
+crm:hasNeed
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range crm:CustomerNeed .
+
+crm:hasObjection
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range crm:Objection .
+
+crm:hasBlocker
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range crm:Blocker .
+
+crm:hasRisk
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range crm:Risk .
+
+crm:hasDecisionCriterion
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range crm:DecisionCriterion .
+
+crm:hasBuyingSignal
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range crm:BuyingSignal .
+
+crm:hasCompetitor
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range crm:Competitor .
+
+crm:raisedBy
+    a owl:ObjectProperty ;
+    rdfs:domain owl:Thing ;
+    rdfs:range crm:Person .
+
+crm:hasAction
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range crm:SalesAction .
+
+crm:addresses
+    a owl:ObjectProperty ;
+    rdfs:domain crm:SalesAction ;
+    rdfs:range owl:Thing .
+
+crm:hasExpansionOpportunity
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range crm:ExpansionOpportunity .
+
+crm:expansionInvolvesProduct
+    a owl:ObjectProperty ;
+    rdfs:domain crm:ExpansionOpportunity ;
+    rdfs:range crm:Product .
+
+crm:supportedBy
+    a owl:ObjectProperty ;
+    rdfs:domain owl:Thing ;
+    rdfs:range crm:Evidence .
+
+crm:hasOutcome
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range crm:DealOutcome .
+
+crm:contributedTo
+    a owl:ObjectProperty ;
+    rdfs:domain crm:SalesAction ;
+    rdfs:range crm:DealOutcome .
+
+#################################################################
+# Datatype properties
+#################################################################
+
+crm:identifier
+    a owl:DatatypeProperty ;
+    rdfs:range xsd:string .
+
+crm:name
+    a owl:DatatypeProperty ;
+    rdfs:range xsd:string .
+
+crm:dealStage
+    a owl:DatatypeProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range xsd:string .
+
+crm:dealValue
+    a owl:DatatypeProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range xsd:decimal .
+
+crm:winProbability
+    a owl:DatatypeProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range xsd:decimal .
+
+crm:expectedCloseDate
+    a owl:DatatypeProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range xsd:date .
+
+crm:lossReason
+    a owl:DatatypeProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range xsd:string .
+
+crm:interactionDate
+    a owl:DatatypeProperty ;
+    rdfs:domain crm:Interaction ;
+    rdfs:range xsd:dateTime .
+
+crm:transcriptText
+    a owl:DatatypeProperty ;
+    rdfs:domain crm:Transcript ;
+    rdfs:range xsd:string .
+
+#################################################################
+# Evidence / provenance properties
+#################################################################
+
+crm:evidenceText
+    a owl:DatatypeProperty ;
+    rdfs:domain crm:Evidence ;
+    rdfs:range xsd:string .
+
+crm:speakerName
+    a owl:DatatypeProperty ;
+    rdfs:domain crm:Evidence ;
+    rdfs:range xsd:string .
+
+crm:evidenceTimestamp
+    a owl:DatatypeProperty ;
+    rdfs:domain crm:Evidence ;
+    rdfs:range xsd:dateTime .
+
+crm:extractionConfidence
+    a owl:DatatypeProperty ;
+    rdfs:domain crm:Evidence ;
+    rdfs:range xsd:decimal .
+
+crm:sourceTranscript
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Evidence ;
+    rdfs:range crm:Transcript .
+
+crm:sourceInteraction
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Evidence ;
+    rdfs:range crm:Interaction .
+
+#################################################################
+# Simple controlled deal outcomes
+#################################################################
+
+crm:Won
+    a crm:DealOutcome ;
+    rdfs:label "Won" .
+
+crm:Lost
+    a crm:DealOutcome ;
+    rdfs:label "Lost" .
+
+crm:Open
+    a crm:DealOutcome ;
+    rdfs:label "Open" .

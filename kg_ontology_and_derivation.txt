@@ -1,0 +1,492 @@
+Sales CRM Knowledge Graph Ontology - V1
+=======================================
+
+Purpose
+-------
+The goal is to build a system that combines structured CRM data and sales/marketing transcripts into a Knowledge Graph that an LLM can use to answer questions such as:
+
+- How can I close this deal?
+- How can I increase the value / sales volume of this deal?
+
+
+1. Why the ontology is not derived only from the CSV columns
+------------------------------------------------------------
+
+The CRM CSV files already give us some obvious concepts.
+
+From the example datasets:
+
+accounts.csv
+- Account
+- Industry
+
+contacts.csv
+- Person / CustomerContact
+- Account
+
+deals.csv
+- Deal
+- Product
+- SalesRep
+- DealStage
+
+activities.csv
+- Interaction
+- Call
+- Meeting
+- Email
+
+transcripts.csv
+- Transcript
+
+So the CSV structure is useful and gives us the initial entities.
+
+However, the CSV schema only describes how the CRM stores data. It does not contain all the semantic concepts required to answer higher-level sales questions.
+
+For example, a transcript may contain:
+
+"Procurement expects a better price."
+
+There is no "blocker" column in deals.csv, but semantically we may want to represent:
+
+Deal D001 --HAS_BLOCKER--> Pricing
+
+Similarly, transcripts may reveal concepts such as:
+
+- Blocker
+- Objection
+- CustomerNeed
+- PainPoint
+- BusinessGoal
+- DecisionCriterion
+- BuyingSignal
+- Risk
+- Competitor
+- SalesAction
+- ExpansionOpportunity
+
+These concepts cannot be derived only from the CRM column names.
+
+
+2. Why competency questions are useful
+---------------------------------------
+
+Before defining the ontology, we define the questions the system should be able to answer.
+
+These are called competency questions.
+
+They help us determine which concepts and relationships are actually necessary.
+
+Example competency questions:
+
+1. What are the main blockers preventing this deal from closing?
+2. Who are the key decision makers and influencers?
+3. What customer needs or business goals are driving the deal?
+4. What objections or concerns has the customer raised?
+5. What actions have already been taken to address those objections?
+6. What next actions are most likely to help close the deal?
+7. Which previously won deals had similar blockers or needs?
+8. What actions helped those similar deals close?
+9. What additional products or services could be relevant?
+10. What evidence suggests that the customer could expand the number of users, locations, products, or contract duration?
+11. What risks could cause the deal to be lost or delayed?
+
+The point is that every competency question forces us to ask:
+
+"What concepts and relationships must exist in the graph for this question to be answerable?"
+
+For example:
+
+Question:
+What are the blockers preventing this deal from closing?
+
+Required concepts:
+- Deal
+- Blocker
+
+Required relationship:
+Deal --HAS_BLOCKER--> Blocker
+
+Question:
+What worked in similar won deals?
+
+Required concepts:
+- Deal
+- Blocker
+- SalesAction
+- DealOutcome
+
+Required relationships:
+Deal --HAS_BLOCKER--> Blocker
+Deal --HAS_ACTION--> SalesAction
+SalesAction --ADDRESSES--> Blocker
+Deal --HAS_OUTCOME--> DealOutcome
+
+
+3. Derivation process
+---------------------
+
+The ontology was derived in four steps.
+
+Step 1 - Start from the CRM schema
+
+Use the CSV files to identify the obvious operational entities:
+
+- Deal
+- Account
+- Person
+- SalesRep
+- Product
+- Interaction
+- Transcript
+- Industry
+
+Step 2 - Define competency questions
+
+Define the actual business questions the LLM needs to answer.
+
+The two main goals are:
+
+A. Close the deal
+This requires understanding:
+- blockers
+- objections
+- stakeholders
+- risks
+- customer needs
+- next actions
+- similar historical deals
+
+B. Increase deal value
+This requires understanding:
+- buying signals
+- customer needs
+- expansion opportunities
+- additional products
+- more users / locations
+- longer contract duration
+- cross-sell / upsell possibilities
+
+Step 3 - Identify concepts missing from the CSV schema
+
+From transcripts and competency questions we introduce:
+
+- CustomerNeed
+- BusinessGoal
+- PainPoint
+- Objection
+- Blocker
+- Risk
+- DecisionCriterion
+- BuyingSignal
+- Competitor
+- SalesAction
+- ExpansionOpportunity
+- UpsellOpportunity
+- CrossSellOpportunity
+- ScopeExpansion
+- ContractExpansion
+- DealOutcome
+- Evidence
+
+Step 4 - Define the relationships needed to answer the questions
+
+The relationships below form the V1 ontology.
+
+
+4. Ontology V1
+--------------
+
+4.1 Core CRM concepts
+
+Classes:
+
+- Account
+- Person
+    - CustomerContact
+    - SalesRep
+- Deal
+- Product
+- Interaction
+    - Call
+    - Meeting
+    - Email
+- Transcript
+- Industry
+
+Relationships:
+
+Deal --FOR_ACCOUNT--> Account
+Deal --INVOLVES_PRODUCT--> Product
+Deal --OWNED_BY--> SalesRep
+
+Person --WORKS_FOR--> Account
+Person --DECISION_MAKER_FOR--> Deal
+Person --INFLUENCER_FOR--> Deal
+Person --CHAMPION_FOR--> Deal
+
+Interaction --ABOUT_DEAL--> Deal
+Interaction --HAS_PARTICIPANT--> Person
+Interaction --HAS_TRANSCRIPT--> Transcript
+
+
+4.2 Sales intelligence concepts
+
+Classes:
+
+CustomerNeed
+    - BusinessGoal
+    - PainPoint
+
+Objection
+Blocker
+Risk
+DecisionCriterion
+BuyingSignal
+Competitor
+SalesAction
+
+ExpansionOpportunity
+    - UpsellOpportunity
+    - CrossSellOpportunity
+    - ScopeExpansion
+    - ContractExpansion
+
+Relationships:
+
+Deal --HAS_NEED--> CustomerNeed
+Deal --HAS_OBJECTION--> Objection
+Deal --HAS_BLOCKER--> Blocker
+Deal --HAS_RISK--> Risk
+Deal --HAS_DECISION_CRITERION--> DecisionCriterion
+Deal --HAS_BUYING_SIGNAL--> BuyingSignal
+Deal --HAS_COMPETITOR--> Competitor
+
+Objection --RAISED_BY--> Person
+Blocker --RAISED_BY--> Person
+
+Deal --HAS_ACTION--> SalesAction
+
+SalesAction --ADDRESSES--> Blocker
+SalesAction --ADDRESSES--> Objection
+SalesAction --ADDRESSES--> CustomerNeed
+
+Deal --HAS_EXPANSION_OPPORTUNITY--> ExpansionOpportunity
+ExpansionOpportunity --INVOLVES_PRODUCT--> Product
+ExpansionOpportunity --SUPPORTED_BY--> BuyingSignal
+ExpansionOpportunity --SUPPORTED_BY--> CustomerNeed
+
+
+4.3 Deal outcome and historical learning
+
+Deal properties may include:
+
+- stage
+- status
+- dealValue
+- winProbability
+- expectedCloseDate
+- lossReason
+
+Class:
+
+DealOutcome
+    - Won
+    - Lost
+    - Open
+
+Relationships:
+
+Deal --HAS_OUTCOME--> DealOutcome
+
+SalesAction --CONTRIBUTED_TO--> DealOutcome
+
+The purpose of this layer is to learn from historical deals.
+
+Example:
+
+Find historical deals that:
+- had blocker = Security
+- ended in outcome = Won
+
+Then retrieve:
+- which SalesActions addressed Security
+
+This can help answer:
+
+"How can I close D001?"
+
+
+4.4 Evidence and provenance
+
+Because many graph facts are extracted from unstructured transcripts by an LLM, we should keep evidence for those facts.
+
+Class:
+
+Evidence
+
+Relationships:
+
+Blocker --SUPPORTED_BY--> Evidence
+CustomerNeed --SUPPORTED_BY--> Evidence
+BuyingSignal --SUPPORTED_BY--> Evidence
+DecisionCriterion --SUPPORTED_BY--> Evidence
+
+Evidence may contain:
+
+- sourceTranscript
+- sourceInteraction
+- speaker
+- textExcerpt
+- timestamp
+- extractionConfidence
+
+Example:
+
+D001 --HAS_BLOCKER--> Pricing
+
+Pricing --SUPPORTED_BY--> Evidence E123
+
+Evidence E123:
+- transcript = T001
+- speaker = Anna Keller
+- excerpt = "procurement expects a better price..."
+- confidence = 0.94
+
+This is important because an LLM-extracted fact should remain traceable back to its source.
+
+
+5. Example: Deal D001
+---------------------
+
+A simplified representation of D001 could look like:
+
+D001 --FOR_ACCOUNT--> Acme Manufacturing
+D001 --INVOLVES_PRODUCT--> Enterprise Platform
+
+D001 --HAS_BLOCKER--> Pricing
+D001 --HAS_BLOCKER--> Security
+
+Pricing --RAISED_BY--> Procurement
+Security --RAISED_BY--> Markus Vogel
+
+D001 --HAS_ACTION--> Three-year pricing option
+Three-year pricing option --ADDRESSES--> Pricing
+
+D001 --HAS_BUYING_SIGNAL--> Three-factory deployment
+
+D001 --HAS_EXPANSION_OPPORTUNITY--> ScopeExpansion
+
+
+6. How the graph supports the two main business questions
+---------------------------------------------------------
+
+Question 1:
+How can I close D001?
+
+Possible graph traversal:
+
+D001
+-> blockers
+-> similar historical deals
+-> actions used to address those blockers
+-> outcomes of those deals
+-> actions associated with successful outcomes
+
+Example:
+
+D001
+-> HAS_BLOCKER -> Security
+-> find other deals with Security blocker
+-> find deals with outcome Won
+-> retrieve SalesActions that addressed Security
+
+The LLM can then summarize those findings into a recommendation.
+
+
+Question 2:
+How can I increase the value of D001?
+
+Possible graph traversal:
+
+D001
+-> customer needs
+-> buying signals
+-> expansion opportunities
+-> additional products / locations / users / contract duration
+-> similar successful expansions
+
+Example:
+
+D001
+-> HAS_BUYING_SIGNAL -> Three-factory deployment
+-> HAS_EXPANSION_OPPORTUNITY -> ScopeExpansion
+
+The LLM can use this to recommend expanding the deal from one factory to three factories.
+
+
+7. Design principle for V1
+--------------------------
+
+The ontology should remain intentionally limited.
+
+We should not add concepts simply because they sound useful.
+
+A new class or relationship should normally be added when:
+
+1. a competency question requires it, or
+2. the source data reveals an important recurring concept that the current ontology cannot represent.
+
+This avoids building an unnecessarily large and difficult-to-maintain ontology.
+
+Summary
+-------
+
+The ontology was derived by combining two sources:
+
+1. CRM schema
+   -> gives us the obvious operational entities.
+
+2. Competency questions + transcripts
+   -> reveal the semantic concepts that are not present in the CRM schema.
+
+The final flow is:
+
+CSV schema
+    ->
+initial CRM concepts
+    ->
+competency questions
+    ->
+missing semantic concepts
+    ->
+relationships
+    ->
+ontology
+    ->
+LLM + Knowledge Graph reasoning
+
+The resulting V1 ontology focuses on representing:
+
+- deals
+- customers
+- stakeholders
+- products
+- interactions
+- needs
+- blockers
+- objections
+- risks
+- buying signals
+- sales actions
+- expansion opportunities
+- outcomes
+- evidence / provenance
+
+This is enough to begin answering the two core questions:
+
+"How can I close this deal?"
+
+and
+
+"How can I increase the sales volume/value of this deal?"

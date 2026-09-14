@@ -1,0 +1,80 @@
+transcript_id,deal_id,account_id,contact_ids,activity_date,channel,transcript
+T001,D001,A001,C001;C002,2026-09-10,Sales Call,"Sarah (Sales): Last time you mentioned that you were considering deployment across three factories. Is that still the plan?
+Anna Keller: Yes. The first factory is basically approved internally. The main question is whether we can justify expanding to all three this year.
+Sarah: What's preventing that decision?
+Anna Keller: Mostly pricing. If we deploy at all three locations, procurement expects a better price than what is currently in the proposal.
+Markus Vogel: From my side, I also still need confirmation regarding SSO and data residency.
+Sarah: If we solve those security questions and restructure the pricing for three factories, would there be anything else blocking approval?
+Anna Keller: Probably not. I think we could take it to procurement after that.
+Sarah: Great. I'll send a three-year pricing option and the security documentation. Can we review it together next Tuesday?
+Anna Keller: Yes, that works."
+T002,D002,A002,C003;C004,2026-08-21,Product Demo,"Michael (Sales): What would make this pilot successful for you?
+Eva de Vries: Forecast accuracy is the main thing. Our managers don't trust the current forecast.
+Tom Smit: We also have a lot of custom opportunity fields in the CRM. If your connector ignores those, the dashboard won't be useful.
+Michael: We can map custom fields. Would you be comfortable defining three or four success metrics before the pilot starts?
+Eva de Vries: Yes. Forecast accuracy, pipeline coverage, conversion by stage, and probably manager adoption.
+Michael: And if the pilot improves those metrics?
+Eva de Vries: Then I can make the case for rolling it out to the entire sales organization."
+T003,D003,A003,C005;C006,2026-06-04,Technical Workshop,"Rachel (Sales): Before we finalize the proposal, are there any technical blockers left?
+Mette Nielsen: The architecture looks fine now. My concern was whether you could integrate without creating another isolated data store.
+Rachel: The design uses your existing platform and keeps the source systems authoritative.
+Mette Nielsen: That's what we needed.
+Lars Jensen: For me the bigger question is rollout. I don't want this to become a one-business-unit experiment.
+Rachel: We can structure the contract around a phased rollout, but price it as an enterprise agreement.
+Lars Jensen: Good. If security signs off and the rollout plan is included, I think we can move forward.
+Mette Nielsen: From the technical side, I can recommend approval."
+T004,D004,A004,C007,2026-06-25,Sales Call,"Daniel (Sales): The team seemed positive about the solution. What's stopping the project?
+Camille Martin: The product isn't the issue. Finance froze most discretionary spending for the rest of the year.
+Daniel: Would reducing the project scope help?
+Camille Martin: Probably not. The bigger problem is that this isn't considered critical compared with our other initiatives.
+Daniel: Is there anything we could provide to strengthen the case?
+Camille Martin: A stronger ROI model would help next time, but it won't unlock budget this year.
+Daniel: Should we revisit it during next year's planning cycle?
+Camille Martin: Yes. Contact me around October when we start planning next year's budget."
+T005,D005,A005,C009;C010,2026-07-18,Discovery Workshop,"Laura (Sales): What is driving the project internally?
+Noah Frei: We have too many fragmented analytics pipelines. Analysts spend a lot of time preparing data instead of analyzing it.
+Sofia Meier: I agree with the problem, but procurement will need very clear implementation milestones and fixed costs.
+Laura: If we can show a staged implementation with fixed milestones, would that address the procurement concern?
+Sofia Meier: Partly. Payment terms also matter. Annual prepayment will be difficult for us.
+Laura: Would quarterly payments make approval easier?
+Sofia Meier: Yes, definitely.
+Noah Frei: From my side, the technical value is clear. The main question is commercial structure."
+T006,D006,A006,C011;C012,2026-09-01,Qualification Call,"Chris (Sales): You mentioned automation is a priority. Which process causes the most pain today?
+Louise Dubois: That's actually what we're still trying to determine. There are many manual processes.
+Arthur Peeters: Shipment exception handling is probably the best candidate. The team spends hours coordinating exceptions by email.
+Chris: Who owns that process?
+Arthur Peeters: Operations, but we should bring the regional operations manager into the next meeting.
+Louise Dubois: Before we discuss software, I want a clear business case around one process.
+Chris: Understood. We'll focus the next workshop on shipment exceptions and quantify the current manual effort."
+T007,D007,A007,C013;C014,2026-09-11,Commercial Negotiation,"Emma (Sales): Are there any remaining concerns besides commercial terms?
+James Carter: Model governance is mostly resolved. The documentation Priya reviewed was sufficient.
+Priya Shah: Yes. We still want lineage and monitoring included in the implementation plan, but I don't see that as a blocker.
+Emma: On pricing, what would make a multi-year commitment work?
+James Carter: The current price is acceptable for one year. For three years, I need a meaningful incentive.
+Emma: Would a lower effective annual price plus price protection address that?
+James Carter: Potentially. Show me both a two-year and a three-year option.
+Emma: If one of those works commercially, are we ready for legal review?
+James Carter: Yes."
+T008,D008,A008,C015;C016,2026-09-09,Final Review,"Maria (Sales): Is there anything preventing you from moving ahead with the starter package?
+Erik Lind: Not really. I want to keep deployment simple and start before the end of October.
+Sara Berg: I still need clarity on the implementation fee.
+Maria: We can include implementation in the first-year subscription instead of charging it separately.
+Sara Berg: That would simplify approval.
+Erik Lind: If you can confirm the October deployment slot, send us the final order form.
+Maria: I can confirm that today.
+Erik Lind: Then I think we're ready."
+T009,D010,A003,C005;C006,2026-09-03,Expansion Workshop,"Rachel (Sales): What would you need to see before expanding the AI optimization module?
+Lars Jensen: I need evidence that it affects either energy output or operating cost. Ideally both.
+Mette Nielsen: Technically, I'd prefer not to deploy across the whole fleet immediately.
+Rachel: What about a proof of value on one wind farm?
+Mette Nielsen: That's exactly what I was thinking.
+Lars Jensen: If the proof shows measurable impact, expansion becomes much easier to approve.
+Rachel: Let's agree on the baseline metrics before we start.
+Lars Jensen: Good. Then the result is something I can take directly to the investment committee."
+T010,D012,A006,C011;C012,2026-05-22,Executive Review,"Chris (Sales): Arthur has been positive about the platform, but he mentioned sponsorship might be an issue.
+Louise Dubois: That's correct. I like the concept, but we have two transformation programs that already have executive backing.
+Chris: Is there a smaller scope that you could sponsor?
+Louise Dubois: Not this year. It's less about scope and more about organizational priority.
+Arthur Peeters: Could we keep the technical work alive and revisit budget later?
+Louise Dubois: We can revisit it next planning cycle, but I don't want the team spending more time on it now.
+Chris: Understood. We'll close the opportunity for now and reconnect during planning."

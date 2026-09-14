@@ -1,0 +1,4 @@
+morph-kgc>=2.9
+rdflib>=6.1.1,<7.3.0
+requests>=2.31
+pyshacl>=0.26

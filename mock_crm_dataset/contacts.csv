@@ -1,0 +1,17 @@
+contact_id,account_id,first_name,last_name,job_title,department,seniority,email,phone,is_decision_maker
+C001,A001,Anna,Keller,VP Operations,Operations,VP,anna.keller@acme.example,+49-555-0101,True
+C002,A001,Markus,Vogel,IT Director,IT,Director,markus.vogel@acme.example,+49-555-0102,False
+C003,A002,Eva,de Vries,Chief Revenue Officer,Sales,C-Level,eva.devries@technova.example,+31-555-0201,True
+C004,A002,Tom,Smit,Sales Operations Manager,Sales Operations,Manager,tom.smit@technova.example,+31-555-0202,False
+C005,A003,Lars,Jensen,Chief Digital Officer,Digital,C-Level,lars.jensen@greenenergy.example,+45-555-0301,True
+C006,A003,Mette,Nielsen,Data Platform Lead,IT,Lead,mette.nielsen@greenenergy.example,+45-555-0302,False
+C007,A004,Camille,Martin,VP Commerce,Commercial,VP,camille.martin@retailpro.example,+33-555-0401,True
+C008,A004,Hugo,Bernard,CRM Manager,Marketing,Manager,hugo.bernard@retailpro.example,+33-555-0402,False
+C009,A005,Sofia,Meier,Head of Procurement,Procurement,Director,sofia.meier@medaxis.example,+41-555-0501,True
+C010,A005,Noah,Frei,Analytics Lead,Data,Lead,noah.frei@medaxis.example,+41-555-0502,False
+C011,A006,Louise,Dubois,COO,Operations,C-Level,louise.dubois@logicore.example,+32-555-0601,True
+C012,A006,Arthur,Peeters,Transformation Manager,Strategy,Manager,arthur.peeters@logicore.example,+32-555-0602,False
+C013,A007,James,Carter,Chief Risk Officer,Risk,C-Level,james.carter@finpeak.example,+44-555-0701,True
+C014,A007,Priya,Shah,Head of Data,Data,Director,priya.shah@finpeak.example,+44-555-0702,False
+C015,A008,Erik,Lind,Managing Director,Executive,C-Level,erik.lind@buildsphere.example,+46-555-0801,True
+C016,A008,Sara,Berg,Finance Manager,Finance,Manager,sara.berg@buildsphere.example,+46-555-0802,False
