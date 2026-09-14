@@ -7,7 +7,7 @@ import requests
 from rdflib import Graph, Namespace, URIRef
 
 OLLAMA_URL = "http://localhost:11434/api/generate"
-MODEL = "qwen3.5:9b-agent"
+MODEL = "qwen3.5:35b"
 
 CRM = Namespace("https://example.org/sales-kg/")
 RES = Namespace("https://example.org/sales-kg/resource/")

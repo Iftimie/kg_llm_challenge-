@@ -27,7 +27,7 @@ else:
 for path, ctx in [("sales_kg_ontology_v1.ttl", "http://example.org/sales-kg/graph/ontology"),
                   ("kg.nt", "http://example.org/sales-kg/graph/crm")]:
     with open(path, "rb") as f:
-        r = requests.put(f"{GRAPHDB}/repositories/{REPO}/statements",
+        r = requests.post(f"{GRAPHDB}/repositories/{REPO}/statements",
                          params={"context": f"<{ctx}>"},
                          headers={"Content-Type": "application/n-triples" if path.endswith(".nt") else "application/x-turtle"},
                          data=f)
@@ -38,7 +38,7 @@ for path, ctx in [("sales_kg_ontology_v1.ttl", "http://example.org/sales-kg/grap
 if os.path.isdir("extracted"):
     for path in sorted(glob.glob(os.path.join("extracted", "T*.ttl"))):
         with open(path, "rb") as f:
-            r = requests.put(f"{GRAPHDB}/repositories/{REPO}/statements",
+            r = requests.post(f"{GRAPHDB}/repositories/{REPO}/statements",
                              params={"context": "<https://example.org/sales-kg/graph/extracted>"},
                              headers={"Content-Type": "text/turtle"},
                              data=f)

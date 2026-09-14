@@ -39,8 +39,7 @@ crm:InteractionShape a sh:NodeShape ;
 
 crm:TranscriptShape a sh:NodeShape ;
     sh:targetClass crm:Transcript ;
-    sh:property [ sh:path crm:identifier ; sh:minCount 1 ] ;
-    sh:property [ sh:path crm:transcriptText ; sh:minCount 1 ] .
+    sh:property [ sh:path crm:identifier ; sh:minCount 1 ] .
 
 crm:ProductShape a sh:NodeShape ;
     sh:targetClass crm:Product ;

@@ -62,12 +62,10 @@
 <#TranscriptFromActivityMap> a rr:TriplesMap ;
     rml:logicalSource [ rml:source "mock_crm_dataset/activities.csv" ; rml:referenceFormulation ql:CSV ] ;
     rr:subjectMap [ rr:template "https://example.org/sales-kg/resource/Transcript_{activity_id}" ; rr:class crm:Transcript ] ;
-    rr:predicateObjectMap [ rr:predicate crm:identifier ; rr:objectMap [ rr:template "{activity_id}_transcript" ; rr:termType rr:Literal ] ] ;
-    rr:predicateObjectMap [ rr:predicate crm:transcriptText ; rr:objectMap [ rml:reference "transcript_text" ] ] .
+    rr:predicateObjectMap [ rr:predicate crm:identifier ; rr:objectMap [ rr:template "{activity_id}_transcript" ; rr:termType rr:Literal ] ] .
 
 <#TranscriptFromFileMap> a rr:TriplesMap ;
     rml:logicalSource [ rml:source "mock_crm_dataset/transcripts.csv" ; rml:referenceFormulation ql:CSV ] ;
     rr:subjectMap [ rr:template "https://example.org/sales-kg/resource/Transcript_{transcript_id}" ; rr:class crm:Transcript ] ;
     rr:predicateObjectMap [ rr:predicate crm:identifier ; rr:objectMap [ rml:reference "transcript_id" ] ] ;
-    rr:predicateObjectMap [ rr:predicate crm:transcriptText ; rr:objectMap [ rml:reference "transcript" ] ] ;
     rr:predicateObjectMap [ rr:predicate crm:aboutDeal ; rr:objectMap [ rr:parentTriplesMap <#DealMap> ; rr:joinCondition [ rr:child "deal_id" ; rr:parent "deal_id" ] ] ] .

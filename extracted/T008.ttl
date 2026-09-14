@@ -1,0 +1,77 @@
+@prefix crm: <https://example.org/sales-kg/> .
+@prefix res: <https://example.org/sales-kg/resource/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+res:Deal_D008
+    crm:hasBuyingSignal res:BuyingSignal_T008_ready ;
+    crm:hasBuyingSignal res:BuyingSignal_T008_order_form ;
+    crm:hasObjection res:Objection_T008_fee_clarity ;
+    crm:hasNeed res:Need_T008_october_start ;
+    crm:hasAction res:Action_T008_impl_included ;
+    crm:hasAction res:Action_T008_confirm_slot .
+
+res:BuyingSignal_T008_ready
+    a crm:BuyingSignal ;
+    crm:name "Ready to proceed" ;
+    crm:supportedBy res:Evidence_T008_01 .
+
+res:BuyingSignal_T008_order_form
+    a crm:BuyingSignal ;
+    crm:name "Request for final order form" ;
+    crm:supportedBy res:Evidence_T008_02 .
+
+res:Objection_T008_fee_clarity
+    a crm:Objection ;
+    crm:name "Implementation fee clarity needed" ;
+    crm:supportedBy res:Evidence_T008_03 .
+
+res:Need_T008_october_start
+    a crm:CustomerNeed ;
+    crm:name "Deployment before end of October" ;
+    crm:supportedBy res:Evidence_T008_04 .
+
+res:Action_T008_impl_included
+    a crm:SalesAction ;
+    crm:name "Include implementation in subscription" ;
+    crm:supportedBy res:Evidence_T008_05 .
+
+res:Action_T008_confirm_slot
+    a crm:SalesAction ;
+    crm:name "Confirm October deployment slot" ;
+    crm:supportedBy res:Evidence_T008_06 .
+
+res:Evidence_T008_01
+    a crm:Evidence ;
+    crm:sourceTranscript res:Transcript_T008 ;
+    crm:speakerName "Erik Lind" ;
+    crm:evidenceText "Then I think we're ready." .
+
+res:Evidence_T008_02
+    a crm:Evidence ;
+    crm:sourceTranscript res:Transcript_T008 ;
+    crm:speakerName "Erik Lind" ;
+    crm:evidenceText "If you can confirm the October deployment slot, send us the final order form." .
+
+res:Evidence_T008_03
+    a crm:Evidence ;
+    crm:sourceTranscript res:Transcript_T008 ;
+    crm:speakerName "Sara Berg" ;
+    crm:evidenceText "I still need clarity on the implementation fee." .
+
+res:Evidence_T008_04
+    a crm:Evidence ;
+    crm:sourceTranscript res:Transcript_T008 ;
+    crm:speakerName "Erik Lind" ;
+    crm:evidenceText "I want to keep deployment simple and start before the end of October." .
+
+res:Evidence_T008_05
+    a crm:Evidence ;
+    crm:sourceTranscript res:Transcript_T008 ;
+    crm:speakerName "Maria" ;
+    crm:evidenceText "We can include implementation in the first-year subscription instead of charging it separately." .
+
+res:Evidence_T008_06
+    a crm:Evidence ;
+    crm:sourceTranscript res:Transcript_T008 ;
+    crm:speakerName "Maria" ;
+    crm:evidenceText "I can confirm that today." .

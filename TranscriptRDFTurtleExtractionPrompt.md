@@ -22,6 +22,7 @@ Rules:
 * Keep generated instance identifiers short, stable, and descriptive.
 * Every extracted semantic fact should be traceable to evidence from the transcript when the ontology supports provenance.
 * Evidence should preserve the source transcript, speaker, and a short exact excerpt when possible.
+* Never copy the full transcript text: do NOT emit `crm:transcriptText`. Reference the transcript only by its canonical URI via `crm:sourceTranscript` (e.g. `res:Transcript_T001`) — that node and its text already exist in the graph.
 
 The ontology below is authoritative.
 

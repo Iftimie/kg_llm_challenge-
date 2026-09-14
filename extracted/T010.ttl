@@ -1,0 +1,49 @@
+@prefix crm: <https://example.org/sales-kg/> .
+@prefix res: <https://example.org/sales-kg/resource/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+res:Deal_D012
+    crm:hasBlocker res:Blocker_D012_exec_sponsorship ;
+    crm:hasAction res:SalesAction_D012_reconnect ;
+    crm:hasExpansionOpportunity res:ExpansionOpportunity_D012_planning_cycle .
+
+res:Blocker_D012_exec_sponsorship
+    a crm:Blocker ;
+    crm:name "Executive Sponsorship Issue" ;
+    crm:supportedBy res:Evidence_T010_001,
+        res:Evidence_T010_002 .
+
+res:Evidence_T010_001
+    a crm:Evidence ;
+    crm:sourceTranscript res:Transcript_T010 ;
+    crm:speakerName "Louise Dubois" ;
+    crm:evidenceText "we have two transformation programs that already have executive backing." .
+
+res:Evidence_T010_002
+    a crm:Evidence ;
+    crm:sourceTranscript res:Transcript_T010 ;
+    crm:speakerName "Louise Dubois" ;
+    crm:evidenceText "It's less about scope and more about organizational priority." .
+
+res:SalesAction_D012_reconnect
+    a crm:SalesAction ;
+    crm:name "Reconnect during planning" ;
+    crm:supportedBy res:Evidence_T010_003 .
+
+res:Evidence_T010_003
+    a crm:Evidence ;
+    crm:sourceTranscript res:Transcript_T010 ;
+    crm:speakerName "Chris" ;
+    crm:evidenceText "We'll close the opportunity for now and reconnect during planning." .
+
+res:ExpansionOpportunity_D012_planning_cycle
+    a crm:ExpansionOpportunity ;
+    crm:name "Revisit next planning cycle" ;
+    crm:supportedBy res:Evidence_T010_004 ;
+    crm:expansionInvolvesProduct res:Product_Data%20Platform .
+
+res:Evidence_T010_004
+    a crm:Evidence ;
+    crm:sourceTranscript res:Transcript_T010 ;
+    crm:speakerName "Louise Dubois" ;
+    crm:evidenceText "We can revisit it next planning cycle" .

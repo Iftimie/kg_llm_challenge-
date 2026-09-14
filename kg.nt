@@ -1,589 +1,548 @@
-<https://example.org/sales-kg/resource/Deal_D012> <https://example.org/sales-kg/hasOutcome> <https://example.org/sales-kg/Lost> .
-<https://example.org/sales-kg/resource/Interaction_ACT002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Contact_C015> <https://example.org/sales-kg/decisionMakerFor> <https://example.org/sales-kg/resource/Deal_D008> .
+<https://example.org/sales-kg/resource/Industry_Healthcare> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Industry> .
+<https://example.org/sales-kg/resource/Product_AI%20Add-on> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Product> .
+<https://example.org/sales-kg/resource/Transcript_ACT018> <https://example.org/sales-kg/identifier> "ACT018_transcript" .
+<https://example.org/sales-kg/resource/Interaction_ACT010> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
+<https://example.org/sales-kg/resource/Transcript_T010> <https://example.org/sales-kg/identifier> "T010" .
+<https://example.org/sales-kg/resource/Deal_D001> <https://example.org/sales-kg/ownedBy> <https://example.org/sales-kg/resource/SalesRep_S017> .
+<https://example.org/sales-kg/resource/Deal_D001> <https://example.org/sales-kg/dealValue> "120000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<https://example.org/sales-kg/resource/Product_Automation%20Suite> <https://example.org/sales-kg/name> "Automation Suite" .
+<https://example.org/sales-kg/resource/Interaction_ACT028> <https://example.org/sales-kg/interactionDate> "2026-03-05T15:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/sales-kg/resource/Interaction_ACT010> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C007> .
+<https://example.org/sales-kg/resource/Transcript_T003> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D003> .
+<https://example.org/sales-kg/resource/Deal_D012> <https://example.org/sales-kg/dealStage> "Closed Lost" .
+<https://example.org/sales-kg/resource/Product_Starter%20Package> <https://example.org/sales-kg/name> "Starter Package" .
+<https://example.org/sales-kg/resource/Deal_D012> <https://example.org/sales-kg/identifier> "D012" .
+<https://example.org/sales-kg/resource/Transcript_ACT005> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Transcript_T002> <https://example.org/sales-kg/identifier> "T002" .
+<https://example.org/sales-kg/resource/Transcript_ACT029> <https://example.org/sales-kg/identifier> "ACT029_transcript" .
+<https://example.org/sales-kg/resource/Deal_D008> <https://example.org/sales-kg/dealStage> "Proposal" .
+<https://example.org/sales-kg/resource/Transcript_ACT031> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Interaction_ACT022> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D008> .
+<https://example.org/sales-kg/resource/Deal_D001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Deal> .
+<https://example.org/sales-kg/resource/Deal_D004> <https://example.org/sales-kg/dealValue> "80000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<https://example.org/sales-kg/resource/Product_Analytics%20Module> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Product> .
+<https://example.org/sales-kg/resource/Deal_D001> <https://example.org/sales-kg/winProbability> "0.75"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<https://example.org/sales-kg/resource/Transcript_ACT010> <https://example.org/sales-kg/identifier> "ACT010_transcript" .
+<https://example.org/sales-kg/resource/Transcript_T007> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D007> .
+<https://example.org/sales-kg/resource/Interaction_ACT001> <https://example.org/sales-kg/interactionDate> "2026-08-28T10:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
 <https://example.org/sales-kg/resource/Interaction_ACT013> <https://example.org/sales-kg/identifier> "ACT013" .
-<https://example.org/sales-kg/resource/Deal_D010> <https://example.org/sales-kg/name> "GreenEnergy AI Optimization Add-on" .
-<https://example.org/sales-kg/resource/Transcript_ACT029> <https://example.org/sales-kg/transcriptText> "Sofia said procurement can approve the purchase if the implementation fee remains fixed." .
-<https://example.org/sales-kg/resource/Contact_C007> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
-<https://example.org/sales-kg/resource/Industry_Retail> <https://example.org/sales-kg/name> "Retail" .
-<https://example.org/sales-kg/resource/Interaction_ACT005> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT005> .
-<https://example.org/sales-kg/resource/Deal_D009> <https://example.org/sales-kg/name> "Acme Predictive Maintenance Add-on" .
-<https://example.org/sales-kg/resource/Interaction_ACT019> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT019> .
-<https://example.org/sales-kg/resource/Deal_D011> <https://example.org/sales-kg/expectedCloseDate> "2026-05-12"^^<http://www.w3.org/2001/XMLSchema#date> .
-<https://example.org/sales-kg/resource/Interaction_ACT018> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C013> .
-<https://example.org/sales-kg/resource/Interaction_ACT008> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C006> .
-<https://example.org/sales-kg/resource/Account_A003> <https://example.org/sales-kg/name> "GreenEnergy Group" .
-<https://example.org/sales-kg/resource/Contact_C011> <https://example.org/sales-kg/identifier> "C011" .
-<https://example.org/sales-kg/resource/Interaction_ACT004> <https://example.org/sales-kg/identifier> "ACT004" .
-<https://example.org/sales-kg/resource/Interaction_ACT015> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D005> .
-<https://example.org/sales-kg/resource/Deal_D012> <https://example.org/sales-kg/forAccount> <https://example.org/sales-kg/resource/Account_A006> .
-<https://example.org/sales-kg/resource/Account_A005> <https://example.org/sales-kg/name> "MedAxis" .
-<https://example.org/sales-kg/resource/Deal_D010> <https://example.org/sales-kg/involvesProduct> <https://example.org/sales-kg/resource/Product_AI%20Add-on> .
-<https://example.org/sales-kg/resource/Transcript_ACT024> <https://example.org/sales-kg/transcriptText> "Anna is interested if the add-on can show measurable reduction in machine downtime." .
-<https://example.org/sales-kg/resource/Interaction_ACT005> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Contact_C008> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A004> .
-<https://example.org/sales-kg/resource/Deal_D003> <https://example.org/sales-kg/winProbability> "1.0"^^<http://www.w3.org/2001/XMLSchema#decimal> .
-<https://example.org/sales-kg/resource/Interaction_ACT003> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D001> .
+<https://example.org/sales-kg/resource/Transcript_ACT021> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
 <https://example.org/sales-kg/resource/Transcript_ACT001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Transcript_ACT027> <https://example.org/sales-kg/transcriptText> "Mette proposed using one wind farm as a proof of value before expanding across the fleet." .
-<https://example.org/sales-kg/resource/Deal_D003> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Deal> .
-<https://example.org/sales-kg/resource/Deal_D010> <https://example.org/sales-kg/identifier> "D010" .
-<https://example.org/sales-kg/resource/Interaction_ACT020> <https://example.org/sales-kg/identifier> "ACT020" .
+<https://example.org/sales-kg/resource/Industry_SaaS> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Industry> .
+<https://example.org/sales-kg/resource/Interaction_ACT005> <https://example.org/sales-kg/interactionDate> "2026-08-21T15:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/sales-kg/resource/Contact_C007> <https://example.org/sales-kg/name> "Camille Martin" .
+<https://example.org/sales-kg/resource/Interaction_ACT001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
+<https://example.org/sales-kg/resource/Product_AI%20Add-on> <https://example.org/sales-kg/name> "AI Add-on" .
+<https://example.org/sales-kg/resource/Deal_D007> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Deal> .
+<https://example.org/sales-kg/resource/Transcript_ACT020> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Account_A007> <https://example.org/sales-kg/identifier> "A007" .
+<https://example.org/sales-kg/resource/Interaction_ACT023> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT023> .
+<https://example.org/sales-kg/resource/Interaction_ACT015> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
+<https://example.org/sales-kg/resource/Interaction_ACT011> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D004> .
+<https://example.org/sales-kg/resource/Interaction_ACT021> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT021> .
+<https://example.org/sales-kg/resource/Deal_D003> <https://example.org/sales-kg/expectedCloseDate> "2026-07-20"^^<http://www.w3.org/2001/XMLSchema#date> .
+<https://example.org/sales-kg/resource/Contact_C011> <https://example.org/sales-kg/name> "Louise Dubois" .
+<https://example.org/sales-kg/resource/Deal_D007> <https://example.org/sales-kg/identifier> "D007" .
+<https://example.org/sales-kg/resource/SalesRep_S044> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/SalesRep> .
+<https://example.org/sales-kg/resource/Deal_D005> <https://example.org/sales-kg/dealValue> "95000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<https://example.org/sales-kg/resource/Interaction_ACT023> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C015> .
+<https://example.org/sales-kg/resource/Industry_Manufacturing> <https://example.org/sales-kg/name> "Manufacturing" .
+<https://example.org/sales-kg/resource/Interaction_ACT001> <https://example.org/sales-kg/identifier> "ACT001" .
+<https://example.org/sales-kg/resource/Interaction_ACT019> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
+<https://example.org/sales-kg/resource/Deal_D005> <https://example.org/sales-kg/identifier> "D005" .
+<https://example.org/sales-kg/resource/Transcript_ACT024> <https://example.org/sales-kg/identifier> "ACT024_transcript" .
+<https://example.org/sales-kg/resource/SalesRep_S022> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/SalesRep> .
+<https://example.org/sales-kg/resource/Transcript_ACT002> <https://example.org/sales-kg/identifier> "ACT002_transcript" .
+<https://example.org/sales-kg/resource/Interaction_ACT008> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT008> .
 <https://example.org/sales-kg/resource/Contact_C005> <https://example.org/sales-kg/decisionMakerFor> <https://example.org/sales-kg/resource/Deal_D010> .
 <https://example.org/sales-kg/resource/Contact_C005> <https://example.org/sales-kg/decisionMakerFor> <https://example.org/sales-kg/resource/Deal_D003> .
-<https://example.org/sales-kg/resource/Interaction_ACT001> <https://example.org/sales-kg/identifier> "ACT001" .
-<https://example.org/sales-kg/resource/Interaction_ACT030> <https://example.org/sales-kg/interactionDate> "2026-04-02T14:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Deal_D006> <https://example.org/sales-kg/involvesProduct> <https://example.org/sales-kg/resource/Product_Automation%20Suite> .
-<https://example.org/sales-kg/resource/Account_A001> <https://example.org/sales-kg/identifier> "A001" .
-<https://example.org/sales-kg/resource/Transcript_ACT011> <https://example.org/sales-kg/identifier> "ACT011_transcript" .
-<https://example.org/sales-kg/resource/Interaction_ACT027> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C006> .
-<https://example.org/sales-kg/resource/Deal_D006> <https://example.org/sales-kg/expectedCloseDate> "2026-12-15"^^<http://www.w3.org/2001/XMLSchema#date> .
-<https://example.org/sales-kg/resource/Interaction_ACT029> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT029> .
-<https://example.org/sales-kg/resource/Interaction_ACT013> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT013> .
-<https://example.org/sales-kg/resource/Deal_D005> <https://example.org/sales-kg/hasOutcome> <https://example.org/sales-kg/Open> .
-<https://example.org/sales-kg/resource/Account_A008> <https://example.org/sales-kg/name> "BuildSphere" .
-<https://example.org/sales-kg/resource/Interaction_ACT026> <https://example.org/sales-kg/identifier> "ACT026" .
-<https://example.org/sales-kg/resource/Deal_D003> <https://example.org/sales-kg/hasOutcome> <https://example.org/sales-kg/Won> .
-<https://example.org/sales-kg/resource/Interaction_ACT002> <https://example.org/sales-kg/interactionDate> "2026-09-02T14:22:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Transcript_ACT018> <https://example.org/sales-kg/transcriptText> "James sees strong value but requires clear explainability and model governance before approval." .
-<https://example.org/sales-kg/resource/Transcript_ACT010> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Interaction_ACT017> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D006> .
-<https://example.org/sales-kg/resource/Contact_C011> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
-<https://example.org/sales-kg/resource/Contact_C010> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
-<https://example.org/sales-kg/resource/Transcript_ACT023> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Deal_D011> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Deal> .
-<https://example.org/sales-kg/resource/Industry_Logistics> <https://example.org/sales-kg/name> "Logistics" .
-<https://example.org/sales-kg/resource/Deal_D006> <https://example.org/sales-kg/forAccount> <https://example.org/sales-kg/resource/Account_A006> .
-<https://example.org/sales-kg/resource/Interaction_ACT013> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D005> .
-<https://example.org/sales-kg/resource/Industry_Healthcare> <https://example.org/sales-kg/name> "Healthcare" .
-<https://example.org/sales-kg/resource/Interaction_ACT028> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT028> .
-<https://example.org/sales-kg/resource/Contact_C009> <https://example.org/sales-kg/decisionMakerFor> <https://example.org/sales-kg/resource/Deal_D005> .
-<https://example.org/sales-kg/resource/Contact_C005> <https://example.org/sales-kg/name> "Lars Jensen" .
-<https://example.org/sales-kg/resource/Contact_C013> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
-<https://example.org/sales-kg/resource/Contact_C016> <https://example.org/sales-kg/name> "Sara Berg" .
-<https://example.org/sales-kg/resource/Deal_D001> <https://example.org/sales-kg/ownedBy> <https://example.org/sales-kg/resource/SalesRep_S017> .
-<https://example.org/sales-kg/resource/Account_A007> <https://example.org/sales-kg/name> "FinPeak" .
-<https://example.org/sales-kg/resource/Interaction_ACT017> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Deal_D007> <https://example.org/sales-kg/dealStage> "Negotiation" .
-<https://example.org/sales-kg/resource/Industry_Energy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Industry> .
-<https://example.org/sales-kg/resource/Interaction_ACT016> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C011> .
-<https://example.org/sales-kg/resource/Contact_C005> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A003> .
-<https://example.org/sales-kg/resource/Interaction_ACT017> <https://example.org/sales-kg/interactionDate> "2026-09-01T13:40:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Interaction_ACT031> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT031> .
-<https://example.org/sales-kg/resource/Deal_D012> <https://example.org/sales-kg/identifier> "D012" .
-<https://example.org/sales-kg/resource/Transcript_ACT021> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Contact_C013> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A007> .
-<https://example.org/sales-kg/resource/Transcript_ACT013> <https://example.org/sales-kg/transcriptText> "Sofia asked for detailed pricing, implementation milestones, and healthcare compliance documentation." .
-<https://example.org/sales-kg/resource/Deal_D003> <https://example.org/sales-kg/involvesProduct> <https://example.org/sales-kg/resource/Product_Enterprise%20Platform> .
-<https://example.org/sales-kg/resource/Transcript_ACT017> <https://example.org/sales-kg/identifier> "ACT017_transcript" .
-<https://example.org/sales-kg/resource/Interaction_ACT001> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT001> .
-<https://example.org/sales-kg/resource/Transcript_ACT006> <https://example.org/sales-kg/transcriptText> "Eva said they can start with 25 users if the pilot proves a measurable increase in forecast accuracy." .
-<https://example.org/sales-kg/resource/Transcript_ACT016> <https://example.org/sales-kg/transcriptText> "Louise is interested in automation but has not yet identified which operational process should be addressed first." .
-<https://example.org/sales-kg/resource/Interaction_ACT011> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT011> .
-<https://example.org/sales-kg/resource/Transcript_T009> <https://example.org/sales-kg/identifier> "T009" .
-<https://example.org/sales-kg/resource/Transcript_ACT028> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Deal_D006> <https://example.org/sales-kg/name> "LogiCore Automation Suite" .
-<https://example.org/sales-kg/resource/Deal_D002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Deal> .
-<https://example.org/sales-kg/resource/Deal_D002> <https://example.org/sales-kg/winProbability> "0.3"^^<http://www.w3.org/2001/XMLSchema#decimal> .
-<https://example.org/sales-kg/resource/Interaction_ACT015> <https://example.org/sales-kg/identifier> "ACT015" .
-<https://example.org/sales-kg/resource/Deal_D011> <https://example.org/sales-kg/winProbability> "1.0"^^<http://www.w3.org/2001/XMLSchema#decimal> .
-<https://example.org/sales-kg/resource/Deal_D009> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Deal> .
-<https://example.org/sales-kg/resource/Transcript_ACT030> <https://example.org/sales-kg/identifier> "ACT030_transcript" .
-<https://example.org/sales-kg/resource/Transcript_ACT025> <https://example.org/sales-kg/transcriptText> "Markus asked which machine telemetry signals are required and whether historical sensor data can be imported." .
-<https://example.org/sales-kg/resource/Deal_D010> <https://example.org/sales-kg/hasOutcome> <https://example.org/sales-kg/Open> .
-<https://example.org/sales-kg/resource/Contact_C009> <https://example.org/sales-kg/identifier> "C009" .
-<https://example.org/sales-kg/resource/Transcript_T008> <https://example.org/sales-kg/transcriptText> "Maria (Sales): Is there anything preventing you from moving ahead with the starter package?\nErik Lind: Not really. I want to keep deployment simple and start before the end of October.\nSara Berg: I still need clarity on the implementation fee.\nMaria: We can include implementation in the first-year subscription instead of charging it separately.\nSara Berg: That would simplify approval.\nErik Lind: If you can confirm the October deployment slot, send us the final order form.\nMaria: I can confirm that today.\nErik Lind: Then I think we're ready." .
-<https://example.org/sales-kg/resource/Transcript_T006> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D006> .
-<https://example.org/sales-kg/resource/Interaction_ACT030> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Interaction_ACT008> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Deal_D007> <https://example.org/sales-kg/identifier> "D007" .
-<https://example.org/sales-kg/resource/Deal_D004> <https://example.org/sales-kg/forAccount> <https://example.org/sales-kg/resource/Account_A004> .
-<https://example.org/sales-kg/resource/Interaction_ACT011> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C008> .
-<https://example.org/sales-kg/resource/Deal_D003> <https://example.org/sales-kg/dealValue> "210000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
-<https://example.org/sales-kg/resource/Interaction_ACT012> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D004> .
-<https://example.org/sales-kg/resource/Transcript_ACT024> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Interaction_ACT006> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT006> .
-<https://example.org/sales-kg/resource/Transcript_ACT031> <https://example.org/sales-kg/identifier> "ACT031_transcript" .
-<https://example.org/sales-kg/resource/Interaction_ACT009> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Contact_C004> <https://example.org/sales-kg/name> "Tom Smit" .
-<https://example.org/sales-kg/resource/Deal_D002> <https://example.org/sales-kg/ownedBy> <https://example.org/sales-kg/resource/SalesRep_S022> .
-<https://example.org/sales-kg/resource/Interaction_ACT029> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Deal_D011> <https://example.org/sales-kg/hasOutcome> <https://example.org/sales-kg/Won> .
-<https://example.org/sales-kg/resource/Interaction_ACT014> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C010> .
-<https://example.org/sales-kg/resource/Industry_Retail> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Industry> .
-<https://example.org/sales-kg/resource/Interaction_ACT010> <https://example.org/sales-kg/identifier> "ACT010" .
-<https://example.org/sales-kg/resource/Interaction_ACT001> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C001> .
-<https://example.org/sales-kg/resource/Transcript_ACT001> <https://example.org/sales-kg/transcriptText> "Anna said the solution fits their operational goals, but asked for a stronger volume discount if they expand to three factories." .
-<https://example.org/sales-kg/resource/Interaction_ACT003> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Contact_C007> <https://example.org/sales-kg/name> "Camille Martin" .
-<https://example.org/sales-kg/resource/Transcript_T004> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Deal_D009> <https://example.org/sales-kg/involvesProduct> <https://example.org/sales-kg/resource/Product_AI%20Add-on> .
-<https://example.org/sales-kg/resource/Interaction_ACT001> <https://example.org/sales-kg/interactionDate> "2026-08-28T10:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Transcript_ACT027> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Contact_C013> <https://example.org/sales-kg/identifier> "C013" .
-<https://example.org/sales-kg/resource/Interaction_ACT002> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C002> .
-<https://example.org/sales-kg/resource/Contact_C003> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
-<https://example.org/sales-kg/resource/Deal_D010> <https://example.org/sales-kg/winProbability> "0.72"^^<http://www.w3.org/2001/XMLSchema#decimal> .
-<https://example.org/sales-kg/resource/Interaction_ACT027> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Interaction_ACT012> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C007> .
-<https://example.org/sales-kg/resource/Deal_D004> <https://example.org/sales-kg/identifier> "D004" .
-<https://example.org/sales-kg/resource/Transcript_T002> <https://example.org/sales-kg/transcriptText> "Michael (Sales): What would make this pilot successful for you?\nEva de Vries: Forecast accuracy is the main thing. Our managers don't trust the current forecast.\nTom Smit: We also have a lot of custom opportunity fields in the CRM. If your connector ignores those, the dashboard won't be useful.\nMichael: We can map custom fields. Would you be comfortable defining three or four success metrics before the pilot starts?\nEva de Vries: Yes. Forecast accuracy, pipeline coverage, conversion by stage, and probably manager adoption.\nMichael: And if the pilot improves those metrics?\nEva de Vries: Then I can make the case for rolling it out to the entire sales organization." .
-<https://example.org/sales-kg/resource/Transcript_ACT018> <https://example.org/sales-kg/identifier> "ACT018_transcript" .
-<https://example.org/sales-kg/resource/Transcript_ACT008> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Transcript_ACT005> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Transcript_T006> <https://example.org/sales-kg/transcriptText> "Chris (Sales): You mentioned automation is a priority. Which process causes the most pain today?\nLouise Dubois: That's actually what we're still trying to determine. There are many manual processes.\nArthur Peeters: Shipment exception handling is probably the best candidate. The team spends hours coordinating exceptions by email.\nChris: Who owns that process?\nArthur Peeters: Operations, but we should bring the regional operations manager into the next meeting.\nLouise Dubois: Before we discuss software, I want a clear business case around one process.\nChris: Understood. We'll focus the next workshop on shipment exceptions and quantify the current manual effort." .
-<https://example.org/sales-kg/resource/Transcript_ACT017> <https://example.org/sales-kg/transcriptText> "Arthur suggested starting with shipment exception handling because the team currently manages it manually." .
-<https://example.org/sales-kg/resource/Contact_C016> <https://example.org/sales-kg/identifier> "C016" .
-<https://example.org/sales-kg/resource/Deal_D004> <https://example.org/sales-kg/name> "RetailPro Analytics Upgrade" .
-<https://example.org/sales-kg/resource/Deal_D008> <https://example.org/sales-kg/involvesProduct> <https://example.org/sales-kg/resource/Product_Starter%20Package> .
-<https://example.org/sales-kg/resource/Interaction_ACT017> <https://example.org/sales-kg/identifier> "ACT017" .
-<https://example.org/sales-kg/resource/Transcript_T004> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D004> .
-<https://example.org/sales-kg/resource/Transcript_ACT010> <https://example.org/sales-kg/transcriptText> "Camille liked the capabilities but said the project needs a stronger ROI case to compete with other internal investments." .
-<https://example.org/sales-kg/resource/Interaction_ACT012> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Interaction_ACT001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Contact_C009> <https://example.org/sales-kg/decisionMakerFor> <https://example.org/sales-kg/resource/Deal_D011> .
-<https://example.org/sales-kg/resource/Interaction_ACT024> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Deal_D011> <https://example.org/sales-kg/identifier> "D011" .
-<https://example.org/sales-kg/resource/Contact_C007> <https://example.org/sales-kg/decisionMakerFor> <https://example.org/sales-kg/resource/Deal_D004> .
-<https://example.org/sales-kg/resource/Interaction_ACT008> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT008> .
-<https://example.org/sales-kg/resource/Interaction_ACT028> <https://example.org/sales-kg/identifier> "ACT028" .
-<https://example.org/sales-kg/resource/Transcript_ACT018> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Transcript_T007> <https://example.org/sales-kg/transcriptText> "Emma (Sales): Are there any remaining concerns besides commercial terms?\nJames Carter: Model governance is mostly resolved. The documentation Priya reviewed was sufficient.\nPriya Shah: Yes. We still want lineage and monitoring included in the implementation plan, but I don't see that as a blocker.\nEmma: On pricing, what would make a multi-year commitment work?\nJames Carter: The current price is acceptable for one year. For three years, I need a meaningful incentive.\nEmma: Would a lower effective annual price plus price protection address that?\nJames Carter: Potentially. Show me both a two-year and a three-year option.\nEmma: If one of those works commercially, are we ready for legal review?\nJames Carter: Yes." .
-<https://example.org/sales-kg/resource/Deal_D001> <https://example.org/sales-kg/dealStage> "Negotiation" .
-<https://example.org/sales-kg/resource/Contact_C006> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
-<https://example.org/sales-kg/resource/Transcript_T001> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D001> .
-<https://example.org/sales-kg/resource/Contact_C005> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
-<https://example.org/sales-kg/resource/Transcript_T005> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Product_Data%20Platform> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Product> .
-<https://example.org/sales-kg/resource/Transcript_ACT002> <https://example.org/sales-kg/transcriptText> "Markus requested documentation on SSO, audit logs, data residency, and penetration testing." .
-<https://example.org/sales-kg/resource/Interaction_ACT029> <https://example.org/sales-kg/interactionDate> "2026-04-21T10:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Transcript_ACT006> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Transcript_ACT019> <https://example.org/sales-kg/transcriptText> "Priya confirmed data availability and requested documentation for lineage, model monitoring, and access controls." .
-<https://example.org/sales-kg/resource/Interaction_ACT004> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT004> .
-<https://example.org/sales-kg/resource/Deal_D008> <https://example.org/sales-kg/identifier> "D008" .
-<https://example.org/sales-kg/resource/Interaction_ACT007> <https://example.org/sales-kg/identifier> "ACT007" .
-<https://example.org/sales-kg/resource/Interaction_ACT009> <https://example.org/sales-kg/interactionDate> "2026-07-20T17:04:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Interaction_ACT021> <https://example.org/sales-kg/identifier> "ACT021" .
-<https://example.org/sales-kg/resource/Deal_D011> <https://example.org/sales-kg/forAccount> <https://example.org/sales-kg/resource/Account_A005> .
-<https://example.org/sales-kg/resource/Interaction_ACT006> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C003> .
-<https://example.org/sales-kg/resource/Interaction_ACT011> <https://example.org/sales-kg/identifier> "ACT011" .
-<https://example.org/sales-kg/resource/Deal_D008> <https://example.org/sales-kg/forAccount> <https://example.org/sales-kg/resource/Account_A008> .
-<https://example.org/sales-kg/resource/Transcript_ACT031> <https://example.org/sales-kg/transcriptText> "Louise said other transformation programs have priority and she cannot sponsor the initiative this year." .
-<https://example.org/sales-kg/resource/Interaction_ACT025> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D009> .
-<https://example.org/sales-kg/resource/Transcript_T003> <https://example.org/sales-kg/transcriptText> "Rachel (Sales): Before we finalize the proposal, are there any technical blockers left?\nMette Nielsen: The architecture looks fine now. My concern was whether you could integrate without creating another isolated data store.\nRachel: The design uses your existing platform and keeps the source systems authoritative.\nMette Nielsen: That's what we needed.\nLars Jensen: For me the bigger question is rollout. I don't want this to become a one-business-unit experiment.\nRachel: We can structure the contract around a phased rollout, but price it as an enterprise agreement.\nLars Jensen: Good. If security signs off and the rollout plan is included, I think we can move forward.\nMette Nielsen: From the technical side, I can recommend approval." .
-<https://example.org/sales-kg/resource/Interaction_ACT029> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C009> .
-<https://example.org/sales-kg/resource/Contact_C007> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A004> .
-<https://example.org/sales-kg/resource/Product_Starter%20Package> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Product> .
-<https://example.org/sales-kg/resource/Deal_D001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Deal> .
-<https://example.org/sales-kg/resource/Deal_D009> <https://example.org/sales-kg/hasOutcome> <https://example.org/sales-kg/Open> .
-<https://example.org/sales-kg/resource/Transcript_ACT004> <https://example.org/sales-kg/transcriptText> "Eva wants better visibility into pipeline conversion and rep performance before committing to a broader rollout." .
-<https://example.org/sales-kg/resource/Account_A003> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Account> .
-<https://example.org/sales-kg/resource/Transcript_ACT022> <https://example.org/sales-kg/identifier> "ACT022_transcript" .
-<https://example.org/sales-kg/resource/Account_A004> <https://example.org/sales-kg/identifier> "A004" .
-<https://example.org/sales-kg/resource/Transcript_ACT016> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Contact_C011> <https://example.org/sales-kg/name> "Louise Dubois" .
-<https://example.org/sales-kg/resource/Transcript_T006> <https://example.org/sales-kg/identifier> "T006" .
-<https://example.org/sales-kg/resource/Contact_C010> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A005> .
-<https://example.org/sales-kg/resource/Contact_C008> <https://example.org/sales-kg/name> "Hugo Bernard" .
-<https://example.org/sales-kg/resource/Contact_C004> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A002> .
-<https://example.org/sales-kg/resource/Contact_C001> <https://example.org/sales-kg/identifier> "C001" .
-<https://example.org/sales-kg/resource/Interaction_ACT006> <https://example.org/sales-kg/identifier> "ACT006" .
-<https://example.org/sales-kg/resource/Account_A002> <https://example.org/sales-kg/identifier> "A002" .
-<https://example.org/sales-kg/resource/Contact_C005> <https://example.org/sales-kg/identifier> "C005" .
-<https://example.org/sales-kg/resource/Transcript_ACT005> <https://example.org/sales-kg/identifier> "ACT005_transcript" .
-<https://example.org/sales-kg/resource/Contact_C016> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A008> .
-<https://example.org/sales-kg/resource/Interaction_ACT023> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Account_A005> <https://example.org/sales-kg/identifier> "A005" .
-<https://example.org/sales-kg/resource/Interaction_ACT021> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT021> .
-<https://example.org/sales-kg/resource/Interaction_ACT007> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D003> .
-<https://example.org/sales-kg/resource/Product_Automation%20Suite> <https://example.org/sales-kg/name> "Automation Suite" .
-<https://example.org/sales-kg/resource/Transcript_ACT023> <https://example.org/sales-kg/identifier> "ACT023_transcript" .
-<https://example.org/sales-kg/resource/Contact_C003> <https://example.org/sales-kg/decisionMakerFor> <https://example.org/sales-kg/resource/Deal_D002> .
-<https://example.org/sales-kg/resource/Contact_C004> <https://example.org/sales-kg/identifier> "C004" .
-<https://example.org/sales-kg/resource/Interaction_ACT017> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C012> .
-<https://example.org/sales-kg/resource/Interaction_ACT008> <https://example.org/sales-kg/identifier> "ACT008" .
-<https://example.org/sales-kg/resource/Account_A001> <https://example.org/sales-kg/name> "Acme Manufacturing" .
-<https://example.org/sales-kg/resource/Contact_C003> <https://example.org/sales-kg/identifier> "C003" .
-<https://example.org/sales-kg/resource/SalesRep_S031> <https://example.org/sales-kg/identifier> "S031" .
-<https://example.org/sales-kg/resource/Interaction_ACT030> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT030> .
-<https://example.org/sales-kg/resource/Deal_D012> <https://example.org/sales-kg/dealStage> "Closed Lost" .
-<https://example.org/sales-kg/resource/Interaction_ACT027> <https://example.org/sales-kg/identifier> "ACT027" .
-<https://example.org/sales-kg/resource/Interaction_ACT004> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D002> .
-<https://example.org/sales-kg/resource/Deal_D009> <https://example.org/sales-kg/winProbability> "0.35"^^<http://www.w3.org/2001/XMLSchema#decimal> .
-<https://example.org/sales-kg/resource/Transcript_T010> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D012> .
-<https://example.org/sales-kg/resource/Product_AI%20Add-on> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Product> .
-<https://example.org/sales-kg/resource/Deal_D011> <https://example.org/sales-kg/involvesProduct> <https://example.org/sales-kg/resource/Product_Analytics%20Module> .
-<https://example.org/sales-kg/resource/Contact_C011> <https://example.org/sales-kg/decisionMakerFor> <https://example.org/sales-kg/resource/Deal_D006> .
-<https://example.org/sales-kg/resource/Deal_D009> <https://example.org/sales-kg/identifier> "D009" .
-<https://example.org/sales-kg/resource/Interaction_ACT026> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Deal_D001> <https://example.org/sales-kg/identifier> "D001" .
-<https://example.org/sales-kg/resource/Transcript_ACT004> <https://example.org/sales-kg/identifier> "ACT004_transcript" .
-<https://example.org/sales-kg/resource/Transcript_ACT023> <https://example.org/sales-kg/transcriptText> "Erik said they are ready to proceed if deployment can start before the end of October." .
-<https://example.org/sales-kg/resource/Deal_D009> <https://example.org/sales-kg/forAccount> <https://example.org/sales-kg/resource/Account_A001> .
-<https://example.org/sales-kg/resource/Deal_D012> <https://example.org/sales-kg/ownedBy> <https://example.org/sales-kg/resource/SalesRep_S031> .
-<https://example.org/sales-kg/resource/Transcript_T003> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D003> .
-<https://example.org/sales-kg/resource/Transcript_T010> <https://example.org/sales-kg/transcriptText> "Chris (Sales): Arthur has been positive about the platform, but he mentioned sponsorship might be an issue.\nLouise Dubois: That's correct. I like the concept, but we have two transformation programs that already have executive backing.\nChris: Is there a smaller scope that you could sponsor?\nLouise Dubois: Not this year. It's less about scope and more about organizational priority.\nArthur Peeters: Could we keep the technical work alive and revisit budget later?\nLouise Dubois: We can revisit it next planning cycle, but I don't want the team spending more time on it now.\nChris: Understood. We'll close the opportunity for now and reconnect during planning." .
-<https://example.org/sales-kg/resource/Transcript_T006> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Deal_D003> <https://example.org/sales-kg/name> "GreenEnergy Platform Rollout" .
-<https://example.org/sales-kg/resource/Deal_D001> <https://example.org/sales-kg/involvesProduct> <https://example.org/sales-kg/resource/Product_Enterprise%20Platform> .
-<https://example.org/sales-kg/resource/Deal_D005> <https://example.org/sales-kg/involvesProduct> <https://example.org/sales-kg/resource/Product_Data%20Platform> .
-<https://example.org/sales-kg/resource/Interaction_ACT014> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT014> .
-<https://example.org/sales-kg/resource/Transcript_T004> <https://example.org/sales-kg/transcriptText> "Daniel (Sales): The team seemed positive about the solution. What's stopping the project?\nCamille Martin: The product isn't the issue. Finance froze most discretionary spending for the rest of the year.\nDaniel: Would reducing the project scope help?\nCamille Martin: Probably not. The bigger problem is that this isn't considered critical compared with our other initiatives.\nDaniel: Is there anything we could provide to strengthen the case?\nCamille Martin: A stronger ROI model would help next time, but it won't unlock budget this year.\nDaniel: Should we revisit it during next year's planning cycle?\nCamille Martin: Yes. Contact me around October when we start planning next year's budget." .
-<https://example.org/sales-kg/resource/Deal_D005> <https://example.org/sales-kg/winProbability> "0.55"^^<http://www.w3.org/2001/XMLSchema#decimal> .
-<https://example.org/sales-kg/resource/Interaction_ACT019> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Contact_C010> <https://example.org/sales-kg/identifier> "C010" .
-<https://example.org/sales-kg/resource/Interaction_ACT019> <https://example.org/sales-kg/interactionDate> "2026-07-29T10:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Transcript_ACT025> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Interaction_ACT028> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D011> .
-<https://example.org/sales-kg/resource/Transcript_T001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/SalesRep_S017> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/SalesRep> .
-<https://example.org/sales-kg/resource/Transcript_ACT007> <https://example.org/sales-kg/transcriptText> "Lars wants a unified data layer across business units and emphasized faster access to operational insights." .
-<https://example.org/sales-kg/resource/Interaction_ACT020> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT020> .
-<https://example.org/sales-kg/resource/Contact_C012> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
-<https://example.org/sales-kg/resource/Interaction_ACT020> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Deal_D012> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Deal> .
-<https://example.org/sales-kg/resource/Deal_D006> <https://example.org/sales-kg/winProbability> "0.2"^^<http://www.w3.org/2001/XMLSchema#decimal> .
-<https://example.org/sales-kg/resource/Transcript_T004> <https://example.org/sales-kg/identifier> "T004" .
-<https://example.org/sales-kg/resource/Deal_D007> <https://example.org/sales-kg/forAccount> <https://example.org/sales-kg/resource/Account_A007> .
-<https://example.org/sales-kg/resource/Interaction_ACT016> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT016> .
-<https://example.org/sales-kg/resource/Deal_D006> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Deal> .
-<https://example.org/sales-kg/resource/Deal_D002> <https://example.org/sales-kg/involvesProduct> <https://example.org/sales-kg/resource/Product_Analytics%20Module> .
-<https://example.org/sales-kg/resource/Interaction_ACT009> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT009> .
-<https://example.org/sales-kg/resource/Interaction_ACT001> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D001> .
-<https://example.org/sales-kg/resource/Interaction_ACT011> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D004> .
-<https://example.org/sales-kg/resource/Industry_Financial%20Services> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Industry> .
-<https://example.org/sales-kg/resource/Transcript_ACT012> <https://example.org/sales-kg/identifier> "ACT012_transcript" .
-<https://example.org/sales-kg/resource/SalesRep_S022> <https://example.org/sales-kg/identifier> "S022" .
-<https://example.org/sales-kg/resource/Transcript_ACT024> <https://example.org/sales-kg/identifier> "ACT024_transcript" .
-<https://example.org/sales-kg/resource/Transcript_ACT003> <https://example.org/sales-kg/identifier> "ACT003_transcript" .
-<https://example.org/sales-kg/resource/Deal_D006> <https://example.org/sales-kg/ownedBy> <https://example.org/sales-kg/resource/SalesRep_S031> .
-<https://example.org/sales-kg/resource/Interaction_ACT016> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Interaction_ACT011> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Deal_D010> <https://example.org/sales-kg/ownedBy> <https://example.org/sales-kg/resource/SalesRep_S017> .
-<https://example.org/sales-kg/resource/Transcript_T002> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D002> .
-<https://example.org/sales-kg/resource/Deal_D011> <https://example.org/sales-kg/name> "MedAxis Analytics Pilot" .
-<https://example.org/sales-kg/resource/Interaction_ACT004> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Interaction_ACT010> <https://example.org/sales-kg/interactionDate> "2026-04-03T12:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Deal_D003> <https://example.org/sales-kg/ownedBy> <https://example.org/sales-kg/resource/SalesRep_S017> .
-<https://example.org/sales-kg/resource/Interaction_ACT022> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT022> .
-<https://example.org/sales-kg/resource/Interaction_ACT031> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D012> .
-<https://example.org/sales-kg/resource/Account_A002> <https://example.org/sales-kg/name> "TechNova" .
-<https://example.org/sales-kg/resource/Transcript_ACT013> <https://example.org/sales-kg/identifier> "ACT013_transcript" .
-<https://example.org/sales-kg/resource/SalesRep_S017> <https://example.org/sales-kg/identifier> "S017" .
-<https://example.org/sales-kg/resource/Interaction_ACT016> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D006> .
-<https://example.org/sales-kg/resource/Deal_D007> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Deal> .
-<https://example.org/sales-kg/resource/Interaction_ACT030> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C012> .
-<https://example.org/sales-kg/resource/Transcript_ACT015> <https://example.org/sales-kg/transcriptText> "Sofia said the proposal is competitive, but requested quarterly payments instead of annual prepayment." .
-<https://example.org/sales-kg/resource/Interaction_ACT008> <https://example.org/sales-kg/interactionDate> "2026-06-04T10:30:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Deal_D006> <https://example.org/sales-kg/dealStage> "Qualification" .
-<https://example.org/sales-kg/resource/Interaction_ACT021> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Interaction_ACT026> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT026> .
-<https://example.org/sales-kg/resource/Interaction_ACT013> <https://example.org/sales-kg/interactionDate> "2026-07-02T09:30:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Interaction_ACT031> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C011> .
-<https://example.org/sales-kg/resource/Interaction_ACT015> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C009> .
-<https://example.org/sales-kg/resource/Transcript_T002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Contact_C015> <https://example.org/sales-kg/identifier> "C015" .
-<https://example.org/sales-kg/resource/Deal_D004> <https://example.org/sales-kg/winProbability> "0.0"^^<http://www.w3.org/2001/XMLSchema#decimal> .
-<https://example.org/sales-kg/resource/Deal_D002> <https://example.org/sales-kg/identifier> "D002" .
-<https://example.org/sales-kg/resource/Interaction_ACT003> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT003> .
-<https://example.org/sales-kg/resource/Industry_Manufacturing> <https://example.org/sales-kg/name> "Manufacturing" .
-<https://example.org/sales-kg/resource/Interaction_ACT012> <https://example.org/sales-kg/interactionDate> "2026-06-25T15:30:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Deal_D010> <https://example.org/sales-kg/expectedCloseDate> "2026-10-30"^^<http://www.w3.org/2001/XMLSchema#date> .
-<https://example.org/sales-kg/resource/Interaction_ACT003> <https://example.org/sales-kg/identifier> "ACT003" .
-<https://example.org/sales-kg/resource/Interaction_ACT030> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D012> .
-<https://example.org/sales-kg/resource/Interaction_ACT028> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C010> .
-<https://example.org/sales-kg/resource/Transcript_T007> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Industry_Logistics> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Industry> .
-<https://example.org/sales-kg/resource/Interaction_ACT016> <https://example.org/sales-kg/interactionDate> "2026-08-22T10:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Industry_Healthcare> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Industry> .
-<https://example.org/sales-kg/resource/Interaction_ACT025> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Contact_C015> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
-<https://example.org/sales-kg/resource/Interaction_ACT018> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT018> .
-<https://example.org/sales-kg/resource/Interaction_ACT003> <https://example.org/sales-kg/interactionDate> "2026-09-10T16:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Deal_D005> <https://example.org/sales-kg/expectedCloseDate> "2026-10-31"^^<http://www.w3.org/2001/XMLSchema#date> .
-<https://example.org/sales-kg/resource/Interaction_ACT022> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Contact_C011> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A006> .
-<https://example.org/sales-kg/resource/Deal_D003> <https://example.org/sales-kg/dealStage> "Closed Won" .
-<https://example.org/sales-kg/resource/Interaction_ACT019> <https://example.org/sales-kg/identifier> "ACT019" .
-<https://example.org/sales-kg/resource/Interaction_ACT005> <https://example.org/sales-kg/interactionDate> "2026-08-21T15:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Product_Data%20Platform> <https://example.org/sales-kg/name> "Data Platform" .
-<https://example.org/sales-kg/resource/Transcript_T005> <https://example.org/sales-kg/transcriptText> "Laura (Sales): What is driving the project internally?\nNoah Frei: We have too many fragmented analytics pipelines. Analysts spend a lot of time preparing data instead of analyzing it.\nSofia Meier: I agree with the problem, but procurement will need very clear implementation milestones and fixed costs.\nLaura: If we can show a staged implementation with fixed milestones, would that address the procurement concern?\nSofia Meier: Partly. Payment terms also matter. Annual prepayment will be difficult for us.\nLaura: Would quarterly payments make approval easier?\nSofia Meier: Yes, definitely.\nNoah Frei: From my side, the technical value is clear. The main question is commercial structure." .
-<https://example.org/sales-kg/resource/Transcript_ACT019> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/SalesRep_S031> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/SalesRep> .
-<https://example.org/sales-kg/resource/Interaction_ACT023> <https://example.org/sales-kg/interactionDate> "2026-09-09T09:30:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Industry_Financial%20Services> <https://example.org/sales-kg/name> "Financial Services" .
-<https://example.org/sales-kg/resource/Interaction_ACT019> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C014> .
-<https://example.org/sales-kg/resource/Transcript_T008> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Account_A008> <https://example.org/sales-kg/identifier> "A008" .
-<https://example.org/sales-kg/resource/Interaction_ACT028> <https://example.org/sales-kg/interactionDate> "2026-03-05T15:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Deal_D007> <https://example.org/sales-kg/expectedCloseDate> "2026-10-15"^^<http://www.w3.org/2001/XMLSchema#date> .
-<https://example.org/sales-kg/resource/Transcript_T005> <https://example.org/sales-kg/identifier> "T005" .
-<https://example.org/sales-kg/resource/Transcript_ACT016> <https://example.org/sales-kg/identifier> "ACT016_transcript" .
-<https://example.org/sales-kg/resource/Interaction_ACT027> <https://example.org/sales-kg/interactionDate> "2026-09-03T10:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Transcript_ACT007> <https://example.org/sales-kg/identifier> "ACT007_transcript" .
-<https://example.org/sales-kg/resource/Transcript_ACT028> <https://example.org/sales-kg/identifier> "ACT028_transcript" .
-<https://example.org/sales-kg/resource/Product_Enterprise%20Platform> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Product> .
-<https://example.org/sales-kg/resource/Contact_C009> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
-<https://example.org/sales-kg/resource/Deal_D012> <https://example.org/sales-kg/dealValue> "70000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
-<https://example.org/sales-kg/resource/Product_Analytics%20Module> <https://example.org/sales-kg/name> "Analytics Module" .
-<https://example.org/sales-kg/resource/Transcript_T005> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D005> .
-<https://example.org/sales-kg/resource/Deal_D004> <https://example.org/sales-kg/hasOutcome> <https://example.org/sales-kg/Lost> .
-<https://example.org/sales-kg/resource/SalesRep_S044> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/SalesRep> .
-<https://example.org/sales-kg/resource/Interaction_ACT031> <https://example.org/sales-kg/identifier> "ACT031" .
-<https://example.org/sales-kg/resource/Deal_D005> <https://example.org/sales-kg/dealValue> "95000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
-<https://example.org/sales-kg/resource/Interaction_ACT029> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D011> .
-<https://example.org/sales-kg/resource/Interaction_ACT007> <https://example.org/sales-kg/interactionDate> "2026-05-14T13:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Deal_D010> <https://example.org/sales-kg/dealStage> "Negotiation" .
-<https://example.org/sales-kg/resource/Transcript_ACT026> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Contact_C002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
-<https://example.org/sales-kg/resource/Deal_D005> <https://example.org/sales-kg/identifier> "D005" .
-<https://example.org/sales-kg/resource/Interaction_ACT018> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Deal_D009> <https://example.org/sales-kg/ownedBy> <https://example.org/sales-kg/resource/SalesRep_S017> .
-<https://example.org/sales-kg/resource/Interaction_ACT014> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Interaction_ACT010> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D004> .
-<https://example.org/sales-kg/resource/Deal_D005> <https://example.org/sales-kg/ownedBy> <https://example.org/sales-kg/resource/SalesRep_S022> .
-<https://example.org/sales-kg/resource/Deal_D005> <https://example.org/sales-kg/name> "MedAxis Data Foundation" .
-<https://example.org/sales-kg/resource/Transcript_ACT005> <https://example.org/sales-kg/transcriptText> "Tom liked the dashboard but asked whether the CRM connector can support their custom opportunity fields." .
-<https://example.org/sales-kg/resource/Contact_C006> <https://example.org/sales-kg/identifier> "C006" .
-<https://example.org/sales-kg/resource/Deal_D002> <https://example.org/sales-kg/expectedCloseDate> "2026-11-15"^^<http://www.w3.org/2001/XMLSchema#date> .
-<https://example.org/sales-kg/resource/Transcript_ACT027> <https://example.org/sales-kg/identifier> "ACT027_transcript" .
-<https://example.org/sales-kg/resource/Interaction_ACT031> <https://example.org/sales-kg/interactionDate> "2026-05-22T09:30:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Interaction_ACT013> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C009> .
-<https://example.org/sales-kg/resource/Product_Automation%20Suite> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Product> .
-<https://example.org/sales-kg/resource/Interaction_ACT021> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C015> .
-<https://example.org/sales-kg/resource/Interaction_ACT002> <https://example.org/sales-kg/identifier> "ACT002" .
-<https://example.org/sales-kg/resource/Contact_C014> <https://example.org/sales-kg/name> "Priya Shah" .
-<https://example.org/sales-kg/resource/Transcript_T007> <https://example.org/sales-kg/identifier> "T007" .
-<https://example.org/sales-kg/resource/Deal_D007> <https://example.org/sales-kg/hasOutcome> <https://example.org/sales-kg/Open> .
-<https://example.org/sales-kg/resource/Deal_D004> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Deal> .
-<https://example.org/sales-kg/resource/Deal_D001> <https://example.org/sales-kg/name> "Acme Enterprise Expansion" .
-<https://example.org/sales-kg/resource/Transcript_ACT030> <https://example.org/sales-kg/transcriptText> "Arthur liked the platform but said the project currently has no executive owner and may struggle to get budget." .
-<https://example.org/sales-kg/resource/Deal_D001> <https://example.org/sales-kg/winProbability> "0.75"^^<http://www.w3.org/2001/XMLSchema#decimal> .
-<https://example.org/sales-kg/resource/Deal_D005> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Deal> .
-<https://example.org/sales-kg/resource/Industry_SaaS> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Industry> .
-<https://example.org/sales-kg/resource/Deal_D011> <https://example.org/sales-kg/dealStage> "Closed Won" .
-<https://example.org/sales-kg/resource/Interaction_ACT010> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C007> .
-<https://example.org/sales-kg/resource/Contact_C007> <https://example.org/sales-kg/identifier> "C007" .
-<https://example.org/sales-kg/resource/Interaction_ACT025> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C002> .
-<https://example.org/sales-kg/resource/Interaction_ACT008> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D003> .
-<https://example.org/sales-kg/resource/Deal_D010> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Deal> .
-<https://example.org/sales-kg/resource/Contact_C003> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A002> .
-<https://example.org/sales-kg/resource/Interaction_ACT009> <https://example.org/sales-kg/identifier> "ACT009" .
-<https://example.org/sales-kg/resource/Transcript_ACT008> <https://example.org/sales-kg/identifier> "ACT008_transcript" .
-<https://example.org/sales-kg/resource/Transcript_ACT014> <https://example.org/sales-kg/transcriptText> "Noah wants to consolidate fragmented analytics pipelines and reduce manual data preparation." .
-<https://example.org/sales-kg/resource/Interaction_ACT009> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D003> .
-<https://example.org/sales-kg/resource/Transcript_T010> <https://example.org/sales-kg/identifier> "T010" .
-<https://example.org/sales-kg/resource/Industry_Construction> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Industry> .
-<https://example.org/sales-kg/resource/Contact_C001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
-<https://example.org/sales-kg/resource/Interaction_ACT025> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT025> .
-<https://example.org/sales-kg/resource/Account_A008> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Account> .
-<https://example.org/sales-kg/resource/Deal_D008> <https://example.org/sales-kg/winProbability> "0.62"^^<http://www.w3.org/2001/XMLSchema#decimal> .
-<https://example.org/sales-kg/resource/Interaction_ACT012> <https://example.org/sales-kg/identifier> "ACT012" .
-<https://example.org/sales-kg/resource/Transcript_ACT002> <https://example.org/sales-kg/identifier> "ACT002_transcript" .
-<https://example.org/sales-kg/resource/Interaction_ACT022> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C016> .
-<https://example.org/sales-kg/resource/Transcript_ACT030> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Interaction_ACT022> <https://example.org/sales-kg/interactionDate> "2026-08-04T12:15:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Deal_D006> <https://example.org/sales-kg/dealValue> "60000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
-<https://example.org/sales-kg/resource/Interaction_ACT010> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/SalesRep_S022> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/SalesRep> .
-<https://example.org/sales-kg/resource/Transcript_T002> <https://example.org/sales-kg/identifier> "T002" .
-<https://example.org/sales-kg/resource/Interaction_ACT006> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D002> .
-<https://example.org/sales-kg/resource/Transcript_T007> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D007> .
-<https://example.org/sales-kg/resource/Transcript_T001> <https://example.org/sales-kg/identifier> "T001" .
-<https://example.org/sales-kg/resource/Deal_D007> <https://example.org/sales-kg/involvesProduct> <https://example.org/sales-kg/resource/Product_Analytics%20Module> .
-<https://example.org/sales-kg/resource/Transcript_ACT004> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Interaction_ACT027> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT027> .
-<https://example.org/sales-kg/resource/Transcript_ACT026> <https://example.org/sales-kg/identifier> "ACT026_transcript" .
-<https://example.org/sales-kg/resource/Deal_D002> <https://example.org/sales-kg/hasOutcome> <https://example.org/sales-kg/Open> .
-<https://example.org/sales-kg/resource/Transcript_ACT020> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Interaction_ACT007> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C005> .
-<https://example.org/sales-kg/resource/Contact_C016> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
-<https://example.org/sales-kg/resource/Interaction_ACT021> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D008> .
-<https://example.org/sales-kg/resource/Contact_C001> <https://example.org/sales-kg/name> "Anna Keller" .
-<https://example.org/sales-kg/resource/Interaction_ACT009> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C005> .
-<https://example.org/sales-kg/resource/Interaction_ACT027> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D010> .
-<https://example.org/sales-kg/resource/Interaction_ACT024> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D009> .
-<https://example.org/sales-kg/resource/Interaction_ACT015> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Interaction_ACT022> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D008> .
-<https://example.org/sales-kg/resource/Deal_D002> <https://example.org/sales-kg/dealValue> "45000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
-<https://example.org/sales-kg/resource/Deal_D012> <https://example.org/sales-kg/name> "LogiCore Data Platform" .
-<https://example.org/sales-kg/resource/Interaction_ACT015> <https://example.org/sales-kg/interactionDate> "2026-09-05T11:18:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Interaction_ACT024> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT024> .
-<https://example.org/sales-kg/resource/Deal_D001> <https://example.org/sales-kg/expectedCloseDate> "2026-09-30"^^<http://www.w3.org/2001/XMLSchema#date> .
-<https://example.org/sales-kg/resource/Interaction_ACT006> <https://example.org/sales-kg/interactionDate> "2026-09-08T09:10:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Contact_C006> <https://example.org/sales-kg/name> "Mette Nielsen" .
-<https://example.org/sales-kg/resource/Transcript_T009> <https://example.org/sales-kg/transcriptText> "Rachel (Sales): What would you need to see before expanding the AI optimization module?\nLars Jensen: I need evidence that it affects either energy output or operating cost. Ideally both.\nMette Nielsen: Technically, I'd prefer not to deploy across the whole fleet immediately.\nRachel: What about a proof of value on one wind farm?\nMette Nielsen: That's exactly what I was thinking.\nLars Jensen: If the proof shows measurable impact, expansion becomes much easier to approve.\nRachel: Let's agree on the baseline metrics before we start.\nLars Jensen: Good. Then the result is something I can take directly to the investment committee." .
-<https://example.org/sales-kg/resource/Transcript_ACT011> <https://example.org/sales-kg/transcriptText> "Hugo said the analytics budget is under review and no new purchase can be approved until the next finance cycle." .
-<https://example.org/sales-kg/resource/Interaction_ACT024> <https://example.org/sales-kg/identifier> "ACT024" .
-<https://example.org/sales-kg/resource/Deal_D004> <https://example.org/sales-kg/ownedBy> <https://example.org/sales-kg/resource/SalesRep_S031> .
-<https://example.org/sales-kg/resource/Contact_C013> <https://example.org/sales-kg/name> "James Carter" .
-<https://example.org/sales-kg/resource/Contact_C011> <https://example.org/sales-kg/decisionMakerFor> <https://example.org/sales-kg/resource/Deal_D012> .
-<https://example.org/sales-kg/resource/Transcript_ACT014> <https://example.org/sales-kg/identifier> "ACT014_transcript" .
-<https://example.org/sales-kg/resource/Transcript_ACT022> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Deal_D001> <https://example.org/sales-kg/hasOutcome> <https://example.org/sales-kg/Open> .
-<https://example.org/sales-kg/resource/Deal_D001> <https://example.org/sales-kg/dealValue> "120000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
-<https://example.org/sales-kg/resource/Deal_D008> <https://example.org/sales-kg/dealValue> "28000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
-<https://example.org/sales-kg/resource/Transcript_ACT021> <https://example.org/sales-kg/identifier> "ACT021_transcript" .
-<https://example.org/sales-kg/resource/Transcript_ACT020> <https://example.org/sales-kg/transcriptText> "James said pricing is within range, but a multi-year commitment needs a better commercial incentive." .
-<https://example.org/sales-kg/resource/Product_Analytics%20Module> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Product> .
-<https://example.org/sales-kg/resource/Deal_D010> <https://example.org/sales-kg/forAccount> <https://example.org/sales-kg/resource/Account_A003> .
-<https://example.org/sales-kg/resource/Deal_D008> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Deal> .
-<https://example.org/sales-kg/resource/Contact_C008> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
-<https://example.org/sales-kg/resource/Transcript_T009> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Transcript_T001> <https://example.org/sales-kg/transcriptText> "Sarah (Sales): Last time you mentioned that you were considering deployment across three factories. Is that still the plan?\nAnna Keller: Yes. The first factory is basically approved internally. The main question is whether we can justify expanding to all three this year.\nSarah: What's preventing that decision?\nAnna Keller: Mostly pricing. If we deploy at all three locations, procurement expects a better price than what is currently in the proposal.\nMarkus Vogel: From my side, I also still need confirmation regarding SSO and data residency.\nSarah: If we solve those security questions and restructure the pricing for three factories, would there be anything else blocking approval?\nAnna Keller: Probably not. I think we could take it to procurement after that.\nSarah: Great. I'll send a three-year pricing option and the security documentation. Can we review it together next Tuesday?\nAnna Keller: Yes, that works." .
-<https://example.org/sales-kg/resource/Transcript_ACT012> <https://example.org/sales-kg/transcriptText> "Camille confirmed the budget was frozen for the year and asked us to reconnect next planning cycle." .
-<https://example.org/sales-kg/resource/Deal_D012> <https://example.org/sales-kg/expectedCloseDate> "2026-05-28"^^<http://www.w3.org/2001/XMLSchema#date> .
-<https://example.org/sales-kg/resource/Transcript_ACT015> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Deal_D002> <https://example.org/sales-kg/name> "TechNova Analytics Pilot" .
-<https://example.org/sales-kg/resource/Transcript_ACT019> <https://example.org/sales-kg/identifier> "ACT019_transcript" .
-<https://example.org/sales-kg/resource/Deal_D004> <https://example.org/sales-kg/dealValue> "80000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
-<https://example.org/sales-kg/resource/Transcript_ACT002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Contact_C001> <https://example.org/sales-kg/decisionMakerFor> <https://example.org/sales-kg/resource/Deal_D009> .
-<https://example.org/sales-kg/resource/Contact_C002> <https://example.org/sales-kg/identifier> "C002" .
-<https://example.org/sales-kg/resource/Interaction_ACT020> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C013> .
-<https://example.org/sales-kg/resource/Transcript_ACT009> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Deal_D007> <https://example.org/sales-kg/winProbability> "0.68"^^<http://www.w3.org/2001/XMLSchema#decimal> .
-<https://example.org/sales-kg/resource/Transcript_ACT015> <https://example.org/sales-kg/identifier> "ACT015_transcript" .
-<https://example.org/sales-kg/resource/Interaction_ACT018> <https://example.org/sales-kg/interactionDate> "2026-07-07T16:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Interaction_ACT017> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT017> .
-<https://example.org/sales-kg/resource/Interaction_ACT023> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT023> .
-<https://example.org/sales-kg/resource/Contact_C001> <https://example.org/sales-kg/decisionMakerFor> <https://example.org/sales-kg/resource/Deal_D001> .
-<https://example.org/sales-kg/resource/Interaction_ACT006> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Interaction_ACT020> <https://example.org/sales-kg/interactionDate> "2026-09-11T14:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Interaction_ACT029> <https://example.org/sales-kg/identifier> "ACT029" .
-<https://example.org/sales-kg/resource/Transcript_ACT006> <https://example.org/sales-kg/identifier> "ACT006_transcript" .
-<https://example.org/sales-kg/resource/Contact_C013> <https://example.org/sales-kg/decisionMakerFor> <https://example.org/sales-kg/resource/Deal_D007> .
-<https://example.org/sales-kg/resource/Transcript_ACT031> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Interaction_ACT004> <https://example.org/sales-kg/interactionDate> "2026-08-07T11:30:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Transcript_T008> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D008> .
-<https://example.org/sales-kg/resource/Product_Enterprise%20Platform> <https://example.org/sales-kg/name> "Enterprise Platform" .
-<https://example.org/sales-kg/resource/Deal_D003> <https://example.org/sales-kg/expectedCloseDate> "2026-07-20"^^<http://www.w3.org/2001/XMLSchema#date> .
-<https://example.org/sales-kg/resource/Contact_C009> <https://example.org/sales-kg/name> "Sofia Meier" .
-<https://example.org/sales-kg/resource/Contact_C014> <https://example.org/sales-kg/identifier> "C014" .
-<https://example.org/sales-kg/resource/Interaction_ACT020> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D007> .
-<https://example.org/sales-kg/resource/Interaction_ACT002> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D001> .
-<https://example.org/sales-kg/resource/Interaction_ACT010> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT010> .
-<https://example.org/sales-kg/resource/Contact_C006> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A003> .
-<https://example.org/sales-kg/resource/Transcript_ACT028> <https://example.org/sales-kg/transcriptText> "Noah reported that the pilot reduced weekly manual reporting effort from two days to a few hours." .
-<https://example.org/sales-kg/resource/Transcript_ACT009> <https://example.org/sales-kg/identifier> "ACT009_transcript" .
-<https://example.org/sales-kg/resource/Interaction_ACT023> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C015> .
-<https://example.org/sales-kg/resource/Interaction_ACT005> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C004> .
-<https://example.org/sales-kg/resource/Deal_D012> <https://example.org/sales-kg/lossReason> "No executive sponsor" .
-<https://example.org/sales-kg/resource/Interaction_ACT003> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C001> .
-<https://example.org/sales-kg/resource/Deal_D011> <https://example.org/sales-kg/ownedBy> <https://example.org/sales-kg/resource/SalesRep_S022> .
-<https://example.org/sales-kg/resource/Interaction_ACT031> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Deal_D002> <https://example.org/sales-kg/forAccount> <https://example.org/sales-kg/resource/Account_A002> .
-<https://example.org/sales-kg/resource/Interaction_ACT013> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Interaction_ACT023> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D008> .
-<https://example.org/sales-kg/resource/Industry_Energy> <https://example.org/sales-kg/name> "Energy" .
-<https://example.org/sales-kg/resource/Transcript_ACT007> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Deal_D003> <https://example.org/sales-kg/forAccount> <https://example.org/sales-kg/resource/Account_A003> .
-<https://example.org/sales-kg/resource/Transcript_T003> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Interaction_ACT024> <https://example.org/sales-kg/interactionDate> "2026-08-19T11:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Deal_D004> <https://example.org/sales-kg/lossReason> "Budget frozen" .
-<https://example.org/sales-kg/resource/Account_A004> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Account> .
-<https://example.org/sales-kg/resource/Deal_D006> <https://example.org/sales-kg/identifier> "D006" .
-<https://example.org/sales-kg/resource/Interaction_ACT007> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT007> .
-<https://example.org/sales-kg/resource/Interaction_ACT002> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT002> .
-<https://example.org/sales-kg/resource/Transcript_ACT010> <https://example.org/sales-kg/identifier> "ACT010_transcript" .
-<https://example.org/sales-kg/resource/Transcript_ACT003> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Deal_D012> <https://example.org/sales-kg/involvesProduct> <https://example.org/sales-kg/resource/Product_Data%20Platform> .
-<https://example.org/sales-kg/resource/Account_A001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Account> .
-<https://example.org/sales-kg/resource/Transcript_ACT001> <https://example.org/sales-kg/identifier> "ACT001_transcript" .
-<https://example.org/sales-kg/resource/Interaction_ACT019> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D007> .
-<https://example.org/sales-kg/resource/Contact_C015> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A008> .
-<https://example.org/sales-kg/resource/Interaction_ACT022> <https://example.org/sales-kg/identifier> "ACT022" .
-<https://example.org/sales-kg/resource/Deal_D005> <https://example.org/sales-kg/forAccount> <https://example.org/sales-kg/resource/Account_A005> .
-<https://example.org/sales-kg/resource/Contact_C014> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
-<https://example.org/sales-kg/resource/Interaction_ACT007> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Interaction_ACT026> <https://example.org/sales-kg/interactionDate> "2026-08-14T13:30:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Interaction_ACT005> <https://example.org/sales-kg/identifier> "ACT005" .
-<https://example.org/sales-kg/resource/Deal_D001> <https://example.org/sales-kg/forAccount> <https://example.org/sales-kg/resource/Account_A001> .
-<https://example.org/sales-kg/resource/Interaction_ACT025> <https://example.org/sales-kg/interactionDate> "2026-09-06T10:05:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Contact_C010> <https://example.org/sales-kg/name> "Noah Frei" .
-<https://example.org/sales-kg/resource/Transcript_ACT017> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Product_AI%20Add-on> <https://example.org/sales-kg/name> "AI Add-on" .
-<https://example.org/sales-kg/resource/Deal_D009> <https://example.org/sales-kg/expectedCloseDate> "2026-12-20"^^<http://www.w3.org/2001/XMLSchema#date> .
-<https://example.org/sales-kg/resource/Transcript_ACT029> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Interaction_ACT026> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D010> .
-<https://example.org/sales-kg/resource/Contact_C012> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A006> .
-<https://example.org/sales-kg/resource/Contact_C012> <https://example.org/sales-kg/identifier> "C012" .
-<https://example.org/sales-kg/resource/Interaction_ACT023> <https://example.org/sales-kg/identifier> "ACT023" .
-<https://example.org/sales-kg/resource/Contact_C004> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
-<https://example.org/sales-kg/resource/Interaction_ACT024> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C001> .
-<https://example.org/sales-kg/resource/Deal_D005> <https://example.org/sales-kg/dealStage> "Proposal" .
-<https://example.org/sales-kg/resource/Interaction_ACT014> <https://example.org/sales-kg/identifier> "ACT014" .
-<https://example.org/sales-kg/resource/Contact_C009> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A005> .
-<https://example.org/sales-kg/resource/Transcript_ACT025> <https://example.org/sales-kg/identifier> "ACT025_transcript" .
-<https://example.org/sales-kg/resource/Account_A003> <https://example.org/sales-kg/identifier> "A003" .
-<https://example.org/sales-kg/resource/Account_A002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Account> .
-<https://example.org/sales-kg/resource/Account_A006> <https://example.org/sales-kg/identifier> "A006" .
-<https://example.org/sales-kg/resource/Account_A006> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Account> .
-<https://example.org/sales-kg/resource/Account_A005> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Account> .
-<https://example.org/sales-kg/resource/Industry_Manufacturing> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Industry> .
-<https://example.org/sales-kg/resource/Account_A006> <https://example.org/sales-kg/name> "LogiCore" .
-<https://example.org/sales-kg/resource/Interaction_ACT025> <https://example.org/sales-kg/identifier> "ACT025" .
-<https://example.org/sales-kg/resource/Transcript_ACT026> <https://example.org/sales-kg/transcriptText> "Lars wants to extend the platform with AI optimization if we can show impact on energy output and operating cost." .
-<https://example.org/sales-kg/resource/Interaction_ACT026> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C005> .
-<https://example.org/sales-kg/resource/Interaction_ACT021> <https://example.org/sales-kg/interactionDate> "2026-07-10T09:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Deal_D006> <https://example.org/sales-kg/hasOutcome> <https://example.org/sales-kg/Open> .
-<https://example.org/sales-kg/resource/Deal_D004> <https://example.org/sales-kg/dealStage> "Closed Lost" .
-<https://example.org/sales-kg/resource/Account_A007> <https://example.org/sales-kg/identifier> "A007" .
-<https://example.org/sales-kg/resource/Deal_D008> <https://example.org/sales-kg/hasOutcome> <https://example.org/sales-kg/Open> .
-<https://example.org/sales-kg/resource/Interaction_ACT012> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT012> .
-<https://example.org/sales-kg/resource/Transcript_ACT029> <https://example.org/sales-kg/identifier> "ACT029_transcript" .
-<https://example.org/sales-kg/resource/Deal_D008> <https://example.org/sales-kg/ownedBy> <https://example.org/sales-kg/resource/SalesRep_S044> .
-<https://example.org/sales-kg/resource/Interaction_ACT018> <https://example.org/sales-kg/identifier> "ACT018" .
-<https://example.org/sales-kg/resource/Deal_D004> <https://example.org/sales-kg/expectedCloseDate> "2026-06-30"^^<http://www.w3.org/2001/XMLSchema#date> .
-<https://example.org/sales-kg/resource/Transcript_ACT008> <https://example.org/sales-kg/transcriptText> "Mette confirmed the proposed integration pattern works with their existing data platform and security requirements." .
-<https://example.org/sales-kg/resource/Contact_C002> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A001> .
-<https://example.org/sales-kg/resource/Contact_C008> <https://example.org/sales-kg/identifier> "C008" .
-<https://example.org/sales-kg/resource/Transcript_ACT003> <https://example.org/sales-kg/transcriptText> "Anna expects a decision this month. Procurement is the remaining blocker and wants a three-year price comparison." .
-<https://example.org/sales-kg/resource/Transcript_ACT011> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Deal_D010> <https://example.org/sales-kg/dealValue> "90000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
-<https://example.org/sales-kg/resource/Deal_D008> <https://example.org/sales-kg/name> "BuildSphere Starter Package" .
-<https://example.org/sales-kg/resource/Transcript_ACT009> <https://example.org/sales-kg/transcriptText> "Lars confirmed the agreement was signed and asked to start implementation planning immediately." .
-<https://example.org/sales-kg/resource/Deal_D008> <https://example.org/sales-kg/expectedCloseDate> "2026-09-25"^^<http://www.w3.org/2001/XMLSchema#date> .
-<https://example.org/sales-kg/resource/Interaction_ACT015> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT015> .
-<https://example.org/sales-kg/resource/Contact_C003> <https://example.org/sales-kg/name> "Eva de Vries" .
-<https://example.org/sales-kg/resource/Account_A004> <https://example.org/sales-kg/name> "RetailPro" .
-<https://example.org/sales-kg/resource/Transcript_ACT014> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Interaction_ACT014> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D005> .
-<https://example.org/sales-kg/resource/Deal_D011> <https://example.org/sales-kg/dealValue> "40000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
-<https://example.org/sales-kg/resource/Transcript_T008> <https://example.org/sales-kg/identifier> "T008" .
-<https://example.org/sales-kg/resource/Account_A007> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Account> .
-<https://example.org/sales-kg/resource/Interaction_ACT005> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D002> .
-<https://example.org/sales-kg/resource/Deal_D003> <https://example.org/sales-kg/identifier> "D003" .
-<https://example.org/sales-kg/resource/Transcript_ACT012> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Deal_D007> <https://example.org/sales-kg/dealValue> "175000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
-<https://example.org/sales-kg/resource/Deal_D012> <https://example.org/sales-kg/winProbability> "0.0"^^<http://www.w3.org/2001/XMLSchema#decimal> .
-<https://example.org/sales-kg/resource/Transcript_ACT022> <https://example.org/sales-kg/transcriptText> "Sara asked whether implementation can be included in the subscription price." .
-<https://example.org/sales-kg/resource/Interaction_ACT014> <https://example.org/sales-kg/interactionDate> "2026-07-18T14:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Deal_D007> <https://example.org/sales-kg/name> "FinPeak Risk Analytics" .
 <https://example.org/sales-kg/resource/Deal_D007> <https://example.org/sales-kg/ownedBy> <https://example.org/sales-kg/resource/SalesRep_S017> .
-<https://example.org/sales-kg/resource/Contact_C014> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A007> .
-<https://example.org/sales-kg/resource/Transcript_ACT013> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/Interaction_ACT016> <https://example.org/sales-kg/identifier> "ACT016" .
-<https://example.org/sales-kg/resource/Contact_C012> <https://example.org/sales-kg/name> "Arthur Peeters" .
-<https://example.org/sales-kg/resource/Transcript_T010> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
-<https://example.org/sales-kg/resource/SalesRep_S044> <https://example.org/sales-kg/identifier> "S044" .
-<https://example.org/sales-kg/resource/Interaction_ACT004> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C003> .
-<https://example.org/sales-kg/resource/Deal_D008> <https://example.org/sales-kg/dealStage> "Proposal" .
-<https://example.org/sales-kg/resource/Deal_D004> <https://example.org/sales-kg/involvesProduct> <https://example.org/sales-kg/resource/Product_Analytics%20Module> .
-<https://example.org/sales-kg/resource/Interaction_ACT030> <https://example.org/sales-kg/identifier> "ACT030" .
+<https://example.org/sales-kg/resource/Interaction_ACT026> <https://example.org/sales-kg/identifier> "ACT026" .
+<https://example.org/sales-kg/resource/Interaction_ACT012> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C007> .
+<https://example.org/sales-kg/resource/Interaction_ACT003> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT003> .
+<https://example.org/sales-kg/resource/Deal_D001> <https://example.org/sales-kg/name> "Acme Enterprise Expansion" .
+<https://example.org/sales-kg/resource/Deal_D012> <https://example.org/sales-kg/hasOutcome> <https://example.org/sales-kg/Lost> .
+<https://example.org/sales-kg/resource/Interaction_ACT024> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
+<https://example.org/sales-kg/resource/Transcript_T007> <https://example.org/sales-kg/identifier> "T007" .
+<https://example.org/sales-kg/resource/Interaction_ACT012> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
+<https://example.org/sales-kg/resource/Deal_D007> <https://example.org/sales-kg/involvesProduct> <https://example.org/sales-kg/resource/Product_Analytics%20Module> .
+<https://example.org/sales-kg/resource/Account_A004> <https://example.org/sales-kg/name> "RetailPro" .
+<https://example.org/sales-kg/resource/Transcript_ACT022> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Interaction_ACT009> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D003> .
+<https://example.org/sales-kg/resource/Transcript_T006> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Account_A002> <https://example.org/sales-kg/name> "TechNova" .
+<https://example.org/sales-kg/resource/Contact_C005> <https://example.org/sales-kg/name> "Lars Jensen" .
+<https://example.org/sales-kg/resource/Transcript_ACT006> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Industry_Construction> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Industry> .
+<https://example.org/sales-kg/resource/Contact_C003> <https://example.org/sales-kg/name> "Eva de Vries" .
+<https://example.org/sales-kg/resource/Contact_C011> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
+<https://example.org/sales-kg/resource/Contact_C006> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A003> .
+<https://example.org/sales-kg/resource/Deal_D001> <https://example.org/sales-kg/dealStage> "Negotiation" .
+<https://example.org/sales-kg/resource/Deal_D011> <https://example.org/sales-kg/involvesProduct> <https://example.org/sales-kg/resource/Product_Analytics%20Module> .
+<https://example.org/sales-kg/resource/Contact_C005> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A003> .
+<https://example.org/sales-kg/resource/Transcript_ACT026> <https://example.org/sales-kg/identifier> "ACT026_transcript" .
+<https://example.org/sales-kg/resource/Account_A004> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Account> .
+<https://example.org/sales-kg/resource/Deal_D006> <https://example.org/sales-kg/dealValue> "60000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<https://example.org/sales-kg/resource/Transcript_ACT025> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Interaction_ACT016> <https://example.org/sales-kg/interactionDate> "2026-08-22T10:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/sales-kg/resource/Industry_Logistics> <https://example.org/sales-kg/name> "Logistics" .
+<https://example.org/sales-kg/resource/Interaction_ACT029> <https://example.org/sales-kg/identifier> "ACT029" .
+<https://example.org/sales-kg/resource/Industry_Financial%20Services> <https://example.org/sales-kg/name> "Financial Services" .
+<https://example.org/sales-kg/resource/Deal_D006> <https://example.org/sales-kg/winProbability> "0.2"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<https://example.org/sales-kg/resource/Contact_C015> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A008> .
+<https://example.org/sales-kg/resource/Deal_D009> <https://example.org/sales-kg/winProbability> "0.35"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<https://example.org/sales-kg/resource/Interaction_ACT004> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D002> .
+<https://example.org/sales-kg/resource/Interaction_ACT003> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D001> .
+<https://example.org/sales-kg/resource/Interaction_ACT018> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
 <https://example.org/sales-kg/resource/Interaction_ACT011> <https://example.org/sales-kg/interactionDate> "2026-05-18T08:42:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
-<https://example.org/sales-kg/resource/Deal_D009> <https://example.org/sales-kg/dealValue> "55000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
-<https://example.org/sales-kg/resource/Transcript_T009> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D010> .
-<https://example.org/sales-kg/resource/Interaction_ACT028> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
-<https://example.org/sales-kg/resource/Industry_SaaS> <https://example.org/sales-kg/name> "SaaS" .
-<https://example.org/sales-kg/resource/Transcript_T003> <https://example.org/sales-kg/identifier> "T003" .
-<https://example.org/sales-kg/resource/Product_Starter%20Package> <https://example.org/sales-kg/name> "Starter Package" .
-<https://example.org/sales-kg/resource/Industry_Construction> <https://example.org/sales-kg/name> "Construction" .
-<https://example.org/sales-kg/resource/Transcript_ACT020> <https://example.org/sales-kg/identifier> "ACT020_transcript" .
+<https://example.org/sales-kg/resource/Interaction_ACT003> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C001> .
+<https://example.org/sales-kg/resource/Interaction_ACT002> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D001> .
+<https://example.org/sales-kg/resource/Transcript_T001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Deal_D004> <https://example.org/sales-kg/lossReason> "Budget frozen" .
+<https://example.org/sales-kg/resource/Interaction_ACT031> <https://example.org/sales-kg/interactionDate> "2026-05-22T09:30:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/sales-kg/resource/Interaction_ACT026> <https://example.org/sales-kg/interactionDate> "2026-08-14T13:30:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/sales-kg/resource/Deal_D012> <https://example.org/sales-kg/winProbability> "0.0"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<https://example.org/sales-kg/resource/Industry_Retail> <https://example.org/sales-kg/name> "Retail" .
+<https://example.org/sales-kg/resource/Deal_D012> <https://example.org/sales-kg/involvesProduct> <https://example.org/sales-kg/resource/Product_Data%20Platform> .
+<https://example.org/sales-kg/resource/Contact_C012> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A006> .
+<https://example.org/sales-kg/resource/Transcript_ACT009> <https://example.org/sales-kg/identifier> "ACT009_transcript" .
+<https://example.org/sales-kg/resource/Industry_Retail> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Industry> .
+<https://example.org/sales-kg/resource/Deal_D004> <https://example.org/sales-kg/dealStage> "Closed Lost" .
+<https://example.org/sales-kg/resource/Interaction_ACT013> <https://example.org/sales-kg/interactionDate> "2026-07-02T09:30:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/sales-kg/resource/Deal_D010> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Deal> .
+<https://example.org/sales-kg/resource/Transcript_ACT019> <https://example.org/sales-kg/identifier> "ACT019_transcript" .
+<https://example.org/sales-kg/resource/Contact_C002> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A001> .
+<https://example.org/sales-kg/resource/Interaction_ACT011> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C008> .
+<https://example.org/sales-kg/resource/Contact_C010> <https://example.org/sales-kg/name> "Noah Frei" .
+<https://example.org/sales-kg/resource/Transcript_ACT029> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Deal_D009> <https://example.org/sales-kg/name> "Acme Predictive Maintenance Add-on" .
+<https://example.org/sales-kg/resource/Interaction_ACT008> <https://example.org/sales-kg/interactionDate> "2026-06-04T10:30:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/sales-kg/resource/Interaction_ACT029> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D011> .
+<https://example.org/sales-kg/resource/Contact_C013> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A007> .
+<https://example.org/sales-kg/resource/Interaction_ACT019> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT019> .
+<https://example.org/sales-kg/resource/Industry_Financial%20Services> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Industry> .
+<https://example.org/sales-kg/resource/Contact_C014> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A007> .
+<https://example.org/sales-kg/resource/Transcript_ACT002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Transcript_ACT011> <https://example.org/sales-kg/identifier> "ACT011_transcript" .
+<https://example.org/sales-kg/resource/Transcript_ACT028> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Interaction_ACT030> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
+<https://example.org/sales-kg/resource/Interaction_ACT020> <https://example.org/sales-kg/identifier> "ACT020" .
+<https://example.org/sales-kg/resource/Interaction_ACT031> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C011> .
+<https://example.org/sales-kg/resource/Interaction_ACT011> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT011> .
+<https://example.org/sales-kg/resource/Interaction_ACT004> <https://example.org/sales-kg/interactionDate> "2026-08-07T11:30:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/sales-kg/resource/Interaction_ACT030> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT030> .
+<https://example.org/sales-kg/resource/Transcript_ACT001> <https://example.org/sales-kg/identifier> "ACT001_transcript" .
+<https://example.org/sales-kg/resource/Deal_D006> <https://example.org/sales-kg/hasOutcome> <https://example.org/sales-kg/Open> .
+<https://example.org/sales-kg/resource/Interaction_ACT018> <https://example.org/sales-kg/interactionDate> "2026-07-07T16:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/sales-kg/resource/Deal_D009> <https://example.org/sales-kg/identifier> "D009" .
+<https://example.org/sales-kg/resource/Deal_D010> <https://example.org/sales-kg/expectedCloseDate> "2026-10-30"^^<http://www.w3.org/2001/XMLSchema#date> .
+<https://example.org/sales-kg/resource/Transcript_ACT022> <https://example.org/sales-kg/identifier> "ACT022_transcript" .
+<https://example.org/sales-kg/resource/Interaction_ACT002> <https://example.org/sales-kg/identifier> "ACT002" .
+<https://example.org/sales-kg/resource/Transcript_ACT016> <https://example.org/sales-kg/identifier> "ACT016_transcript" .
+<https://example.org/sales-kg/resource/Deal_D005> <https://example.org/sales-kg/winProbability> "0.55"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<https://example.org/sales-kg/resource/Contact_C004> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
+<https://example.org/sales-kg/resource/Deal_D003> <https://example.org/sales-kg/identifier> "D003" .
+<https://example.org/sales-kg/resource/Transcript_ACT015> <https://example.org/sales-kg/identifier> "ACT015_transcript" .
+<https://example.org/sales-kg/resource/Transcript_ACT014> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Interaction_ACT006> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
+<https://example.org/sales-kg/resource/Deal_D009> <https://example.org/sales-kg/forAccount> <https://example.org/sales-kg/resource/Account_A001> .
 <https://example.org/sales-kg/resource/Deal_D002> <https://example.org/sales-kg/dealStage> "Discovery" .
-<https://example.org/sales-kg/resource/Interaction_ACT018> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D007> .
-<https://example.org/sales-kg/resource/Transcript_ACT021> <https://example.org/sales-kg/transcriptText> "Erik wants a small deployment first and prefers minimal implementation effort." .
-<https://example.org/sales-kg/resource/Contact_C001> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A001> .
-<https://example.org/sales-kg/resource/Contact_C015> <https://example.org/sales-kg/name> "Erik Lind" .
-<https://example.org/sales-kg/resource/Contact_C002> <https://example.org/sales-kg/name> "Markus Vogel" .
+<https://example.org/sales-kg/resource/Interaction_ACT024> <https://example.org/sales-kg/identifier> "ACT024" .
+<https://example.org/sales-kg/resource/Transcript_ACT024> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Interaction_ACT015> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT015> .
+<https://example.org/sales-kg/resource/Deal_D011> <https://example.org/sales-kg/dealValue> "40000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<https://example.org/sales-kg/resource/Interaction_ACT017> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
+<https://example.org/sales-kg/resource/Interaction_ACT016> <https://example.org/sales-kg/identifier> "ACT016" .
+<https://example.org/sales-kg/resource/Transcript_ACT005> <https://example.org/sales-kg/identifier> "ACT005_transcript" .
+<https://example.org/sales-kg/resource/Deal_D011> <https://example.org/sales-kg/expectedCloseDate> "2026-05-12"^^<http://www.w3.org/2001/XMLSchema#date> .
+<https://example.org/sales-kg/resource/Deal_D004> <https://example.org/sales-kg/hasOutcome> <https://example.org/sales-kg/Lost> .
+<https://example.org/sales-kg/resource/Deal_D010> <https://example.org/sales-kg/hasOutcome> <https://example.org/sales-kg/Open> .
+<https://example.org/sales-kg/resource/Deal_D009> <https://example.org/sales-kg/expectedCloseDate> "2026-12-20"^^<http://www.w3.org/2001/XMLSchema#date> .
+<https://example.org/sales-kg/resource/Interaction_ACT010> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D004> .
+<https://example.org/sales-kg/resource/Account_A002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Account> .
+<https://example.org/sales-kg/resource/Contact_C001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
+<https://example.org/sales-kg/resource/Transcript_T008> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Contact_C011> <https://example.org/sales-kg/decisionMakerFor> <https://example.org/sales-kg/resource/Deal_D006> .
+<https://example.org/sales-kg/resource/Interaction_ACT019> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C014> .
+<https://example.org/sales-kg/resource/Contact_C016> <https://example.org/sales-kg/name> "Sara Berg" .
+<https://example.org/sales-kg/resource/Deal_D012> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Deal> .
+<https://example.org/sales-kg/resource/Deal_D006> <https://example.org/sales-kg/dealStage> "Qualification" .
+<https://example.org/sales-kg/resource/Interaction_ACT025> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
+<https://example.org/sales-kg/resource/Deal_D001> <https://example.org/sales-kg/forAccount> <https://example.org/sales-kg/resource/Account_A001> .
+<https://example.org/sales-kg/resource/Deal_D010> <https://example.org/sales-kg/name> "GreenEnergy AI Optimization Add-on" .
+<https://example.org/sales-kg/resource/Deal_D009> <https://example.org/sales-kg/dealValue> "55000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<https://example.org/sales-kg/resource/Transcript_T010> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Interaction_ACT031> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D012> .
+<https://example.org/sales-kg/resource/Interaction_ACT024> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D009> .
+<https://example.org/sales-kg/resource/Transcript_ACT008> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Contact_C009> <https://example.org/sales-kg/identifier> "C009" .
+<https://example.org/sales-kg/resource/Interaction_ACT010> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT010> .
+<https://example.org/sales-kg/resource/Transcript_ACT025> <https://example.org/sales-kg/identifier> "ACT025_transcript" .
+<https://example.org/sales-kg/resource/Contact_C015> <https://example.org/sales-kg/identifier> "C015" .
+<https://example.org/sales-kg/resource/Deal_D003> <https://example.org/sales-kg/name> "GreenEnergy Platform Rollout" .
+<https://example.org/sales-kg/resource/Deal_D005> <https://example.org/sales-kg/forAccount> <https://example.org/sales-kg/resource/Account_A005> .
+<https://example.org/sales-kg/resource/Deal_D008> <https://example.org/sales-kg/involvesProduct> <https://example.org/sales-kg/resource/Product_Starter%20Package> .
+<https://example.org/sales-kg/resource/Deal_D004> <https://example.org/sales-kg/ownedBy> <https://example.org/sales-kg/resource/SalesRep_S031> .
+<https://example.org/sales-kg/resource/Interaction_ACT018> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT018> .
+<https://example.org/sales-kg/resource/Interaction_ACT009> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
 <https://example.org/sales-kg/resource/Deal_D009> <https://example.org/sales-kg/dealStage> "Discovery" .
+<https://example.org/sales-kg/resource/Deal_D012> <https://example.org/sales-kg/expectedCloseDate> "2026-05-28"^^<http://www.w3.org/2001/XMLSchema#date> .
+<https://example.org/sales-kg/resource/Interaction_ACT024> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT024> .
+<https://example.org/sales-kg/resource/Transcript_T005> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Contact_C004> <https://example.org/sales-kg/name> "Tom Smit" .
+<https://example.org/sales-kg/resource/Transcript_ACT026> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Deal_D008> <https://example.org/sales-kg/expectedCloseDate> "2026-09-25"^^<http://www.w3.org/2001/XMLSchema#date> .
+<https://example.org/sales-kg/resource/Transcript_ACT017> <https://example.org/sales-kg/identifier> "ACT017_transcript" .
+<https://example.org/sales-kg/resource/Interaction_ACT009> <https://example.org/sales-kg/identifier> "ACT009" .
+<https://example.org/sales-kg/resource/Transcript_T001> <https://example.org/sales-kg/identifier> "T001" .
+<https://example.org/sales-kg/resource/Interaction_ACT015> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C009> .
+<https://example.org/sales-kg/resource/Account_A006> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Account> .
+<https://example.org/sales-kg/resource/Deal_D005> <https://example.org/sales-kg/expectedCloseDate> "2026-10-31"^^<http://www.w3.org/2001/XMLSchema#date> .
+<https://example.org/sales-kg/resource/Interaction_ACT001> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D001> .
+<https://example.org/sales-kg/resource/Deal_D006> <https://example.org/sales-kg/ownedBy> <https://example.org/sales-kg/resource/SalesRep_S031> .
+<https://example.org/sales-kg/resource/Deal_D004> <https://example.org/sales-kg/winProbability> "0.0"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<https://example.org/sales-kg/resource/Deal_D002> <https://example.org/sales-kg/ownedBy> <https://example.org/sales-kg/resource/SalesRep_S022> .
+<https://example.org/sales-kg/resource/Interaction_ACT001> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C001> .
+<https://example.org/sales-kg/resource/Interaction_ACT021> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
+<https://example.org/sales-kg/resource/Account_A007> <https://example.org/sales-kg/name> "FinPeak" .
+<https://example.org/sales-kg/resource/Interaction_ACT026> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C005> .
+<https://example.org/sales-kg/resource/Deal_D003> <https://example.org/sales-kg/dealValue> "210000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<https://example.org/sales-kg/resource/Deal_D011> <https://example.org/sales-kg/forAccount> <https://example.org/sales-kg/resource/Account_A005> .
+<https://example.org/sales-kg/resource/Interaction_ACT028> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D011> .
+<https://example.org/sales-kg/resource/Deal_D002> <https://example.org/sales-kg/expectedCloseDate> "2026-11-15"^^<http://www.w3.org/2001/XMLSchema#date> .
+<https://example.org/sales-kg/resource/Interaction_ACT020> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
+<https://example.org/sales-kg/resource/Product_Automation%20Suite> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Product> .
+<https://example.org/sales-kg/resource/Deal_D011> <https://example.org/sales-kg/identifier> "D011" .
+<https://example.org/sales-kg/resource/SalesRep_S044> <https://example.org/sales-kg/identifier> "S044" .
+<https://example.org/sales-kg/resource/SalesRep_S017> <https://example.org/sales-kg/identifier> "S017" .
+<https://example.org/sales-kg/resource/Transcript_ACT004> <https://example.org/sales-kg/identifier> "ACT004_transcript" .
+<https://example.org/sales-kg/resource/Deal_D007> <https://example.org/sales-kg/name> "FinPeak Risk Analytics" .
+<https://example.org/sales-kg/resource/Interaction_ACT012> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D004> .
+<https://example.org/sales-kg/resource/Industry_SaaS> <https://example.org/sales-kg/name> "SaaS" .
+<https://example.org/sales-kg/resource/Deal_D009> <https://example.org/sales-kg/hasOutcome> <https://example.org/sales-kg/Open> .
+<https://example.org/sales-kg/resource/Account_A008> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Account> .
+<https://example.org/sales-kg/resource/Interaction_ACT004> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C003> .
+<https://example.org/sales-kg/resource/Transcript_ACT021> <https://example.org/sales-kg/identifier> "ACT021_transcript" .
+<https://example.org/sales-kg/resource/Contact_C006> <https://example.org/sales-kg/identifier> "C006" .
+<https://example.org/sales-kg/resource/Deal_D008> <https://example.org/sales-kg/winProbability> "0.62"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<https://example.org/sales-kg/resource/Contact_C007> <https://example.org/sales-kg/identifier> "C007" .
+<https://example.org/sales-kg/resource/Deal_D002> <https://example.org/sales-kg/winProbability> "0.3"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<https://example.org/sales-kg/resource/Contact_C014> <https://example.org/sales-kg/identifier> "C014" .
+<https://example.org/sales-kg/resource/Interaction_ACT026> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D010> .
+<https://example.org/sales-kg/resource/Deal_D002> <https://example.org/sales-kg/dealValue> "45000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<https://example.org/sales-kg/resource/Contact_C016> <https://example.org/sales-kg/identifier> "C016" .
+<https://example.org/sales-kg/resource/Transcript_ACT007> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Interaction_ACT024> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C001> .
+<https://example.org/sales-kg/resource/Contact_C003> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A002> .
+<https://example.org/sales-kg/resource/Contact_C007> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
+<https://example.org/sales-kg/resource/Deal_D007> <https://example.org/sales-kg/winProbability> "0.68"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<https://example.org/sales-kg/resource/Interaction_ACT019> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D007> .
+<https://example.org/sales-kg/resource/Interaction_ACT028> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C010> .
+<https://example.org/sales-kg/resource/Interaction_ACT017> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT017> .
+<https://example.org/sales-kg/resource/Transcript_ACT008> <https://example.org/sales-kg/identifier> "ACT008_transcript" .
+<https://example.org/sales-kg/resource/Transcript_ACT020> <https://example.org/sales-kg/identifier> "ACT020_transcript" .
+<https://example.org/sales-kg/resource/Interaction_ACT002> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C002> .
+<https://example.org/sales-kg/resource/Interaction_ACT023> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
+<https://example.org/sales-kg/resource/Contact_C015> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
+<https://example.org/sales-kg/resource/Contact_C015> <https://example.org/sales-kg/name> "Erik Lind" .
+<https://example.org/sales-kg/resource/Deal_D005> <https://example.org/sales-kg/dealStage> "Proposal" .
+<https://example.org/sales-kg/resource/Deal_D010> <https://example.org/sales-kg/forAccount> <https://example.org/sales-kg/resource/Account_A003> .
+<https://example.org/sales-kg/resource/Interaction_ACT016> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT016> .
+<https://example.org/sales-kg/resource/Interaction_ACT002> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT002> .
+<https://example.org/sales-kg/resource/Transcript_T008> <https://example.org/sales-kg/identifier> "T008" .
+<https://example.org/sales-kg/resource/Interaction_ACT005> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D002> .
+<https://example.org/sales-kg/resource/Transcript_T004> <https://example.org/sales-kg/identifier> "T004" .
+<https://example.org/sales-kg/resource/Account_A006> <https://example.org/sales-kg/identifier> "A006" .
+<https://example.org/sales-kg/resource/Deal_D004> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Deal> .
+<https://example.org/sales-kg/resource/Deal_D002> <https://example.org/sales-kg/identifier> "D002" .
+<https://example.org/sales-kg/resource/Interaction_ACT006> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C003> .
+<https://example.org/sales-kg/resource/Product_Enterprise%20Platform> <https://example.org/sales-kg/name> "Enterprise Platform" .
+<https://example.org/sales-kg/resource/Interaction_ACT005> <https://example.org/sales-kg/identifier> "ACT005" .
+<https://example.org/sales-kg/resource/Contact_C007> <https://example.org/sales-kg/decisionMakerFor> <https://example.org/sales-kg/resource/Deal_D004> .
+<https://example.org/sales-kg/resource/Deal_D007> <https://example.org/sales-kg/forAccount> <https://example.org/sales-kg/resource/Account_A007> .
+<https://example.org/sales-kg/resource/Deal_D010> <https://example.org/sales-kg/winProbability> "0.72"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<https://example.org/sales-kg/resource/Interaction_ACT016> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
+<https://example.org/sales-kg/resource/Interaction_ACT014> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
+<https://example.org/sales-kg/resource/Deal_D012> <https://example.org/sales-kg/ownedBy> <https://example.org/sales-kg/resource/SalesRep_S031> .
+<https://example.org/sales-kg/resource/Deal_D006> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Deal> .
+<https://example.org/sales-kg/resource/Transcript_ACT003> <https://example.org/sales-kg/identifier> "ACT003_transcript" .
+<https://example.org/sales-kg/resource/Deal_D005> <https://example.org/sales-kg/hasOutcome> <https://example.org/sales-kg/Open> .
+<https://example.org/sales-kg/resource/Account_A007> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Account> .
+<https://example.org/sales-kg/resource/Transcript_T003> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Transcript_ACT031> <https://example.org/sales-kg/identifier> "ACT031_transcript" .
+<https://example.org/sales-kg/resource/Product_Data%20Platform> <https://example.org/sales-kg/name> "Data Platform" .
+<https://example.org/sales-kg/resource/Interaction_ACT031> <https://example.org/sales-kg/identifier> "ACT031" .
+<https://example.org/sales-kg/resource/Transcript_ACT027> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Transcript_ACT010> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Transcript_ACT030> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Interaction_ACT025> <https://example.org/sales-kg/interactionDate> "2026-09-06T10:05:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/sales-kg/resource/Interaction_ACT022> <https://example.org/sales-kg/identifier> "ACT022" .
+<https://example.org/sales-kg/resource/Deal_D005> <https://example.org/sales-kg/ownedBy> <https://example.org/sales-kg/resource/SalesRep_S022> .
+<https://example.org/sales-kg/resource/Deal_D010> <https://example.org/sales-kg/ownedBy> <https://example.org/sales-kg/resource/SalesRep_S017> .
+<https://example.org/sales-kg/resource/Industry_Manufacturing> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Industry> .
+<https://example.org/sales-kg/resource/Interaction_ACT010> <https://example.org/sales-kg/identifier> "ACT010" .
+<https://example.org/sales-kg/resource/Contact_C009> <https://example.org/sales-kg/decisionMakerFor> <https://example.org/sales-kg/resource/Deal_D011> .
+<https://example.org/sales-kg/resource/Interaction_ACT007> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
+<https://example.org/sales-kg/resource/Interaction_ACT013> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C009> .
+<https://example.org/sales-kg/resource/SalesRep_S022> <https://example.org/sales-kg/identifier> "S022" .
+<https://example.org/sales-kg/resource/Contact_C015> <https://example.org/sales-kg/decisionMakerFor> <https://example.org/sales-kg/resource/Deal_D008> .
+<https://example.org/sales-kg/resource/Interaction_ACT014> <https://example.org/sales-kg/interactionDate> "2026-07-18T14:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/sales-kg/resource/Interaction_ACT031> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT031> .
+<https://example.org/sales-kg/resource/Interaction_ACT004> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
+<https://example.org/sales-kg/resource/Contact_C013> <https://example.org/sales-kg/identifier> "C013" .
+<https://example.org/sales-kg/resource/Interaction_ACT007> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT007> .
+<https://example.org/sales-kg/resource/Deal_D004> <https://example.org/sales-kg/identifier> "D004" .
+<https://example.org/sales-kg/resource/Interaction_ACT004> <https://example.org/sales-kg/identifier> "ACT004" .
+<https://example.org/sales-kg/resource/Interaction_ACT012> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT012> .
+<https://example.org/sales-kg/resource/Deal_D004> <https://example.org/sales-kg/involvesProduct> <https://example.org/sales-kg/resource/Product_Analytics%20Module> .
+<https://example.org/sales-kg/resource/Contact_C003> <https://example.org/sales-kg/identifier> "C003" .
+<https://example.org/sales-kg/resource/Contact_C009> <https://example.org/sales-kg/decisionMakerFor> <https://example.org/sales-kg/resource/Deal_D005> .
+<https://example.org/sales-kg/resource/Account_A001> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Account> .
+<https://example.org/sales-kg/resource/Contact_C009> <https://example.org/sales-kg/name> "Sofia Meier" .
+<https://example.org/sales-kg/resource/Transcript_T007> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/SalesRep_S031> <https://example.org/sales-kg/identifier> "S031" .
+<https://example.org/sales-kg/resource/Interaction_ACT023> <https://example.org/sales-kg/interactionDate> "2026-09-09T09:30:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/sales-kg/resource/Contact_C005> <https://example.org/sales-kg/identifier> "C005" .
+<https://example.org/sales-kg/resource/Account_A001> <https://example.org/sales-kg/identifier> "A001" .
+<https://example.org/sales-kg/resource/Deal_D011> <https://example.org/sales-kg/ownedBy> <https://example.org/sales-kg/resource/SalesRep_S022> .
+<https://example.org/sales-kg/resource/Interaction_ACT024> <https://example.org/sales-kg/interactionDate> "2026-08-19T11:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/sales-kg/resource/Interaction_ACT022> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C016> .
+<https://example.org/sales-kg/resource/Deal_D010> <https://example.org/sales-kg/involvesProduct> <https://example.org/sales-kg/resource/Product_AI%20Add-on> .
+<https://example.org/sales-kg/resource/Interaction_ACT016> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C011> .
+<https://example.org/sales-kg/resource/Deal_D010> <https://example.org/sales-kg/identifier> "D010" .
+<https://example.org/sales-kg/resource/Interaction_ACT013> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
+<https://example.org/sales-kg/resource/Interaction_ACT008> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
+<https://example.org/sales-kg/resource/Interaction_ACT025> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D009> .
+<https://example.org/sales-kg/resource/Contact_C012> <https://example.org/sales-kg/name> "Arthur Peeters" .
+<https://example.org/sales-kg/resource/Deal_D006> <https://example.org/sales-kg/name> "LogiCore Automation Suite" .
+<https://example.org/sales-kg/resource/Deal_D008> <https://example.org/sales-kg/name> "BuildSphere Starter Package" .
+<https://example.org/sales-kg/resource/Deal_D006> <https://example.org/sales-kg/expectedCloseDate> "2026-12-15"^^<http://www.w3.org/2001/XMLSchema#date> .
+<https://example.org/sales-kg/resource/Transcript_T004> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Contact_C013> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
+<https://example.org/sales-kg/resource/Interaction_ACT010> <https://example.org/sales-kg/interactionDate> "2026-04-03T12:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/sales-kg/resource/Deal_D003> <https://example.org/sales-kg/winProbability> "1.0"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<https://example.org/sales-kg/resource/Interaction_ACT021> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D008> .
+<https://example.org/sales-kg/resource/Deal_D002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Deal> .
+<https://example.org/sales-kg/resource/Interaction_ACT003> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
+<https://example.org/sales-kg/resource/Interaction_ACT016> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D006> .
+<https://example.org/sales-kg/resource/Contact_C011> <https://example.org/sales-kg/identifier> "C011" .
+<https://example.org/sales-kg/resource/Interaction_ACT027> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT027> .
+<https://example.org/sales-kg/resource/Deal_D003> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Deal> .
+<https://example.org/sales-kg/resource/Deal_D001> <https://example.org/sales-kg/identifier> "D001" .
+<https://example.org/sales-kg/resource/Interaction_ACT018> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D007> .
+<https://example.org/sales-kg/resource/Contact_C005> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
+<https://example.org/sales-kg/resource/Transcript_ACT012> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Contact_C011> <https://example.org/sales-kg/decisionMakerFor> <https://example.org/sales-kg/resource/Deal_D012> .
+<https://example.org/sales-kg/resource/Interaction_ACT027> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D010> .
+<https://example.org/sales-kg/resource/Contact_C007> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A004> .
+<https://example.org/sales-kg/resource/Contact_C001> <https://example.org/sales-kg/decisionMakerFor> <https://example.org/sales-kg/resource/Deal_D009> .
+<https://example.org/sales-kg/resource/Deal_D012> <https://example.org/sales-kg/name> "LogiCore Data Platform" .
+<https://example.org/sales-kg/resource/Contact_C009> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A005> .
+<https://example.org/sales-kg/resource/Account_A005> <https://example.org/sales-kg/name> "MedAxis" .
+<https://example.org/sales-kg/resource/Deal_D009> <https://example.org/sales-kg/ownedBy> <https://example.org/sales-kg/resource/SalesRep_S017> .
+<https://example.org/sales-kg/resource/Interaction_ACT029> <https://example.org/sales-kg/interactionDate> "2026-04-21T10:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/sales-kg/resource/Product_Starter%20Package> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Product> .
+<https://example.org/sales-kg/resource/Deal_D005> <https://example.org/sales-kg/name> "MedAxis Data Foundation" .
+<https://example.org/sales-kg/resource/Interaction_ACT009> <https://example.org/sales-kg/interactionDate> "2026-07-20T17:04:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/sales-kg/resource/Interaction_ACT027> <https://example.org/sales-kg/identifier> "ACT027" .
+<https://example.org/sales-kg/resource/Contact_C006> <https://example.org/sales-kg/name> "Mette Nielsen" .
+<https://example.org/sales-kg/resource/Deal_D008> <https://example.org/sales-kg/identifier> "D008" .
+<https://example.org/sales-kg/resource/Deal_D003> <https://example.org/sales-kg/ownedBy> <https://example.org/sales-kg/resource/SalesRep_S017> .
+<https://example.org/sales-kg/resource/Interaction_ACT006> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT006> .
+<https://example.org/sales-kg/resource/Deal_D007> <https://example.org/sales-kg/dealStage> "Negotiation" .
+<https://example.org/sales-kg/resource/Interaction_ACT022> <https://example.org/sales-kg/interactionDate> "2026-08-04T12:15:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/sales-kg/resource/Interaction_ACT007> <https://example.org/sales-kg/identifier> "ACT007" .
+<https://example.org/sales-kg/resource/Transcript_ACT023> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Account_A005> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Account> .
+<https://example.org/sales-kg/resource/Deal_D012> <https://example.org/sales-kg/lossReason> "No executive sponsor" .
+<https://example.org/sales-kg/resource/Deal_D005> <https://example.org/sales-kg/involvesProduct> <https://example.org/sales-kg/resource/Product_Data%20Platform> .
+<https://example.org/sales-kg/resource/Interaction_ACT030> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D012> .
+<https://example.org/sales-kg/resource/Deal_D008> <https://example.org/sales-kg/dealValue> "28000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<https://example.org/sales-kg/resource/Deal_D009> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Deal> .
+<https://example.org/sales-kg/resource/Interaction_ACT023> <https://example.org/sales-kg/identifier> "ACT023" .
+<https://example.org/sales-kg/resource/Industry_Energy> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Industry> .
+<https://example.org/sales-kg/resource/Contact_C002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
+<https://example.org/sales-kg/resource/Account_A008> <https://example.org/sales-kg/name> "BuildSphere" .
+<https://example.org/sales-kg/resource/Contact_C014> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
+<https://example.org/sales-kg/resource/Interaction_ACT021> <https://example.org/sales-kg/interactionDate> "2026-07-10T09:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/sales-kg/resource/Transcript_ACT019> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Deal_D009> <https://example.org/sales-kg/involvesProduct> <https://example.org/sales-kg/resource/Product_AI%20Add-on> .
+<https://example.org/sales-kg/resource/Account_A002> <https://example.org/sales-kg/identifier> "A002" .
+<https://example.org/sales-kg/resource/Deal_D003> <https://example.org/sales-kg/hasOutcome> <https://example.org/sales-kg/Won> .
+<https://example.org/sales-kg/resource/Interaction_ACT009> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C005> .
+<https://example.org/sales-kg/resource/Deal_D002> <https://example.org/sales-kg/hasOutcome> <https://example.org/sales-kg/Open> .
+<https://example.org/sales-kg/resource/Interaction_ACT030> <https://example.org/sales-kg/identifier> "ACT030" .
+<https://example.org/sales-kg/resource/Contact_C006> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
+<https://example.org/sales-kg/resource/Deal_D004> <https://example.org/sales-kg/name> "RetailPro Analytics Upgrade" .
+<https://example.org/sales-kg/resource/Deal_D008> <https://example.org/sales-kg/ownedBy> <https://example.org/sales-kg/resource/SalesRep_S044> .
+<https://example.org/sales-kg/resource/Transcript_ACT018> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Deal_D008> <https://example.org/sales-kg/forAccount> <https://example.org/sales-kg/resource/Account_A008> .
+<https://example.org/sales-kg/resource/Transcript_ACT012> <https://example.org/sales-kg/identifier> "ACT012_transcript" .
+<https://example.org/sales-kg/resource/Interaction_ACT008> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C006> .
+<https://example.org/sales-kg/resource/Transcript_T009> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D010> .
+<https://example.org/sales-kg/resource/Product_Enterprise%20Platform> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Product> .
+<https://example.org/sales-kg/resource/Deal_D006> <https://example.org/sales-kg/forAccount> <https://example.org/sales-kg/resource/Account_A006> .
+<https://example.org/sales-kg/resource/Contact_C001> <https://example.org/sales-kg/decisionMakerFor> <https://example.org/sales-kg/resource/Deal_D001> .
+<https://example.org/sales-kg/resource/Contact_C012> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
+<https://example.org/sales-kg/resource/Interaction_ACT018> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C013> .
+<https://example.org/sales-kg/resource/Deal_D012> <https://example.org/sales-kg/dealValue> "70000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<https://example.org/sales-kg/resource/Contact_C013> <https://example.org/sales-kg/decisionMakerFor> <https://example.org/sales-kg/resource/Deal_D007> .
+<https://example.org/sales-kg/resource/Deal_D010> <https://example.org/sales-kg/dealStage> "Negotiation" .
+<https://example.org/sales-kg/resource/Account_A003> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Account> .
+<https://example.org/sales-kg/resource/Interaction_ACT015> <https://example.org/sales-kg/identifier> "ACT015" .
+<https://example.org/sales-kg/resource/Contact_C002> <https://example.org/sales-kg/name> "Markus Vogel" .
+<https://example.org/sales-kg/resource/Contact_C008> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
+<https://example.org/sales-kg/resource/Account_A003> <https://example.org/sales-kg/name> "GreenEnergy Group" .
+<https://example.org/sales-kg/resource/Interaction_ACT022> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
+<https://example.org/sales-kg/resource/Transcript_T003> <https://example.org/sales-kg/identifier> "T003" .
+<https://example.org/sales-kg/resource/Deal_D011> <https://example.org/sales-kg/winProbability> "1.0"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<https://example.org/sales-kg/resource/Interaction_ACT005> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C004> .
+<https://example.org/sales-kg/resource/Interaction_ACT022> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT022> .
+<https://example.org/sales-kg/resource/Interaction_ACT008> <https://example.org/sales-kg/identifier> "ACT008" .
+<https://example.org/sales-kg/resource/Interaction_ACT023> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D008> .
+<https://example.org/sales-kg/resource/Interaction_ACT014> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT014> .
+<https://example.org/sales-kg/resource/Contact_C003> <https://example.org/sales-kg/decisionMakerFor> <https://example.org/sales-kg/resource/Deal_D002> .
+<https://example.org/sales-kg/resource/Interaction_ACT025> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT025> .
+<https://example.org/sales-kg/resource/Deal_D006> <https://example.org/sales-kg/identifier> "D006" .
+<https://example.org/sales-kg/resource/Interaction_ACT019> <https://example.org/sales-kg/identifier> "ACT019" .
+<https://example.org/sales-kg/resource/Deal_D005> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Deal> .
+<https://example.org/sales-kg/resource/Interaction_ACT005> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
+<https://example.org/sales-kg/resource/Interaction_ACT026> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
+<https://example.org/sales-kg/resource/Contact_C012> <https://example.org/sales-kg/identifier> "C012" .
+<https://example.org/sales-kg/resource/Interaction_ACT020> <https://example.org/sales-kg/interactionDate> "2026-09-11T14:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/sales-kg/resource/Deal_D002> <https://example.org/sales-kg/forAccount> <https://example.org/sales-kg/resource/Account_A002> .
+<https://example.org/sales-kg/resource/Interaction_ACT029> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT029> .
+<https://example.org/sales-kg/resource/Transcript_T006> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D006> .
+<https://example.org/sales-kg/resource/Contact_C004> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A002> .
+<https://example.org/sales-kg/resource/Contact_C009> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
+<https://example.org/sales-kg/resource/Interaction_ACT028> <https://example.org/sales-kg/identifier> "ACT028" .
+<https://example.org/sales-kg/resource/Contact_C001> <https://example.org/sales-kg/identifier> "C001" .
+<https://example.org/sales-kg/resource/Transcript_T009> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Interaction_ACT003> <https://example.org/sales-kg/identifier> "ACT003" .
+<https://example.org/sales-kg/resource/Transcript_T008> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D008> .
+<https://example.org/sales-kg/resource/Interaction_ACT011> <https://example.org/sales-kg/identifier> "ACT011" .
+<https://example.org/sales-kg/resource/Interaction_ACT017> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D006> .
+<https://example.org/sales-kg/resource/Interaction_ACT011> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
+<https://example.org/sales-kg/resource/Deal_D004> <https://example.org/sales-kg/expectedCloseDate> "2026-06-30"^^<http://www.w3.org/2001/XMLSchema#date> .
+<https://example.org/sales-kg/resource/Interaction_ACT027> <https://example.org/sales-kg/interactionDate> "2026-09-03T10:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/sales-kg/resource/Interaction_ACT021> <https://example.org/sales-kg/identifier> "ACT021" .
+<https://example.org/sales-kg/resource/Deal_D002> <https://example.org/sales-kg/name> "TechNova Analytics Pilot" .
+<https://example.org/sales-kg/resource/Deal_D011> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Deal> .
+<https://example.org/sales-kg/resource/Interaction_ACT015> <https://example.org/sales-kg/interactionDate> "2026-09-05T11:18:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/sales-kg/resource/SalesRep_S017> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/SalesRep> .
+<https://example.org/sales-kg/resource/Interaction_ACT003> <https://example.org/sales-kg/interactionDate> "2026-09-10T16:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/sales-kg/resource/Interaction_ACT020> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D007> .
+<https://example.org/sales-kg/resource/Interaction_ACT030> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C012> .
+<https://example.org/sales-kg/resource/Interaction_ACT029> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C009> .
+<https://example.org/sales-kg/resource/Interaction_ACT027> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
+<https://example.org/sales-kg/resource/Deal_D003> <https://example.org/sales-kg/dealStage> "Closed Won" .
+<https://example.org/sales-kg/resource/Interaction_ACT030> <https://example.org/sales-kg/interactionDate> "2026-04-02T14:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/sales-kg/resource/Account_A006> <https://example.org/sales-kg/name> "LogiCore" .
+<https://example.org/sales-kg/resource/Contact_C010> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A005> .
+<https://example.org/sales-kg/resource/Transcript_ACT027> <https://example.org/sales-kg/identifier> "ACT027_transcript" .
+<https://example.org/sales-kg/resource/Transcript_ACT009> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Interaction_ACT012> <https://example.org/sales-kg/interactionDate> "2026-06-25T15:30:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/sales-kg/resource/Deal_D003> <https://example.org/sales-kg/involvesProduct> <https://example.org/sales-kg/resource/Product_Enterprise%20Platform> .
+<https://example.org/sales-kg/resource/Transcript_T002> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D002> .
+<https://example.org/sales-kg/resource/Contact_C001> <https://example.org/sales-kg/name> "Anna Keller" .
+<https://example.org/sales-kg/resource/Interaction_ACT026> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT026> .
+<https://example.org/sales-kg/resource/Interaction_ACT014> <https://example.org/sales-kg/identifier> "ACT014" .
+<https://example.org/sales-kg/resource/Transcript_T005> <https://example.org/sales-kg/identifier> "T005" .
+<https://example.org/sales-kg/resource/Contact_C010> <https://example.org/sales-kg/identifier> "C010" .
+<https://example.org/sales-kg/resource/Deal_D012> <https://example.org/sales-kg/forAccount> <https://example.org/sales-kg/resource/Account_A006> .
+<https://example.org/sales-kg/resource/Transcript_T010> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D012> .
+<https://example.org/sales-kg/resource/Deal_D001> <https://example.org/sales-kg/hasOutcome> <https://example.org/sales-kg/Open> .
+<https://example.org/sales-kg/resource/Transcript_ACT004> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Interaction_ACT015> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D005> .
+<https://example.org/sales-kg/resource/Interaction_ACT017> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C012> .
+<https://example.org/sales-kg/resource/Deal_D007> <https://example.org/sales-kg/expectedCloseDate> "2026-10-15"^^<http://www.w3.org/2001/XMLSchema#date> .
+<https://example.org/sales-kg/resource/Account_A005> <https://example.org/sales-kg/identifier> "A005" .
+<https://example.org/sales-kg/resource/Industry_Construction> <https://example.org/sales-kg/name> "Construction" .
+<https://example.org/sales-kg/resource/Transcript_ACT014> <https://example.org/sales-kg/identifier> "ACT014_transcript" .
+<https://example.org/sales-kg/resource/Interaction_ACT029> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
+<https://example.org/sales-kg/resource/Contact_C014> <https://example.org/sales-kg/name> "Priya Shah" .
+<https://example.org/sales-kg/resource/Transcript_ACT003> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Contact_C008> <https://example.org/sales-kg/identifier> "C008" .
+<https://example.org/sales-kg/resource/Deal_D011> <https://example.org/sales-kg/hasOutcome> <https://example.org/sales-kg/Won> .
+<https://example.org/sales-kg/resource/Interaction_ACT006> <https://example.org/sales-kg/identifier> "ACT006" .
+<https://example.org/sales-kg/resource/Transcript_ACT007> <https://example.org/sales-kg/identifier> "ACT007_transcript" .
+<https://example.org/sales-kg/resource/Interaction_ACT009> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT009> .
+<https://example.org/sales-kg/resource/Interaction_ACT031> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
+<https://example.org/sales-kg/resource/Transcript_ACT016> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Contact_C011> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A006> .
+<https://example.org/sales-kg/resource/SalesRep_S031> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/SalesRep> .
+<https://example.org/sales-kg/resource/Product_Data%20Platform> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Product> .
+<https://example.org/sales-kg/resource/Interaction_ACT007> <https://example.org/sales-kg/interactionDate> "2026-05-14T13:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/sales-kg/resource/Industry_Energy> <https://example.org/sales-kg/name> "Energy" .
+<https://example.org/sales-kg/resource/Industry_Healthcare> <https://example.org/sales-kg/name> "Healthcare" .
+<https://example.org/sales-kg/resource/Transcript_ACT017> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Contact_C008> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A004> .
+<https://example.org/sales-kg/resource/Industry_Logistics> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Industry> .
+<https://example.org/sales-kg/resource/Contact_C010> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
+<https://example.org/sales-kg/resource/Transcript_T005> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D005> .
+<https://example.org/sales-kg/resource/Transcript_ACT013> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Interaction_ACT006> <https://example.org/sales-kg/interactionDate> "2026-09-08T09:10:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/sales-kg/resource/Contact_C001> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A001> .
+<https://example.org/sales-kg/resource/Contact_C016> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
+<https://example.org/sales-kg/resource/Account_A003> <https://example.org/sales-kg/identifier> "A003" .
+<https://example.org/sales-kg/resource/Deal_D008> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Deal> .
+<https://example.org/sales-kg/resource/Interaction_ACT028> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT028> .
+<https://example.org/sales-kg/resource/Deal_D011> <https://example.org/sales-kg/name> "MedAxis Analytics Pilot" .
+<https://example.org/sales-kg/resource/Interaction_ACT007> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C005> .
+<https://example.org/sales-kg/resource/Interaction_ACT020> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT020> .
+<https://example.org/sales-kg/resource/Interaction_ACT014> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C010> .
+<https://example.org/sales-kg/resource/Interaction_ACT025> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C002> .
+<https://example.org/sales-kg/resource/Deal_D011> <https://example.org/sales-kg/dealStage> "Closed Won" .
+<https://example.org/sales-kg/resource/Interaction_ACT014> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D005> .
+<https://example.org/sales-kg/resource/Interaction_ACT002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
+<https://example.org/sales-kg/resource/Account_A001> <https://example.org/sales-kg/name> "Acme Manufacturing" .
+<https://example.org/sales-kg/resource/Interaction_ACT028> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Interaction> .
+<https://example.org/sales-kg/resource/Deal_D007> <https://example.org/sales-kg/hasOutcome> <https://example.org/sales-kg/Open> .
+<https://example.org/sales-kg/resource/Account_A004> <https://example.org/sales-kg/identifier> "A004" .
+<https://example.org/sales-kg/resource/Contact_C016> <https://example.org/sales-kg/worksFor> <https://example.org/sales-kg/resource/Account_A008> .
+<https://example.org/sales-kg/resource/Interaction_ACT017> <https://example.org/sales-kg/interactionDate> "2026-09-01T13:40:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/sales-kg/resource/Deal_D010> <https://example.org/sales-kg/dealValue> "90000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<https://example.org/sales-kg/resource/Interaction_ACT017> <https://example.org/sales-kg/identifier> "ACT017" .
+<https://example.org/sales-kg/resource/Transcript_T009> <https://example.org/sales-kg/identifier> "T009" .
+<https://example.org/sales-kg/resource/Interaction_ACT006> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D002> .
+<https://example.org/sales-kg/resource/Transcript_ACT011> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Contact_C002> <https://example.org/sales-kg/identifier> "C002" .
+<https://example.org/sales-kg/resource/Transcript_T004> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D004> .
+<https://example.org/sales-kg/resource/Interaction_ACT012> <https://example.org/sales-kg/identifier> "ACT012" .
+<https://example.org/sales-kg/resource/Deal_D006> <https://example.org/sales-kg/involvesProduct> <https://example.org/sales-kg/resource/Product_Automation%20Suite> .
+<https://example.org/sales-kg/resource/Interaction_ACT027> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C006> .
+<https://example.org/sales-kg/resource/Contact_C003> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/CustomerContact> .
+<https://example.org/sales-kg/resource/Deal_D003> <https://example.org/sales-kg/forAccount> <https://example.org/sales-kg/resource/Account_A003> .
+<https://example.org/sales-kg/resource/Transcript_ACT006> <https://example.org/sales-kg/identifier> "ACT006_transcript" .
+<https://example.org/sales-kg/resource/Deal_D001> <https://example.org/sales-kg/involvesProduct> <https://example.org/sales-kg/resource/Product_Enterprise%20Platform> .
+<https://example.org/sales-kg/resource/Transcript_ACT015> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Interaction_ACT020> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C013> .
+<https://example.org/sales-kg/resource/Product_Analytics%20Module> <https://example.org/sales-kg/name> "Analytics Module" .
+<https://example.org/sales-kg/resource/Deal_D008> <https://example.org/sales-kg/hasOutcome> <https://example.org/sales-kg/Open> .
+<https://example.org/sales-kg/resource/Transcript_T002> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://example.org/sales-kg/Transcript> .
+<https://example.org/sales-kg/resource/Deal_D002> <https://example.org/sales-kg/involvesProduct> <https://example.org/sales-kg/resource/Product_Analytics%20Module> .
+<https://example.org/sales-kg/resource/Interaction_ACT018> <https://example.org/sales-kg/identifier> "ACT018" .
+<https://example.org/sales-kg/resource/Interaction_ACT021> <https://example.org/sales-kg/hasParticipant> <https://example.org/sales-kg/resource/Contact_C015> .
+<https://example.org/sales-kg/resource/Interaction_ACT013> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT013> .
+<https://example.org/sales-kg/resource/Deal_D001> <https://example.org/sales-kg/expectedCloseDate> "2026-09-30"^^<http://www.w3.org/2001/XMLSchema#date> .
+<https://example.org/sales-kg/resource/Transcript_ACT028> <https://example.org/sales-kg/identifier> "ACT028_transcript" .
+<https://example.org/sales-kg/resource/Transcript_T001> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D001> .
+<https://example.org/sales-kg/resource/Interaction_ACT005> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT005> .
+<https://example.org/sales-kg/resource/Interaction_ACT004> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT004> .
+<https://example.org/sales-kg/resource/Interaction_ACT013> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D005> .
+<https://example.org/sales-kg/resource/Interaction_ACT001> <https://example.org/sales-kg/hasTranscript> <https://example.org/sales-kg/resource/Transcript_ACT001> .
+<https://example.org/sales-kg/resource/Contact_C013> <https://example.org/sales-kg/name> "James Carter" .
+<https://example.org/sales-kg/resource/Interaction_ACT019> <https://example.org/sales-kg/interactionDate> "2026-07-29T10:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/sales-kg/resource/Interaction_ACT008> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D003> .
+<https://example.org/sales-kg/resource/Contact_C004> <https://example.org/sales-kg/identifier> "C004" .
+<https://example.org/sales-kg/resource/Interaction_ACT002> <https://example.org/sales-kg/interactionDate> "2026-09-02T14:22:00"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+<https://example.org/sales-kg/resource/Deal_D004> <https://example.org/sales-kg/forAccount> <https://example.org/sales-kg/resource/Account_A004> .
+<https://example.org/sales-kg/resource/Transcript_ACT030> <https://example.org/sales-kg/identifier> "ACT030_transcript" .
+<https://example.org/sales-kg/resource/Contact_C008> <https://example.org/sales-kg/name> "Hugo Bernard" .
+<https://example.org/sales-kg/resource/Account_A008> <https://example.org/sales-kg/identifier> "A008" .
+<https://example.org/sales-kg/resource/Transcript_ACT013> <https://example.org/sales-kg/identifier> "ACT013_transcript" .
+<https://example.org/sales-kg/resource/Transcript_T006> <https://example.org/sales-kg/identifier> "T006" .
+<https://example.org/sales-kg/resource/Interaction_ACT007> <https://example.org/sales-kg/aboutDeal> <https://example.org/sales-kg/resource/Deal_D003> .
+<https://example.org/sales-kg/resource/Transcript_ACT023> <https://example.org/sales-kg/identifier> "ACT023_transcript" .
+<https://example.org/sales-kg/resource/Deal_D007> <https://example.org/sales-kg/dealValue> "175000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<https://example.org/sales-kg/resource/Interaction_ACT025> <https://example.org/sales-kg/identifier> "ACT025" .
