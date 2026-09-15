@@ -577,6 +577,22 @@
     return null;
   }
 
+  // Detect a failed tool call flagged at the source level (not just in hits):
+  // an explicit ok===false or a non-empty `error` field. Returns the detail
+  // string, or null when the record is not flagged as failed.
+  function recordError(src) {
+    if (!src || typeof src !== "object") { return null; }
+    var flagged = (src.ok === false) ||
+      (src.error !== undefined && src.error !== null && src.error !== "");
+    if (!flagged) { return null; }
+    var detail = firstOf(src, ["error", "message", "detail"]);
+    if (detail === undefined) { detail = "error"; }
+    if (typeof detail !== "string") {
+      try { detail = JSON.stringify(detail); } catch (ignored) { detail = String(detail); }
+    }
+    return detail;
+  }
+
   // A raw plain-text hit (not an object, nor a JSON encoding of one).
   function isPlainHitString(hit) {
     if (typeof hit !== "string") { return false; }
@@ -647,12 +663,26 @@
     return nm === base || (suffix !== undefined && nm.slice(-suffix.length) === suffix);
   }
 
+  // Human label for a tool whose record carries ok===false / an error field.
+  function errorClause(src) {
+    if (matchesTool(src, "query_kg")) { return "KG query (error)"; }
+    if (matchesTool(src, "keyword_search")) { return "keyword search (error)"; }
+    if (matchesTool(src, "semantic_search")) { return "vector search (error)"; }
+    if (matchesTool(src, "get_transcript")) { return "transcript lookup (error)"; }
+    if (matchesTool(src, "describe_kg_schema")) { return "schema check (error)"; }
+    return (src.name || src.tool) + " (error)";
+  }
+
   // Auto-derive the "How I checked" line from the tool trace.
   function buildHowChecked(sources) {
     if (!sources || !sources.length) { return null; }
     var clauses = [];
     sources.forEach(function (src) {
       if (!src || !(src.name || src.tool)) { return; }
+      if (recordError(src)) {
+        clauses.push(errorClause(src));
+        return;
+      }
       var hits = Array.isArray(src.hits) ? src.hits : [];
       var total = (typeof src.total === "number") ? src.total : hits.length;
       if (matchesTool(src, "query_kg")) {
@@ -714,6 +744,46 @@
     return table;
   }
 
+  // Lightweight, dependency-free SPARQL pretty-printer for the KG <pre> and
+  // the Copy button. Defensive: a single-line query becomes multi-line and an
+  // already-multiline query is re-broken consistently. IRIs and quoted strings
+  // are preserved verbatim (keywords inside them are never touched).
+  function formatSparql(q) {
+    var s = String(q == null ? "" : q).replace(/\r\n?/g, "\n");
+    if (!s.trim()) { return ""; }
+
+    // Flatten whitespace so structural breaks are deterministic.
+    s = s.replace(/\s+/g, " ").trim();
+    s = s.replace(/^\n+/, "");
+
+    // PREFIX/BASE declarations each start their own line.
+    s = s.replace(
+      /"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|<[^>\n]*>|[A-Za-z_][\w.-]*:[A-Za-z_][\w.-]*|(PREFIX|BASE)\b/gi,
+      function (m, kw) { return kw ? "\n" + kw : m; }
+    );
+    s = s.replace(/^\n+/, "");
+
+    // Newline before structural keywords and braces (mid-string included).
+    s = s.replace(
+      /"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|<[^>\n]*>|[A-Za-z_][\w.-]*:[A-Za-z_][\w.-]*|(FILTER\s*\(|BIND\s*\(|\b(?:WHERE|OPTIONAL|UNION|VALUES|LIMIT|SELECT|ORDER\s+BY|GROUP\s+BY)\b(?![:\w]))|([{}])/gi,
+      function (m, kw, brace) {
+        if (kw) { return "\n" + kw; }
+        if (brace) { return "\n" + brace; }
+        return m;
+      }
+    );
+
+    // Blank line after a leading declaration block.
+    s = s.replace(/^((?:PREFIX|BASE)[^\n]*\n)+/i, function (block) { return block + "\n"; });
+
+    // Collapse 3+ newlines to 2 and trim trailing spaces on every line.
+    s = s.replace(/\n{3,}/g, "\n\n");
+    s = s.split("\n").map(function (line) {
+      return line.replace(/[ \t]+$/, "");
+    }).join("\n").trim();
+    return s;
+  }
+
   function copyText(text, button) {
     function done(ok) {
       button.textContent = ok ? "Copied" : "Copy failed";
@@ -730,11 +800,11 @@
 
   function renderKgSection(src) {
     src = src || {};
-    var sparql = (src.input && src.input.sparql) || src.sparql || "";
+    var sparql = formatSparql((src.input && src.input.sparql) || src.sparql || "");
     var hits = Array.isArray(src.hits) ? src.hits : [];
     var rows = hits.map(parseHit);
     var rowCount = (typeof src.total === "number") ? src.total : rows.length;
-    var err = toolError(src);
+    var err = toolError(src) || recordError(src);
     var zero = !err && rowCount === 0 && rows.length === 0;
     var details = domEl("details", "ev-section");
     details.open = !zero;
@@ -775,7 +845,7 @@
     var hits = Array.isArray(src.hits) ? src.hits : [];
     var count = (typeof src.total === "number") ? src.total : hits.length;
     var label = kind === "vector" ? "Vector search" : "Keyword search";
-    var err = toolError(src);
+    var err = toolError(src) || recordError(src);
     var zero = !err && count === 0;
 
     var details = domEl("details", "ev-section");

@@ -328,9 +328,14 @@ def _sparql_bindings(value):
 def _unwrap_payload(value):
     """Unwrap a FastMCP ``{"content": [{"type": "text", ...}]}`` envelope.
 
-    Each text block is parsed as JSON and the first parse wins; if none parse,
-    the joined text is used. Non-envelope values are returned unchanged so the
-    existing SPARQL/list/scalar normalization still applies downstream.
+    FastMCP can spread one result across several ``text`` blocks (e.g. one hit
+    per block), so every block is parsed as JSON and the parsed dicts/lists are
+    combined into a single list, capped at :data:`_SEARCH_HITS`. Blocks that do
+    not parse contribute their truncated text so no data is silently dropped.
+    A single-block envelope keeps the original behavior -- the parsed value when
+    it parses, else its raw text -- so SPARQL ``results.bindings`` and scalar
+    payloads still normalize downstream. Non-envelope values are returned
+    unchanged.
     """
     if not isinstance(value, dict):
         return value
@@ -347,12 +352,22 @@ def _unwrap_payload(value):
                 texts.append(part.strip())
     if not texts:
         return value
+    if len(texts) == 1:
+        try:
+            return json.loads(texts[0])
+        except (ValueError, TypeError):
+            return texts[0]
+    combined = []
     for text in texts:
         try:
-            return json.loads(text)
+            item = json.loads(text)
         except (ValueError, TypeError):
-            continue
-    return "\n".join(texts)
+            item = _truncate(text)
+        if isinstance(item, list):
+            combined.extend(item)
+        else:
+            combined.append(item)
+    return combined[:_SEARCH_HITS]
 
 
 def _normalize_payload(value, tool):
@@ -367,12 +382,59 @@ def _normalize_payload(value, tool):
     return ([text] if text else []), (1 if text else 0)
 
 
-def _parse_events(text):
-    """Parse JSON-lines ``text`` into ``(answer, sources)`` best-effort.
+def _decode_output(raw):
+    """Decode a logged tool ``output`` into its underlying Python value.
 
-    Tool calls are collected first; a second pass attaches any co-located
-    result payloads to the most recent matching, still-unmatched source.
+    The opencode ``trace-log`` plugin records ``output`` as a JSON string that
+    may itself be JSON-encoded more than once (the raw string plus the
+    enclosing record). Try ``json.loads`` up to two times, then run the
+    existing :func:`_unwrap_payload` to dissolve FastMCP
+    ``{"content": [{"type": "text", "text": ...}]}`` envelopes.
     """
+    value = raw
+    for _ in range(2):
+        if not isinstance(value, str):
+            break
+        try:
+            value = json.loads(value)
+        except (ValueError, TypeError):
+            break
+    return _unwrap_payload(value)
+
+
+def _coerce_hit(item):
+    """Parse a hit that is itself a JSON string encoding a dict/list."""
+    if isinstance(item, str):
+        stripped = item.strip()
+        if stripped[:1] in ("{", "["):
+            try:
+                parsed = json.loads(stripped)
+            except (ValueError, TypeError):
+                return item
+            if isinstance(parsed, (dict, list)):
+                return parsed
+    return item
+
+
+def _hits_total_from_output(raw, tool):
+    """Build ``(hits, total)`` from a logged ``output`` payload.
+
+    SPARQL bindings are kept as dicts (only long string *values* are capped) so
+    their columns fill instead of collapsing into one ``snippet`` blob. All
+    other payloads reuse :func:`_normalize_payload`, then any hit that survived
+    as a JSON string is parsed back into a dict/list.
+    """
+    value = _decode_output(raw)
+    cap = _KG_HITS if tool == "query_kg" or tool.endswith("_query_kg") else _SEARCH_HITS
+    bindings = _sparql_bindings(value)
+    if bindings is not None:
+        return [_normalize_hit(item) for item in bindings[:cap]], len(bindings)
+    hits, total = _normalize_payload(value, tool)
+    return [_normalize_hit(_coerce_hit(hit)) for hit in hits], total
+
+
+def _parse_json_lines(text):
+    """Parse JSON-lines ``text`` into a list of objects, skipping bad lines."""
     events = []
     for line in (text or "").splitlines():
         line = line.strip()
@@ -382,6 +444,35 @@ def _parse_events(text):
             events.append(json.loads(line))
         except (ValueError, TypeError):
             continue
+    return events
+
+
+def _session_id_from_raw(text):
+    """Return the first non-empty ``sessionID`` in JSON-lines ``text``, else ``None``.
+
+    OpenCode nests the id either at the event top level (``event.sessionID``) or
+    under ``event.part.sessionID``; the first non-empty one in file order wins.
+    """
+    for event in _parse_json_lines(text):
+        if not isinstance(event, dict):
+            continue
+        part = event.get("part")
+        for container in (event, part):
+            if not isinstance(container, dict):
+                continue
+            value = container.get("sessionID")
+            if isinstance(value, str) and value.strip():
+                return value.strip()
+    return None
+
+
+def _parse_events(text):
+    """Parse JSON-lines ``text`` into ``(answer, sources)`` best-effort.
+
+    Tool calls are collected first; a second pass attaches any co-located
+    result payloads to the most recent matching, still-unmatched source.
+    """
+    events = _parse_json_lines(text)
 
     sources = []
     answer = ""
@@ -481,12 +572,20 @@ def _diff_calls(path, since):
         raw_tool = entry.get("tool")
         if not isinstance(raw_tool, str) or not raw_tool:
             continue
+        # The trace-log plugin records the raw ``output`` payload; MCP_LOG
+        # records already carry parsed ``hits``/``total``. Prefer ``output``
+        # when present and fall back to the pre-computed fields otherwise.
+        if isinstance(entry.get("output"), (str, dict, list)):
+            hits, total = _hits_total_from_output(entry.get("output"), raw_tool)
+        else:
+            hits = entry.get("hits") if isinstance(entry.get("hits"), list) else []
+            total = entry.get("total", 0)
         record = {
             "tool": raw_tool,
             "name": _normalize_tool_name(raw_tool),
             "input": entry.get("input") if isinstance(entry.get("input"), dict) else {},
-            "hits": entry.get("hits") if isinstance(entry.get("hits"), list) else [],
-            "total": entry.get("total", 0),
+            "hits": hits,
+            "total": total,
         }
         if entry.get("error"):
             record["error"] = entry["error"]
@@ -502,6 +601,80 @@ def _read_new_calls(since_size):
     and attributed to this run.
     """
     return _diff_calls(config.MCP_LOG, since_size)
+
+
+def _record_from_trace(entry):
+    """Map one ``trace-log`` plugin line to the shared source-record shape.
+
+    ``args`` is the truncated JSON string written by the plugin; ``output`` is
+    the raw tool result string (usually JSON, for MCP a ``{"content": [...]}``
+    envelope). Malformed pieces degrade to empties so one bad line cannot drop
+    the rest of the trace.
+    """
+    raw_tool = entry.get("tool")
+    if not isinstance(raw_tool, str) or not raw_tool:
+        return None
+
+    args = entry.get("args")
+    if isinstance(args, str):
+        try:
+            args = json.loads(args)
+        except (ValueError, TypeError):
+            args = {}
+    if not isinstance(args, dict):
+        args = {}
+
+    kept = {}
+    for key in _INPUT_KEEP:
+        value = args.get(key)
+        if value is None:
+            continue
+        if not isinstance(value, str):
+            value = json.dumps(value, ensure_ascii=False)
+        kept[key] = value[:2000]
+
+    hits, total = _hits_total_from_output(entry.get("output"), raw_tool)
+
+    return {
+        "tool": raw_tool,
+        "name": _normalize_tool_name(raw_tool),
+        "input": kept,
+        "hits": hits,
+        "total": total,
+        "callID": entry.get("callID", ""),
+    }
+
+
+def _load_trace_calls(session_id):
+    """Return ``trace-log`` records matching ``session_id``, in file order.
+
+    Pure helper reading ``<REPO_ROOT>/logs/tool_calls.jsonl`` (written by the
+    opencode ``trace-log`` plugin). Returns ``[]`` when the session id is blank
+    or the file is missing/unreadable, so callers can fall back.
+    """
+    if not session_id:
+        return []
+    path = config.REPO_ROOT / "logs" / "tool_calls.jsonl"
+    try:
+        data = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return []
+
+    records = []
+    for line in data.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            entry = json.loads(line)
+        except (ValueError, TypeError):
+            continue
+        if not isinstance(entry, dict) or entry.get("sessionID") != session_id:
+            continue
+        record = _record_from_trace(entry)
+        if record is not None:
+            records.append(record)
+    return records
 
 
 def run_agent(question: str, history=None, timeout: int = 300) -> dict:
@@ -556,11 +729,19 @@ def run_agent(question: str, history=None, timeout: int = 300) -> dict:
     raw = proc.stdout or ""
     answer, event_sources = _parse_events(raw)
 
-    # The server writes ground-truth call records to config.MCP_LOG while the
-    # subprocess runs; prefer them over the adjacency-guessed event payloads.
-    # If logging was unavailable (zero new records), keep the old behavior.
-    log_sources = _read_new_calls(start_size)
-    sources = log_sources if log_sources else event_sources
+    # Preferred: the opencode "trace-log" plugin appends one line per tool call,
+    # tagged with the session id, to logs/tool_calls.jsonl. When at least one
+    # line matches this run's session id those records are authoritative (in file
+    # order) and replace the fallbacks below. Otherwise fall back to the MCP
+    # server's ground-truth call records written to config.MCP_LOG while the
+    # subprocess runs; if logging was unavailable (zero new records), keep the
+    # old behavior of the adjacency-guessed event payloads.
+    trace_sources = _load_trace_calls(_session_id_from_raw(raw))
+    if trace_sources:
+        sources = trace_sources
+    else:
+        log_sources = _read_new_calls(start_size)
+        sources = log_sources if log_sources else event_sources
 
     if not answer:
         kept = []

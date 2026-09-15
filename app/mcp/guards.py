@@ -17,10 +17,37 @@ MAX_ROWS = 100
 MAX_TOP_K = 10
 
 _COMMENT_RE = re.compile(r"#[^\n]*")
+# IRIs (<...>) and quoted literals are masked before comment stripping so a
+# '#' inside them (e.g. <http://www.w3.org/2000/01/rdf-schema#>) is never
+# mistaken for the start of a comment.
+_MASK_RE = re.compile(r"<[^>]*>|\"(?:\\.|[^\"\\])*\"|'(?:\\.|[^'\\])*'")
+_MASKED_RE = re.compile(r"\x00(\d+)\x00")
 # Prologue declarations that may legally precede the query keyword.
 _PREFIX_IRI_RE = re.compile(r"PREFIX\s+\S+\s*<[^>]*>", re.IGNORECASE)
 _PREFIX_PNAME_RE = re.compile(r"PREFIX\s+\S+:\s*\S+", re.IGNORECASE)
 _BASE_RE = re.compile(r"BASE\s+<[^>]*>", re.IGNORECASE)
+
+
+def _strip_comments(sparql: str) -> str:
+    """Drop ``#`` line comments without touching IRIs or quoted literals.
+
+    IRI ``<...>`` blocks and quoted strings are swapped for ``\\x00N\\x00``
+    placeholders, comments are removed outside those placeholders, and the
+    originals are restored afterwards.
+    """
+    masked = []
+
+    def _mask(match):
+        masked.append(match.group(0))
+        return "\x00%d\x00" % (len(masked) - 1)
+
+    out = _MASK_RE.sub(_mask, sparql)
+    out = _COMMENT_RE.sub(" ", out)
+
+    def _restore(match):
+        return masked[int(match.group(1))]
+
+    return _MASKED_RE.sub(_restore, out)
 
 
 def assert_readonly(sparql) -> str:
@@ -31,7 +58,7 @@ def assert_readonly(sparql) -> str:
     is accepted. Raises ``ValueError`` unless that keyword is
     SELECT/ASK/CONSTRUCT/DESCRIBE.
     """
-    stripped = _COMMENT_RE.sub(" ", sparql or "")
+    stripped = _strip_comments(sparql or "")
     stripped = _PREFIX_IRI_RE.sub(" ", stripped)
     stripped = _PREFIX_PNAME_RE.sub(" ", stripped)
     stripped = _BASE_RE.sub(" ", stripped)
