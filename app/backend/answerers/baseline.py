@@ -34,6 +34,21 @@ def clean(text: str) -> str:
     return re.sub(r"(?m)^(\s*PREFIX\s+[\w-]+:\s*)(?![<\"])([^\s<>]+)\s*$", r"\1<\2>", text)
 
 
+def _extract_iris(*texts, limit=20):
+    """Pull absolute http(s) IRIs out of arbitrary text, deduped in order."""
+    seen = set()
+    iris = []
+    for text in texts:
+        for match in re.findall(r"https?://[^\s<>\"']+", text or ""):
+            iri = match.rstrip(".,;)]`")
+            if iri and iri not in seen:
+                seen.add(iri)
+                iris.append(iri)
+                if len(iris) >= limit:
+                    return iris
+    return iris
+
+
 def _read(path) -> str:
     with open(path, encoding="utf-8") as f:
         return f.read()
@@ -168,6 +183,7 @@ Final answer:"""
 
         final_answer = _ask_openrouter(api_key, answer_prompt)
         _write(os.path.join(tmp, "answer.txt"), final_answer + "\n")
+        iris = _extract_iris(final_answer, sparql, json.dumps(sample))
         logger.info("answer length=%s", len(final_answer))
     finally:
         if tmp_cm is not None:
@@ -175,10 +191,12 @@ Final answer:"""
 
     return ChatResponse(
         answer=final_answer,
-        sources=[{"sparql": sparql, "row_count": row_count, "sample": sample}],
+        sources=[{"sparql": sparql, "row_count": row_count, "sample": sample, "iris": iris}],
         meta={
             "engine": "baseline",
             "sparql": sparql,
             "model": config.OPENROUTER_MODEL,
+            "graphdb_url": config.GRAPHDB_URL,
+            "graphdb_repo": config.GRAPHDB_REPO,
         },
     )

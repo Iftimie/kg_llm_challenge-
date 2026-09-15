@@ -10,7 +10,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
 # --- Services -----------------------------------------------------------------
-GRAPHDB_URL = os.environ.get("GRAPHDB_URL", "http://127.0.0.1:7200")
+GRAPHDB_URL = os.environ.get("GRAPHDB_URL", "http://localhost:7200")
 GRAPHDB_REPO = os.environ.get("GRAPHDB_REPO", "sales-kg")
 
 OPENROUTER_URL = os.environ.get("OPENROUTER_URL", "https://openrouter.ai/api/v1/chat/completions")

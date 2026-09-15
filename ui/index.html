@@ -65,6 +65,8 @@
     word-break: break-word;
   }
   .meta-line { margin-top: 6px; color: #6b7280; }
+  .row .body a, .meta-line a { color: #1d4ed8; text-decoration: underline; }
+  .meta-line a.gdb-secondary { color: #047857; }
   form#composer {
     display: flex;
     gap: 8px;
@@ -117,7 +119,45 @@
   // Client-side conversation history, sent with every request as `history`.
   var history = [];
 
-  function addRow(role, text, extraClass) {
+  var IRI_RE = /https?:\/\/[^\s<>"'`]+/;
+
+  function gdbBase(u) {
+    return String(u || "http://localhost:7200").replace(/\/+$/, "").replace("://127.0.0.1:", "://localhost:");
+  }
+
+  // Turn bare http(s) IRIs in plain text into <a> nodes without innerHTML.
+  // Links open the IRI in GraphDB using the provided GraphDB base URL.
+  function linkify(text, gdb) {
+    var frag = document.createDocumentFragment();
+    var re = /https?:\/\/[^\s<>"'`]+/g;
+    var last = 0;
+    var m;
+    while ((m = re.exec(text)) !== null) {
+      var raw = m[0];
+      var iri = raw.replace(/[.,;)\]`]+$/, "");
+      if (m.index > last) {
+        frag.appendChild(document.createTextNode(text.slice(last, m.index)));
+      }
+      var a = document.createElement("a");
+      a.href = gdbBase(gdb) + "/graphs-visualizations?uri=" + encodeURIComponent(iri) + "&role=subject";
+      a.title = iri;
+      a.textContent = iri;
+      a.target = "_blank";
+      a.rel = "noopener";
+      frag.appendChild(a);
+      var trailing = raw.slice(iri.length);
+      if (trailing) {
+        frag.appendChild(document.createTextNode(trailing));
+      }
+      last = m.index + raw.length;
+    }
+    if (last < text.length) {
+      frag.appendChild(document.createTextNode(text.slice(last)));
+    }
+    return frag;
+  }
+
+  function addRow(role, text, extraClass, gdb) {
     var row = document.createElement("div");
     row.className = "row " + (extraClass || role.toLowerCase());
 
@@ -128,6 +168,10 @@
     var body = document.createElement("span");
     body.className = "body";
     body.textContent = text;
+    if (role === "Assistant" && IRI_RE.test(text)) {
+      body.textContent = "";
+      body.appendChild(linkify(text, gdb));
+    }
 
     row.appendChild(label);
     row.appendChild(body);
@@ -136,7 +180,52 @@
     return row;
   }
 
-  function addEvidence(row, sources, meta) {
+  // Gather IRIs from the answer text, sources[].iris, and uri-valued sample cells.
+  function collectIris(answerText, sources) {
+    var out = [];
+    var seen = {};
+    function add(iri) {
+      if (iri && typeof iri === "string" && !seen[iri]) {
+        seen[iri] = true;
+        out.push(iri);
+      }
+    }
+    if (answerText) {
+      var re = /https?:\/\/[^\s<>"'`]+/g;
+      var m;
+      while ((m = re.exec(answerText)) !== null) {
+        add(m[0].replace(/[.,;)\]`]+$/, ""));
+      }
+    }
+    (sources || []).forEach(function (src) {
+      if (src && Array.isArray(src.iris)) {
+        src.iris.forEach(add);
+      }
+      if (src && Array.isArray(src.sample)) {
+        src.sample.forEach(function (row) {
+          if (!row) { return; }
+          Object.keys(row).forEach(function (k) {
+            var cell = row[k];
+            if (cell && cell.type === "uri" && typeof cell.value === "string") {
+              add(cell.value);
+            }
+          });
+        });
+      }
+    });
+    return out;
+  }
+
+  function shortIri(iri) {
+    if (iri.indexOf("#") !== -1) {
+      return iri.slice(iri.indexOf("#") + 1);
+    }
+    var trimmed = iri.replace(/\/+$/, "");
+    var parts = trimmed.split("/");
+    return parts[parts.length - 1] || iri;
+  }
+
+  function addEvidence(row, sources, meta, answerText) {
     var details = document.createElement("details");
     details.className = "evidence";
 
@@ -164,6 +253,44 @@
     var sourcesPre = document.createElement("pre");
     sourcesPre.textContent = "sources: " + JSON.stringify(sources || [], null, 2);
     details.appendChild(sourcesPre);
+
+    if (meta && meta.graphdb_url) {
+      var gdb = gdbBase(meta.graphdb_url);
+      var iris = collectIris(answerText, sources);
+
+      var gdbLine = document.createElement("div");
+      gdbLine.className = "meta-line";
+      gdbLine.appendChild(document.createTextNode("GraphDB: "));
+
+      if (!iris.length) {
+        gdbLine.appendChild(document.createTextNode("(no IRIs in answer)"));
+      } else {
+        iris.forEach(function (iri, i) {
+          if (i > 0) {
+            gdbLine.appendChild(document.createTextNode(" | "));
+          }
+          var primary = document.createElement("a");
+          primary.href = gdb + "/graphs-visualizations?uri=" + encodeURIComponent(iri) + "&role=subject";
+          primary.textContent = shortIri(iri);
+          primary.title = iri;
+          primary.target = "_blank";
+          primary.rel = "noopener";
+          gdbLine.appendChild(primary);
+
+          gdbLine.appendChild(document.createTextNode(" "));
+
+          var describe = document.createElement("a");
+          describe.href = gdb + "/sparql?query=" + encodeURIComponent("DESCRIBE <" + iri + ">");
+          describe.textContent = "DESCRIBE";
+          describe.title = "DESCRIBE <" + iri + ">";
+          describe.target = "_blank";
+          describe.rel = "noopener";
+          describe.className = "gdb-secondary";
+          gdbLine.appendChild(describe);
+        });
+      }
+      details.appendChild(gdbLine);
+    }
 
     row.appendChild(details);
   }
@@ -206,8 +333,8 @@
 
       var data = await res.json();
       var answer = (data && data.answer) ? data.answer : "(empty answer)";
-      var row = addRow("Assistant", answer);
-      addEvidence(row, data ? data.sources : [], data ? data.meta : null);
+      var row = addRow("Assistant", answer, null, data && data.meta ? data.meta.graphdb_url : null);
+      addEvidence(row, data ? data.sources : [], data ? data.meta : null, answer);
 
       if (data && data.meta && data.meta.engine) {
         engineEl.textContent = data.meta.engine;
