@@ -37,3 +37,7 @@ EXTRACTED_DIR = REPO_ROOT / "extracted"
 CHROMA_DIR = REPO_ROOT / "chroma_db"
 QA_DIR = REPO_ROOT / "qa"
 COMPETENCY_QUERIES = REPO_ROOT / "competency_queries.txt"
+
+# --- Logging ------------------------------------------------------------------
+LOG_FILE = Path(os.environ.get("LOG_FILE", REPO_ROOT / "logs" / "app.log"))
+LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO")

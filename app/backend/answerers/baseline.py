@@ -11,6 +11,7 @@ External services are configured through :mod:`app.config` and called with
 human-readable message (no internal traceback leaks).
 """
 import json
+import logging
 import os
 import re
 import tempfile
@@ -19,6 +20,8 @@ import requests
 
 from app import config
 from app.backend.schemas import ChatResponse
+
+logger = logging.getLogger(__name__)
 
 # Timeouts (seconds): generous for LLM generation, short for the local store.
 _LLM_TIMEOUT = 600
@@ -55,35 +58,42 @@ def _ask_openrouter(api_key: str, prompt: str) -> str:
             timeout=_LLM_TIMEOUT,
         )
     except requests.RequestException as exc:
+        logger.warning("OpenRouter request failed: %s", exc)
         raise RuntimeError(f"OpenRouter request failed: {exc}") from exc
 
     if r.status_code >= 400:
+        logger.warning("OpenRouter error %s: %s", r.status_code, r.text[:1000])
         raise RuntimeError(f"OpenRouter error {r.status_code}: {r.text[:1000]}")
 
     try:
         return r.json()["choices"][0]["message"]["content"]
     except (ValueError, KeyError, IndexError, TypeError) as exc:
+        logger.warning("Unexpected OpenRouter response: %s", exc)
         raise RuntimeError(f"Unexpected OpenRouter response: {exc}") from exc
 
 
 def _run_sparql(sparql: str) -> dict:
     """Execute SPARQL against GraphDB and return the JSON results document."""
+    repo_url = f"{config.GRAPHDB_URL}/repositories/{config.GRAPHDB_REPO}"
     try:
         q = requests.get(
-            f"{config.GRAPHDB_URL}/repositories/{config.GRAPHDB_REPO}",
+            repo_url,
             params={"query": sparql},
             headers={"Accept": "application/sparql-results+json"},
             timeout=_GRAPHDB_TIMEOUT,
         )
     except requests.RequestException as exc:
+        logger.warning("GraphDB is unreachable at %s: %s", config.GRAPHDB_URL, exc)
         raise RuntimeError(f"GraphDB is unreachable at {config.GRAPHDB_URL}: {exc}") from exc
 
     if q.status_code >= 400:
+        logger.warning("GraphDB error %s: %s", q.status_code, q.text[:1000])
         raise RuntimeError(f"GraphDB error {q.status_code}: {q.text[:1000]}")
 
     try:
         return q.json()
     except ValueError as exc:
+        logger.warning("GraphDB returned a non-JSON response")
         raise RuntimeError("GraphDB returned a non-JSON response") from exc
 
 
@@ -100,6 +110,8 @@ def answer(question: str, history=None) -> ChatResponse:
     if not api_key:
         raise RuntimeError("OPENROUTER_API_KEY is not set")
 
+    logger.info("question=%r model=%s", question[:300], config.OPENROUTER_MODEL)
+
     sparql_prompt = f"""You translate a user question into a SPARQL query over a Sales Knowledge Graph.
 Use only the ontology below. Follow the style of the SPARQL examples.
 
@@ -115,15 +127,30 @@ USER QUESTION:
 Return ONLY the SPARQL query, no code fences, no explanation."""
 
     sparql = clean(_ask_openrouter(api_key, sparql_prompt))
+    logger.info("generated SPARQL: %r", sparql)
 
     # Per-request scratch space instead of the shared qa/ directory.
-    with tempfile.TemporaryDirectory(prefix="kg_baseline_") as tmp:
+    # KG_DEBUG keeps the directory around for inspection instead of deleting it.
+    kg_debug = os.environ.get("KG_DEBUG", "").lower() in ("1", "true", "yes")
+    if kg_debug:
+        tmp = tempfile.mkdtemp(prefix="kg_baseline_")
+        tmp_cm = None
+        logger.info("KG_DEBUG enabled, keeping temp dir: %s", tmp)
+    else:
+        tmp_cm = tempfile.TemporaryDirectory(prefix="kg_baseline_")
+        tmp = tmp_cm.name
+
+    try:
         _write(os.path.join(tmp, "question.txt"), question + "\n")
         _write(os.path.join(tmp, "sparql.rq"), sparql + "\n")
 
+        logger.info("GraphDB repo URL: %s/repositories/%s", config.GRAPHDB_URL, config.GRAPHDB_REPO)
         results = _run_sparql(sparql)
         _write(os.path.join(tmp, "results.json"), json.dumps(results, indent=2))
-        row_count = len(results.get("results", {}).get("bindings", []))
+        bindings = results.get("results", {}).get("bindings", [])
+        row_count = len(bindings)
+        sample = bindings[:5]
+        logger.info("row_count=%s", row_count)
 
         answer_prompt = f"""Answer the user question using ONLY the SPARQL results below.
 If the results are empty, say so plainly instead of inventing facts.
@@ -141,10 +168,14 @@ Final answer:"""
 
         final_answer = _ask_openrouter(api_key, answer_prompt)
         _write(os.path.join(tmp, "answer.txt"), final_answer + "\n")
+        logger.info("answer length=%s", len(final_answer))
+    finally:
+        if tmp_cm is not None:
+            tmp_cm.cleanup()
 
     return ChatResponse(
         answer=final_answer,
-        sources=[{"sparql": sparql, "row_count": row_count}],
+        sources=[{"sparql": sparql, "row_count": row_count, "sample": sample}],
         meta={
             "engine": "baseline",
             "sparql": sparql,

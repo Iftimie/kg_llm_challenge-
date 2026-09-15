@@ -3,6 +3,7 @@
 Exposes only a health probe and the chat endpoint; the UI is a later milestone.
 Business logic lives in the answerers selected via :func:`factory.get_answerer`.
 """
+import logging
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
@@ -12,6 +13,19 @@ from fastapi.staticfiles import StaticFiles
 from app import config
 from app.backend.factory import get_answerer
 from app.backend.schemas import ChatRequest
+
+# Configure logging before defining routes so all module loggers inherit it.
+config.LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
+logging.basicConfig(
+    level=getattr(logging, config.LOG_LEVEL.upper(), logging.INFO),
+    format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+    handlers=[
+        logging.FileHandler(config.LOG_FILE, encoding="utf-8"),
+        logging.StreamHandler(),
+    ],
+    force=True,
+)
+logging.getLogger(__name__).info("logging to %s level=%s", config.LOG_FILE, config.LOG_LEVEL)
 
 app = FastAPI(
     title="Sales Intelligence API",
