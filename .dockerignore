@@ -14,3 +14,4 @@ out.jsonl
 err.txt
 *.log
 .DS_Store
+data/

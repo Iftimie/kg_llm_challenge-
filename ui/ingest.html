@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ingest CRM Data</title>
+<style>
+  :root { color-scheme: light dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.45;
+    background: #f7f7f8;
+    color: #1f2328;
+    min-height: 100vh;
+  }
+  header {
+    padding: 12px 16px;
+    border-bottom: 1px solid #d9dce1;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  header h1 { margin: 0; font-size: 18px; }
+  header a { color: #1d4ed8; font-size: 14px; }
+  main { max-width: 720px; margin: 24px auto; padding: 0 16px; }
+  form {
+    background: #fff;
+    border: 1px solid #d9dce1;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  form h2 { margin: 0 0 12px; font-size: 16px; }
+  .field { margin-bottom: 12px; }
+  .field label { display: block; font-weight: 600; margin-bottom: 4px; }
+  .field input[type="file"],
+  .field input[type="text"] { font: inherit; width: 100%; }
+  .field .hint { font-weight: normal; color: #57606a; font-size: 13px; }
+  button[type="submit"] {
+    padding: 8px 16px;
+    border: 1px solid #1d4ed8;
+    border-radius: 6px;
+    background: #1d4ed8;
+    color: #fff;
+    font: inherit;
+    cursor: pointer;
+  }
+  button[type="submit"]:disabled { opacity: 0.6; cursor: default; }
+  #result {
+    background: #fff;
+    border: 1px solid #d9dce1;
+    border-radius: 8px;
+    padding: 16px;
+    font-size: 14px;
+  }
+  #result h2 { margin: 0 0 8px; font-size: 15px; }
+  .status-ok { color: #047857; }
+  .status-bad { color: #b91c1c; }
+  ul { margin: 4px 0 12px; padding-left: 20px; }
+  li { margin: 2px 0; word-break: break-word; }
+  .step { margin: 4px 0; }
+  .step-name { font-weight: 600; }
+  .step-error {
+    color: #7f1d1d;
+    background: #fde8e8;
+    border: 1px solid #f5b5b5;
+    border-radius: 6px;
+    padding: 4px 8px;
+    margin: 2px 0;
+  }
+  .error-line {
+    color: #7f1d1d;
+    background: #fde8e8;
+    border: 1px solid #f5b5b5;
+    border-radius: 6px;
+    padding: 6px 8px;
+    margin: 4px 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  pre {
+    margin: 8px 0 0;
+    padding: 8px;
+    background: #eef1f4;
+    border: 1px solid #d9dce1;
+    border-radius: 6px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Ingest CRM Data</h1>
+  <a href="/index.html">Back to chat</a>
+</header>
+
+<main>
+  <form id="ingest-form">
+    <h2>CSV data</h2>
+    <div class="field">
+      <label for="files">CRM tables (<span class="hint">.csv only</span>)</label>
+      <input id="files" name="files" type="file" accept=".csv" multiple>
+      <div class="hint">Upload accounts.csv, deals.csv, contacts.csv and activities.csv.</div>
+      <div class="hint">Rows are ADDED to the existing tables. A row whose primary key already exists is rejected (duplicate keys, no overwrite).</div>
+      <div class="hint">Transcripts are added via the transcript form below.</div>
+    </div>
+    <button id="submit" type="submit">Submit CSVs</button>
+  </form>
+
+  <form id="transcript-form">
+    <h2>Transcript rows (CSV)</h2>
+    <div class="field">
+      <label for="t_file">Transcripts .csv (transcripts.csv format)</label>
+      <div class="hint">transcript_id,deal_id,account_id,contact_ids,activity_date,channel,transcript</div>
+      <input id="t_file" name="file" type="file" accept=".csv" required>
+    </div>
+    <button id="submit-transcript" type="submit">Add transcript rows</button>
+  </form>
+
+  <div id="result" hidden></div>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  var form = document.getElementById("ingest-form");
+  var fileInput = document.getElementById("files");
+  var submitBtn = document.getElementById("submit");
+
+  var transcriptForm = document.getElementById("transcript-form");
+  var transcriptBtn = document.getElementById("submit-transcript");
+
+  var result = document.getElementById("result");
+
+  function el(tag, className, text) {
+    var node = document.createElement(tag);
+    if (className) { node.className = className; }
+    if (text !== undefined && text !== null) { node.textContent = text; }
+    return node;
+  }
+
+  function clear(node) {
+    while (node.firstChild) { node.removeChild(node.firstChild); }
+  }
+
+  function stepError(value) {
+    return value && typeof value === "object" && !Array.isArray(value) && "error" in value;
+  }
+
+  function stepSummary(name, value) {
+    var div = el("div", "step");
+    if (stepError(value)) {
+      div.appendChild(el("span", "step-name", name + ": "));
+      div.appendChild(el("span", "step-error", "error \u2014 " + value.error));
+    } else if (name === "build" && Array.isArray(value) && value.length) {
+      div.appendChild(el("span", "step-name", name + ": "));
+      div.appendChild(document.createTextNode(String(value[0]) + " triples"));
+    } else if (name === "load" && Array.isArray(value) && value.length) {
+      div.appendChild(el("span", "step-name", name + ": "));
+      div.appendChild(document.createTextNode("repo " + value[0] + ", " + value[1] + " triples"));
+    } else if (name === "index" && typeof value === "number") {
+      div.appendChild(el("span", "step-name", name + ": "));
+      div.appendChild(document.createTextNode(String(value) + " transcripts indexed"));
+    } else if (name === "extract" && value && typeof value === "object" && Array.isArray(value.ok)) {
+      div.appendChild(el("span", "step-name", name + ": "));
+      div.appendChild(document.createTextNode(value.ok.length + " ok, " + (value.failed || []).length + " failed"));
+    } else {
+      div.appendChild(el("span", "step-name", name + ": "));
+      div.appendChild(document.createTextNode(JSON.stringify(value)));
+    }
+    return div;
+  }
+
+  function render(data) {
+    clear(result);
+    result.hidden = false;
+
+    var status = el("h2", data.status === "ok" ? "status-ok" : "status-bad", "Status: " + data.status);
+    result.appendChild(status);
+
+    if (data.data_dir) {
+      result.appendChild(el("div", null, "Data dir: " + data.data_dir));
+    }
+
+    result.appendChild(el("div", "step-name", "Staged CSVs:"));
+    var csvList = el("ul");
+    (data.staged_csvs || []).forEach(function (name) { csvList.appendChild(el("li", null, name)); });
+    if (!(data.staged_csvs || []).length) { csvList.appendChild(el("li", null, "(none)")); }
+    result.appendChild(csvList);
+
+    result.appendChild(el("div", "step-name", "Staged transcripts:"));
+    var txList = el("ul");
+    (data.staged_transcripts || []).forEach(function (name) { txList.appendChild(el("li", null, name)); });
+    if (!(data.staged_transcripts || []).length) { txList.appendChild(el("li", null, "(none)")); }
+    result.appendChild(txList);
+
+    result.appendChild(el("div", "step-name", "Steps:"));
+    var steps = data.steps || {};
+    Object.keys(steps).forEach(function (name) { result.appendChild(stepSummary(name, steps[name])); });
+
+    if (typeof data.triples === "number") {
+      result.appendChild(el("div", null, "Triples: " + data.triples));
+    }
+    if (typeof data.transcripts_indexed === "number") {
+      result.appendChild(el("div", null, "Transcripts indexed: " + data.transcripts_indexed));
+    }
+
+    (data.errors || []).forEach(function (err) {
+      result.appendChild(el("div", "error-line", "error: " + err));
+    });
+
+    result.appendChild(el("pre", null, JSON.stringify(data, null, 2)));
+  }
+
+  function showError(status, message) {
+    clear(result);
+    result.hidden = false;
+    result.appendChild(el("h2", "status-bad", "Status: " + status));
+    result.appendChild(el("div", "error-line", String(message)));
+  }
+
+  function submitRequest(url, fd, button, busyText, idleText) {
+    button.disabled = true;
+    button.textContent = busyText;
+
+    fetch(url, { method: "POST", body: fd })
+      .then(function (res) {
+        return res.json().catch(function () { return null; }).then(function (body) {
+          return { ok: res.ok, status: res.status, body: body };
+        });
+      })
+      .then(function (res) {
+        if (res.ok && res.body) {
+          render(res.body);
+        } else if (res.body && res.body.detail) {
+          showError(res.status, res.body.detail);
+        } else {
+          showError(res.status, "Request failed (" + res.status + ")");
+        }
+      })
+      .catch(function (err) {
+        showError("network error", (err && err.message) ? err.message : err);
+      })
+      .then(function () {
+        button.disabled = false;
+        button.textContent = idleText;
+      });
+  }
+
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    if (submitBtn.disabled) { return; }
+
+    var picked = fileInput.files;
+    if (!picked || !picked.length) {
+      showError("no files selected", "Choose at least one .csv file.");
+      return;
+    }
+
+    var fd = new FormData();
+    for (var i = 0; i < picked.length; i++) {
+      fd.append("files", picked[i], picked[i].name);
+    }
+
+    submitRequest("/api/ingest", fd, submitBtn, "Ingesting\u2026", "Submit CSVs");
+  });
+
+  transcriptForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    if (transcriptBtn.disabled) { return; }
+
+    var filePicked = document.getElementById("t_file").files;
+    if (!filePicked || !filePicked.length) {
+      showError("no file selected", "Choose a transcripts .csv file.");
+      return;
+    }
+
+    var fd = new FormData();
+    fd.append("file", filePicked[0], filePicked[0].name);
+
+    submitRequest("/api/ingest/transcript", fd, transcriptBtn, "Adding\u2026", "Add transcript rows");
+  });
+})();
+</script>
+</body>
+</html>

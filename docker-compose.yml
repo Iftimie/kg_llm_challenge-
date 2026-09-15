@@ -18,9 +18,13 @@ services:
       ANSWERER: ${ANSWERER:-agent}
       GRAPHDB_URL: http://graphdb:7200
       GRAPHDB_REPO: ${GRAPHDB_REPO:-sales-kg}
+      DATA_DIR: /app/data
     volumes:
       # Persist logs on the host; chroma_db is copied into the image (~0.5 MB).
       - ./logs:/app/logs
+      # Writable, self-contained data dir (CSVs + extracted facts) mounted clean
+      # from the host so the image never ships stale extracted demo facts.
+      - ./data/ingest:/app/data
     depends_on:
       - graphdb
     restart: unless-stopped

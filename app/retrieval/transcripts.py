@@ -15,7 +15,7 @@ _FIELDS = (
 
 
 def _rows():
-    path = config.CRM_DIR / _CSV_NAME
+    path = config.DATA_DIR / _CSV_NAME
     with open(path, newline="", encoding="utf-8") as f:
         return list(csv.DictReader(f))
 

@@ -3,6 +3,8 @@
 No GraphDB or embedding service is contacted. The optional semantic_search
 smoke test runs only when ``chroma_db/`` exists and is skipped otherwise.
 """
+import shutil
+
 import pytest
 
 from app import config
@@ -42,7 +44,13 @@ def test_query_kg_delete_raises_valueerror(monkeypatch):
 
 
 @pytest.mark.skipif(not config.CHROMA_DIR.exists(), reason="chroma_db not present")
-def test_semantic_search_smoke():
+def test_semantic_search_smoke(tmp_path, monkeypatch):
+    # Chroma writes to the persistent store merely by opening it, so copy the
+    # repo collection to a temp dir to keep the tracked chroma_db/ untouched.
+    chroma_copy = tmp_path / "chroma"
+    shutil.copytree(config.CHROMA_DIR, chroma_copy)
+    monkeypatch.setattr(config, "CHROMA_DIR", chroma_copy)
+
     from app.retrieval.vector import semantic_search
 
     hits = semantic_search("SSO data residency", 1)

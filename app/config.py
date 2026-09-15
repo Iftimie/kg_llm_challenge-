@@ -15,6 +15,10 @@ GRAPHDB_REPO = os.environ.get("GRAPHDB_REPO", "sales-kg")
 
 OPENROUTER_URL = os.environ.get("OPENROUTER_URL", "https://openrouter.ai/api/v1/chat/completions")
 OPENROUTER_MODEL = os.environ.get("OPENROUTER_MODEL", "meta/muse-spark-1.3-contributor")
+OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
+
+# Transcript extraction reuses the agent model unless overridden.
+EXTRACT_MODEL = os.environ.get("EXTRACT_MODEL", OPENROUTER_MODEL)
 
 # PydanticAI answerer (OpenAI-compatible endpoint, default OpenRouter).
 PYDANTIC_MODEL = os.environ.get("PYDANTIC_MODEL", OPENROUTER_MODEL)
@@ -37,8 +41,9 @@ SHAPES_PATH = REPO_ROOT / "shapes.ttl"
 MAPPINGS_PATH = REPO_ROOT / "mappings.ttl"
 MORPH_INI = REPO_ROOT / "morph.ini"
 CRM_DIR = REPO_ROOT / "mock_crm_dataset"
+DATA_DIR = Path(os.environ.get("DATA_DIR", str(REPO_ROOT / "mock_crm_dataset")))
 KG_NT = REPO_ROOT / "kg.nt"
-EXTRACTED_DIR = REPO_ROOT / "extracted"
+EXTRACTED_DIR = DATA_DIR / "extracted"
 CHROMA_DIR = REPO_ROOT / "chroma_db"
 QA_DIR = REPO_ROOT / "qa"
 COMPETENCY_QUERIES = REPO_ROOT / "competency_queries.txt"

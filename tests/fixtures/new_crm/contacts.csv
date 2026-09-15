@@ -1,0 +1,3 @@
+contact_id,account_id,first_name,last_name,job_title,department,seniority,email,phone,is_decision_maker
+C101,A101,Ingrid,Solberg,Chief Data Officer,Data & Analytics,Executive,ingrid.solberg@nordicanalytics.no,+47 900 00 001,true
+C102,A101,Olav,Hansen,Head of Platform,Engineering,Senior,olav.hansen@nordicanalytics.no,+47 900 00 002,false

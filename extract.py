@@ -1,13 +1,19 @@
-"""Extract KG triples from transcripts with local Ollama model. Run: python extract.py [limit]"""
+"""Extract KG triples from transcripts with the configured OpenRouter model.
+
+Uses the same OpenRouter model as the agents (``config.EXTRACT_MODEL``, which
+defaults to ``config.OPENROUTER_MODEL``). Run: python extract.py [limit]
+"""
 import csv
 import os
+import pathlib
 import sys
 
 import requests
 from rdflib import Graph, Namespace, URIRef
 
-OLLAMA_URL = "http://localhost:11434/api/generate"
-MODEL = "qwen3.5:35b"
+from app import config
+
+REPO_ROOT = pathlib.Path(__file__).parent
 
 CRM = Namespace("https://example.org/sales-kg/")
 RES = Namespace("https://example.org/sales-kg/resource/")
@@ -39,22 +45,63 @@ def clean(turtle_text: str) -> str:
     return "\n".join(lines).strip()
 
 
-def main() -> None:
-    limit = int(sys.argv[1]) if len(sys.argv) > 1 else None
-    os.makedirs("extracted", exist_ok=True)
-    os.makedirs(os.path.join("extracted", "failed"), exist_ok=True)
+def _generate(prompt: str) -> str:
+    """Send one extraction prompt to the configured OpenRouter model."""
+    key = config.OPENROUTER_API_KEY
+    if not key:
+        raise RuntimeError("OPENROUTER_API_KEY is not set")
 
-    with open("TranscriptRDFTurtleExtractionPrompt.md", encoding="utf-8") as f:
+    r = requests.post(
+        config.OPENROUTER_URL,
+        headers={"Authorization": f"Bearer {key}"},
+        json={
+            "model": config.EXTRACT_MODEL,
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": 0,
+        },
+        timeout=600,
+    )
+    try:
+        r.raise_for_status()
+    except requests.HTTPError as exc:
+        raise RuntimeError(f"OpenRouter error {r.status_code}: {r.text[:1000]}") from exc
+    return r.json()["choices"][0]["message"]["content"]
+
+
+def extract(data_dir=None, limit=None, ids=None) -> dict:
+    """Extract KG triples from transcripts with the configured OpenRouter model.
+
+    Uses the same model as the agents. ``ids``, when a non-empty list, restricts
+    processing to those ``transcript_id`` values while preserving the CSV row
+    order; ``limit`` is applied after that filtering. Returns
+    ``{ok: [ids], failed: [ids]}``.
+    """
+    if data_dir is None:
+        data_dir = pathlib.Path(os.environ.get("DATA_DIR", str(REPO_ROOT / "mock_crm_dataset")))
+    else:
+        data_dir = pathlib.Path(data_dir)
+
+    extracted_dir = data_dir / "extracted"
+    os.makedirs(extracted_dir, exist_ok=True)
+    os.makedirs(extracted_dir / "failed", exist_ok=True)
+
+    with open(REPO_ROOT / "TranscriptRDFTurtleExtractionPrompt.md", encoding="utf-8") as f:
         template = f.read()
-    with open("sales_kg_ontology_v1.ttl", encoding="utf-8") as f:
+    with open(REPO_ROOT / "sales_kg_ontology_v1.ttl", encoding="utf-8") as f:
         ontology = f.read()
     kg = Graph()
-    kg.parse("kg.nt")  # run build.py first
+    kg.parse(str(REPO_ROOT / "kg.nt"))  # run build.py first
 
-    with open(os.path.join("mock_crm_dataset", "transcripts.csv"), newline="", encoding="utf-8") as f:
+    with open(data_dir / "transcripts.csv", newline="", encoding="utf-8") as f:
         rows = list(csv.DictReader(f))
+    if ids:
+        wanted = set(ids)
+        rows = [row for row in rows if row["transcript_id"] in wanted]
     if limit:
         rows = rows[:limit]
+
+    ok = []
+    failed = []
 
     for row in rows:
         tid = row["transcript_id"]
@@ -69,29 +116,34 @@ def main() -> None:
         prompt = prompt.replace("{{TRANSCRIPT}}", row["transcript"])
 
         try:
-            r = requests.post(OLLAMA_URL,
-                              json={"model": MODEL, "prompt": prompt, "stream": False,
-                                    "options": {"temperature": 0, "num_ctx": 32768}},
-                              timeout=600)
-            r.raise_for_status()
-            raw = clean(r.json()["response"])
+            raw = clean(_generate(prompt))
         except Exception as e:  # noqa: BLE001 - sandbox: save and continue
-            with open(os.path.join("extracted", "failed", f"{tid}.txt"), "w", encoding="utf-8") as f:
+            with open(extracted_dir / "failed" / f"{tid}.txt", "w", encoding="utf-8") as f:
                 f.write(f"GENERATION ERROR: {e}\n")
             print(tid, "generation failed:", e)
+            failed.append(tid)
             continue
 
         try:
             Graph().parse(data=raw, format="turtle")
         except Exception as e:  # noqa: BLE001 - sandbox: save and continue
-            with open(os.path.join("extracted", "failed", f"{tid}.txt"), "w", encoding="utf-8") as f:
+            with open(extracted_dir / "failed" / f"{tid}.txt", "w", encoding="utf-8") as f:
                 f.write(raw + f"\n\nPARSE ERROR: {e}\n")
             print(tid, "parse failed, saved to extracted/failed/")
+            failed.append(tid)
             continue
 
-        with open(os.path.join("extracted", f"{tid}.ttl"), "w", encoding="utf-8") as f:
+        with open(extracted_dir / f"{tid}.ttl", "w", encoding="utf-8") as f:
             f.write(raw + "\n")
-        print(tid, "ok ->", os.path.join("extracted", f"{tid}.ttl"))
+        print(tid, "ok ->", extracted_dir / f"{tid}.ttl")
+        ok.append(tid)
+
+    return {"ok": ok, "failed": failed}
+
+
+def main() -> None:
+    limit = int(sys.argv[1]) if len(sys.argv) > 1 else None
+    extract(limit=limit)
 
 
 if __name__ == "__main__":

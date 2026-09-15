@@ -14,11 +14,16 @@ def tokenize(text: str) -> list:
     return re.findall(r"\w+", text.lower())
 
 
+def reset_cache():
+    global _cache
+    _cache = None
+
+
 def _load():
     """Return ``(rows, bm25)`` from the CSV, memoized on first use."""
     global _cache
     if _cache is None:
-        path = config.CRM_DIR / _CSV_NAME
+        path = config.DATA_DIR / _CSV_NAME
         with open(path, newline="", encoding="utf-8") as f:
             rows = list(csv.DictReader(f))
         corpus = [tokenize(r.get("transcript", "")) for r in rows]

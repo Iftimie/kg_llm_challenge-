@@ -12,6 +12,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app import config
 from app.backend.factory import get_answerer
+from app.backend.ingest import router as ingest_router
 from app.backend.schemas import ChatRequest
 
 # Configure logging before defining routes so all module loggers inherit it.
@@ -42,6 +43,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Ingestion router is included before the static mount so /api/ingest wins over
+# the catch-all UI mount.
+app.include_router(ingest_router)
 
 
 @app.get("/health")
