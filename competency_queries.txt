@@ -179,3 +179,23 @@ When generating new queries:
 * use only classes and properties defined in the ontology
 * do not invent predicates
 * return valid SPARQL only
+
+
+What indicates that the customer is ready to move forward with deal D007, and what statements support that?
+PREFIX crm: <https://example.org/sales-kg/>
+PREFIX res: <https://example.org/sales-kg/resource/>
+
+SELECT ?signal ?name ?speaker ?evidenceText
+WHERE {
+    res:Deal_D007 crm:hasBuyingSignal ?signal .
+
+    OPTIONAL {
+        ?signal crm:name ?name .
+    }
+
+    OPTIONAL {
+        ?signal crm:supportedBy ?evidence .
+        ?evidence crm:speakerName ?speaker ;
+                  crm:evidenceText ?evidenceText .
+    }
+}

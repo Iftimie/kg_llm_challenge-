@@ -1,4 +1,14 @@
-The open deals that meet these criteria are:
+For deal D001:
 
-*   TechNova Analytics Pilot
-*   Acme Enterprise Expansion
+* **Current deal stage:** Negotiation
+* **Current deal value:** 120000
+
+**Blockers identified:**
+
+1. **Blocker:** Pricing for three factories
+   * **Speaker:** Anna Keller
+   * **Evidence:** "procurement expects a better price than what is currently in the proposal"
+
+2. **Blocker:** SSO and data residency confirmation
+   * **Speaker:** Markus Vogel
+   * **Evidence:** "I also still need confirmation regarding SSO and data residency"

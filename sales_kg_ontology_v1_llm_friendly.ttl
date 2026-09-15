@@ -1,0 +1,826 @@
+@prefix crm:  <https://example.org/sales-kg/> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+crm:SalesKnowledgeGraphOntology
+    a owl:Ontology ;
+    rdfs:label "Sales CRM Knowledge Graph Ontology" ;
+    rdfs:comment "V1 ontology for CRM data, sales transcripts, deal intelligence and LLM-assisted recommendations." .
+
+#################################################################
+# Core CRM classes
+#################################################################
+
+crm:Account a owl:Class .
+crm:Industry a owl:Class .
+crm:Person a owl:Class .
+
+crm:CustomerContact
+    a owl:Class ;
+    rdfs:subClassOf crm:Person .
+
+crm:SalesRep
+    a owl:Class ;
+    rdfs:subClassOf crm:Person .
+
+crm:Deal a owl:Class .
+crm:Product a owl:Class .
+
+crm:Interaction a owl:Class .
+
+crm:Call
+    a owl:Class ;
+    rdfs:subClassOf crm:Interaction .
+
+crm:Meeting
+    a owl:Class ;
+    rdfs:subClassOf crm:Interaction .
+
+crm:Email
+    a owl:Class ;
+    rdfs:subClassOf crm:Interaction .
+
+crm:Transcript a owl:Class .
+
+#################################################################
+# Sales intelligence classes
+#################################################################
+
+crm:CustomerNeed a owl:Class .
+
+crm:BusinessGoal
+    a owl:Class ;
+    rdfs:subClassOf crm:CustomerNeed .
+
+crm:PainPoint
+    a owl:Class ;
+    rdfs:subClassOf crm:CustomerNeed .
+
+crm:Objection a owl:Class .
+crm:Blocker a owl:Class .
+crm:Risk a owl:Class .
+crm:DecisionCriterion a owl:Class .
+crm:BuyingSignal a owl:Class .
+crm:Competitor a owl:Class .
+crm:SalesAction a owl:Class .
+
+crm:ExpansionOpportunity a owl:Class .
+
+crm:UpsellOpportunity
+    a owl:Class ;
+    rdfs:subClassOf crm:ExpansionOpportunity .
+
+crm:CrossSellOpportunity
+    a owl:Class ;
+    rdfs:subClassOf crm:ExpansionOpportunity .
+
+crm:ScopeExpansion
+    a owl:Class ;
+    rdfs:subClassOf crm:ExpansionOpportunity .
+
+crm:ContractExpansion
+    a owl:Class ;
+    rdfs:subClassOf crm:ExpansionOpportunity .
+
+crm:DealOutcome a owl:Class .
+crm:Evidence a owl:Class .
+
+#################################################################
+# Core CRM object properties
+#################################################################
+
+crm:forAccount
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range crm:Account .
+
+crm:involvesProduct
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range crm:Product .
+
+crm:ownedBy
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range crm:SalesRep .
+
+crm:worksFor
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Person ;
+    rdfs:range crm:Account .
+
+crm:decisionMakerFor
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Person ;
+    rdfs:range crm:Deal .
+
+crm:influencerFor
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Person ;
+    rdfs:range crm:Deal .
+
+crm:championFor
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Person ;
+    rdfs:range crm:Deal .
+
+crm:aboutDeal
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Interaction ;
+    rdfs:range crm:Deal .
+
+crm:hasParticipant
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Interaction ;
+    rdfs:range crm:Person .
+
+crm:hasTranscript
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Interaction ;
+    rdfs:range crm:Transcript .
+
+#################################################################
+# Sales intelligence object properties
+#################################################################
+
+crm:hasNeed
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range crm:CustomerNeed .
+
+crm:hasObjection
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range crm:Objection .
+
+crm:hasBlocker
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range crm:Blocker .
+
+crm:hasRisk
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range crm:Risk .
+
+crm:hasDecisionCriterion
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range crm:DecisionCriterion .
+
+crm:hasBuyingSignal
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range crm:BuyingSignal .
+
+crm:hasCompetitor
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range crm:Competitor .
+
+crm:raisedBy
+    a owl:ObjectProperty ;
+    rdfs:domain owl:Thing ;
+    rdfs:range crm:Person .
+
+crm:hasAction
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range crm:SalesAction .
+
+crm:addresses
+    a owl:ObjectProperty ;
+    rdfs:domain crm:SalesAction ;
+    rdfs:range owl:Thing .
+
+crm:hasExpansionOpportunity
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range crm:ExpansionOpportunity .
+
+crm:expansionInvolvesProduct
+    a owl:ObjectProperty ;
+    rdfs:domain crm:ExpansionOpportunity ;
+    rdfs:range crm:Product .
+
+crm:supportedBy
+    a owl:ObjectProperty ;
+    rdfs:domain owl:Thing ;
+    rdfs:range crm:Evidence .
+
+crm:hasOutcome
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range crm:DealOutcome .
+
+crm:contributedTo
+    a owl:ObjectProperty ;
+    rdfs:domain crm:SalesAction ;
+    rdfs:range crm:DealOutcome .
+
+#################################################################
+# Datatype properties
+#################################################################
+
+crm:identifier
+    a owl:DatatypeProperty ;
+    rdfs:range xsd:string .
+
+crm:name
+    a owl:DatatypeProperty ;
+    rdfs:range xsd:string .
+
+crm:dealStage
+    a owl:DatatypeProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range xsd:string .
+
+crm:dealValue
+    a owl:DatatypeProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range xsd:decimal .
+
+crm:winProbability
+    a owl:DatatypeProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range xsd:decimal .
+
+crm:expectedCloseDate
+    a owl:DatatypeProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range xsd:date .
+
+crm:lossReason
+    a owl:DatatypeProperty ;
+    rdfs:domain crm:Deal ;
+    rdfs:range xsd:string .
+
+crm:interactionDate
+    a owl:DatatypeProperty ;
+    rdfs:domain crm:Interaction ;
+    rdfs:range xsd:dateTime .
+
+crm:transcriptText
+    a owl:DatatypeProperty ;
+    rdfs:domain crm:Transcript ;
+    rdfs:range xsd:string .
+
+#################################################################
+# Evidence / provenance properties
+#################################################################
+
+crm:evidenceText
+    a owl:DatatypeProperty ;
+    rdfs:domain crm:Evidence ;
+    rdfs:range xsd:string .
+
+crm:speakerName
+    a owl:DatatypeProperty ;
+    rdfs:domain crm:Evidence ;
+    rdfs:range xsd:string .
+
+crm:evidenceTimestamp
+    a owl:DatatypeProperty ;
+    rdfs:domain crm:Evidence ;
+    rdfs:range xsd:dateTime .
+
+crm:extractionConfidence
+    a owl:DatatypeProperty ;
+    rdfs:domain crm:Evidence ;
+    rdfs:range xsd:decimal .
+
+crm:sourceTranscript
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Evidence ;
+    rdfs:range crm:Transcript .
+
+crm:sourceInteraction
+    a owl:ObjectProperty ;
+    rdfs:domain crm:Evidence ;
+    rdfs:range crm:Interaction .
+
+#################################################################
+# Simple controlled deal outcomes
+#################################################################
+
+crm:Won
+    a crm:DealOutcome ;
+    rdfs:label "Won" .
+
+crm:Lost
+    a crm:DealOutcome ;
+    rdfs:label "Lost" .
+
+crm:Open
+    a crm:DealOutcome ;
+    rdfs:label "Open" .
+#################################################################
+# LLM / natural-language grounding annotations
+#
+# These annotations do not change the graph model. They explain
+# how ontology terms correspond to natural-language sales questions
+# and how they should normally be used when generating SPARQL.
+#################################################################
+
+crm:queryHint
+    a owl:AnnotationProperty ;
+    rdfs:label "query hint" ;
+    rdfs:comment "Guidance for natural-language-to-SPARQL systems about when and how an ontology term should be used." .
+
+crm:naturalLanguageExample
+    a owl:AnnotationProperty ;
+    rdfs:label "natural language example" ;
+    rdfs:comment "Example wording a user might use when referring to this ontology concept or property." .
+
+#################################################################
+# Core classes
+#################################################################
+
+crm:Account
+    rdfs:label "Customer account" ;
+    skos:altLabel "account", "customer", "client", "company", "customer organization" ;
+    skos:definition "An organization or customer represented in the CRM and associated with contacts, deals, and interactions." ;
+    crm:naturalLanguageExample "Which customer is this deal for?" .
+
+crm:Industry
+    rdfs:label "Industry" ;
+    skos:altLabel "sector", "business sector", "vertical", "market sector" ;
+    skos:definition "The industry or business sector in which an account operates." .
+
+crm:Person
+    rdfs:label "Person" ;
+    skos:altLabel "person", "stakeholder", "individual", "participant" ;
+    skos:definition "A human participant in the sales process, including customer contacts and sales representatives." .
+
+crm:CustomerContact
+    rdfs:label "Customer contact" ;
+    skos:altLabel "contact", "customer stakeholder", "buyer contact", "client contact" ;
+    skos:definition "A person who works for a customer account and may participate in, influence, champion, or decide a deal." .
+
+crm:SalesRep
+    rdfs:label "Sales representative" ;
+    skos:altLabel "sales rep", "seller", "account executive", "AE", "salesperson", "deal owner" ;
+    skos:definition "A salesperson responsible for managing or owning customer relationships and sales deals." .
+
+crm:Deal
+    rdfs:label "Sales deal" ;
+    skos:altLabel "deal", "opportunity", "sales opportunity", "commercial opportunity" ;
+    skos:definition "A sales opportunity with an account for one or more products, with a value, stage, expected close date, and outcome." ;
+    crm:naturalLanguageExample "What is happening with deal D001?" .
+
+crm:Product
+    rdfs:label "Product" ;
+    skos:altLabel "product", "solution", "offering", "module", "service" ;
+    skos:definition "A product, service, module, or commercial offering involved in a deal or expansion opportunity." .
+
+crm:Interaction
+    rdfs:label "Customer interaction" ;
+    skos:altLabel "interaction", "activity", "customer touchpoint", "sales activity", "conversation" ;
+    skos:definition "A sales-related interaction involving people and normally associated with a deal, such as a call, meeting, or email." .
+
+crm:Call
+    rdfs:label "Call" ;
+    skos:altLabel "phone call", "sales call", "customer call" ;
+    skos:definition "A telephone or voice interaction with a customer or stakeholder." .
+
+crm:Meeting
+    rdfs:label "Meeting" ;
+    skos:altLabel "meeting", "workshop", "review", "demo", "customer meeting" ;
+    skos:definition "A scheduled interaction involving customer or sales participants." .
+
+crm:Email
+    rdfs:label "Email" ;
+    skos:altLabel "email", "email message", "mail" ;
+    skos:definition "An email interaction associated with a sales process." .
+
+crm:Transcript
+    rdfs:label "Transcript" ;
+    skos:altLabel "call transcript", "meeting transcript", "conversation transcript", "raw transcript" ;
+    skos:definition "The source transcript associated with an interaction. A transcript is a source document; extracted business facts should normally be represented as semantic entities such as Blocker, Risk, Need, or BuyingSignal and linked to Evidence." ;
+    skos:scopeNote "When a user asks for evidence supporting an extracted business fact, prefer the path fact -> supportedBy -> Evidence -> evidenceText. Do not assume that querying Transcript or transcriptText is equivalent to querying evidence." ;
+    crm:queryHint "Use Transcript when the question is about the source conversation itself. For 'evidence', 'supporting quote', 'what did they say', or justification for a semantic fact, normally traverse supportedBy to Evidence." .
+
+#################################################################
+# Sales intelligence classes
+#################################################################
+
+crm:CustomerNeed
+    rdfs:label "Customer need" ;
+    skos:altLabel "need", "requirement", "customer requirement", "business requirement", "desired capability" ;
+    skos:definition "A need, requirement, or desired capability expressed by the customer and relevant to the deal." ;
+    crm:naturalLanguageExample "What does the customer need?" .
+
+crm:BusinessGoal
+    rdfs:label "Business goal" ;
+    skos:altLabel "goal", "business objective", "strategic objective", "desired outcome", "target outcome" ;
+    skos:definition "A higher-level business objective the customer wants to achieve." .
+
+crm:PainPoint
+    rdfs:label "Pain point" ;
+    skos:altLabel "pain point", "problem", "customer problem", "business pain", "operational problem", "challenge" ;
+    skos:definition "A current problem, inefficiency, or source of difficulty motivating the customer to consider a solution." .
+
+crm:Objection
+    rdfs:label "Customer objection" ;
+    skos:altLabel "objection", "concern", "reservation", "pushback", "customer concern", "hesitation" ;
+    skos:definition "A concern, reservation, or negative reaction raised by a stakeholder during the sales process." ;
+    skos:scopeNote "An objection is something a stakeholder raises or questions. It may or may not be serious enough to stop the deal. If it prevents or materially delays progress, model it as a Blocker when supported by the evidence." ;
+    crm:naturalLanguageExample "What objections did the customer raise?" .
+
+crm:Blocker
+    rdfs:label "Deal blocker" ;
+    skos:altLabel "blocker", "obstacle", "roadblock", "blocking issue", "barrier", "showstopper", "thing preventing closure", "issue stopping the deal", "reason the deal cannot progress" ;
+    skos:definition "A problem, condition, dependency, or unresolved concern that prevents or materially delays progress or closure of a sales deal." ;
+    skos:scopeNote "Use Blocker for issues that actually impede progression of the deal, such as unresolved pricing, security approval, procurement approval, missing sponsorship, or budget constraints." ;
+    crm:queryHint "Questions using words such as 'blocking', 'stopping', 'preventing closure', 'roadblocks', 'obstacles', or 'what must be resolved before we can close' usually map to Deal -> hasBlocker -> Blocker." ;
+    crm:naturalLanguageExample "What is preventing D001 from closing?" .
+
+crm:Risk
+    rdfs:label "Deal risk" ;
+    skos:altLabel "risk", "deal risk", "threat", "risk factor", "potential problem", "possible cause of loss", "thing that could delay the deal" ;
+    skos:definition "A condition that may negatively affect a deal in the future, including delay, reduced value, or loss." ;
+    skos:scopeNote "A Risk is a potential negative condition. A Blocker is an issue already preventing or materially delaying progress." ;
+    crm:queryHint "Questions asking 'what could go wrong', 'what risks could delay or lose the deal', or 'what threatens the deal' should normally use hasRisk." .
+
+crm:DecisionCriterion
+    rdfs:label "Decision criterion" ;
+    skos:altLabel "decision criterion", "buying criterion", "approval criterion", "decision requirement", "purchase criterion", "condition for approval", "what the customer needs to approve" ;
+    skos:definition "A condition or criterion the customer uses to evaluate, approve, or reject the purchase." ;
+    crm:queryHint "Questions such as 'what does the customer need to see before approving?', 'what matters for the decision?', or 'what are the buying criteria?' normally map to hasDecisionCriterion." .
+
+crm:BuyingSignal
+    rdfs:label "Buying signal" ;
+    skos:altLabel "buying signal", "positive signal", "purchase intent", "intent to buy", "commitment signal", "readiness signal", "sign of interest", "sign the customer may proceed" ;
+    skos:definition "An observed statement or behavior indicating interest, intent, commitment, readiness to progress, or willingness to purchase or expand." ;
+    skos:scopeNote "Examples include agreeing to a next meeting, asking for a final order form, discussing rollout, requesting multi-year options, or stating readiness for legal review." ;
+    crm:queryHint "Questions asking for signs of interest, purchase intent, commitment, readiness to proceed, or signals that the customer may buy should normally use hasBuyingSignal." .
+
+crm:Competitor
+    rdfs:label "Competitor" ;
+    skos:altLabel "competitor", "competing vendor", "alternative vendor", "alternative solution", "competitive product" ;
+    skos:definition "A competing vendor, product, or alternative solution relevant to the deal." .
+
+crm:SalesAction
+    rdfs:label "Sales action" ;
+    skos:altLabel "sales action", "next step", "action", "follow-up action", "seller action", "mitigation action", "commercial action" ;
+    skos:definition "An action taken or planned by the sales team to progress the deal, address a problem, satisfy a need, or support closing." ;
+    skos:scopeNote "Examples include sending security documentation, revising pricing, running a workshop, preparing an ROI model, or scheduling procurement review." ;
+    crm:queryHint "Questions asking 'what did sales do?', 'what action was taken?', 'what next step addresses the issue?', or 'how was this blocker handled?' normally use hasAction and, when relevant, addresses." .
+
+crm:ExpansionOpportunity
+    rdfs:label "Expansion opportunity" ;
+    skos:altLabel "expansion opportunity", "growth opportunity", "deal expansion", "increase deal value", "increase sales volume", "larger rollout", "commercial expansion" ;
+    skos:definition "An opportunity to increase the value, scope, products, users, locations, or duration associated with an existing or prospective deal." ;
+    crm:queryHint "Questions about increasing deal value, expanding scope, selling more, adding products, increasing users or locations, or extending contract duration normally use hasExpansionOpportunity." .
+
+crm:UpsellOpportunity
+    rdfs:label "Upsell opportunity" ;
+    skos:altLabel "upsell", "upgrade opportunity", "higher-tier opportunity", "sell more of current offering" ;
+    skos:definition "An opportunity to increase value by selling a larger or higher-value version of an existing offering." .
+
+crm:CrossSellOpportunity
+    rdfs:label "Cross-sell opportunity" ;
+    skos:altLabel "cross-sell", "additional product opportunity", "sell another product", "adjacent product opportunity" ;
+    skos:definition "An opportunity to sell an additional product or service beyond what is already in the deal." .
+
+crm:ScopeExpansion
+    rdfs:label "Scope expansion" ;
+    skos:altLabel "scope expansion", "rollout expansion", "more users", "more locations", "more factories", "broader deployment" ;
+    skos:definition "An opportunity to increase the breadth of deployment, such as additional users, teams, locations, factories, or business units." .
+
+crm:ContractExpansion
+    rdfs:label "Contract expansion" ;
+    skos:altLabel "contract expansion", "longer contract", "multi-year commitment", "contract extension", "longer term" ;
+    skos:definition "An opportunity to increase commercial value through a longer or expanded contractual commitment." .
+
+crm:DealOutcome
+    rdfs:label "Deal outcome" ;
+    skos:altLabel "outcome", "deal result", "result", "win/loss result", "deal status outcome" ;
+    skos:definition "The final or current outcome classification of a deal, such as Won, Lost, or Open." ;
+    crm:queryHint "Questions about successful deals, won deals, lost deals, or open deals should normally use hasOutcome." .
+
+crm:Evidence
+    rdfs:label "Supporting evidence" ;
+    skos:altLabel "evidence", "transcript evidence", "supporting quote", "supporting statement", "customer quote", "proof", "source excerpt", "conversation evidence", "supporting excerpt" ;
+    skos:definition "A provenance object containing the source excerpt, speaker, timestamp, and source transcript or interaction that supports an extracted semantic fact." ;
+    skos:scopeNote "Evidence is the preferred representation for answering questions such as 'what evidence supports this blocker?', 'what did the customer say?', 'show the quote', or 'where did this fact come from?'." ;
+    crm:queryHint "For evidence supporting a Blocker, Risk, Need, BuyingSignal, DecisionCriterion, or similar extracted fact, traverse that fact via supportedBy to Evidence and retrieve evidenceText, speakerName, sourceTranscript, and optionally evidenceTimestamp." ;
+    crm:naturalLanguageExample "What transcript evidence supports this blocker?" .
+
+#################################################################
+# Core CRM object properties
+#################################################################
+
+crm:forAccount
+    rdfs:label "for account" ;
+    skos:altLabel "belongs to customer", "for customer", "account for deal", "customer account" ;
+    rdfs:comment "Links a Deal to the customer Account associated with that deal." ;
+    crm:queryHint "Use when the question asks which customer/account a deal belongs to." .
+
+crm:involvesProduct
+    rdfs:label "involves product" ;
+    skos:altLabel "includes product", "product in deal", "selling product", "deal product" ;
+    rdfs:comment "Links a Deal to a Product included in or associated with the opportunity." .
+
+crm:ownedBy
+    rdfs:label "owned by sales representative" ;
+    skos:altLabel "deal owner", "owned by", "sales owner", "assigned sales rep" ;
+    rdfs:comment "Links a Deal to the SalesRep responsible for it." .
+
+crm:worksFor
+    rdfs:label "works for account" ;
+    skos:altLabel "employed by", "belongs to account", "works at", "customer organization" ;
+    rdfs:comment "Links a Person to the Account they work for." .
+
+crm:decisionMakerFor
+    rdfs:label "decision maker for" ;
+    skos:altLabel "decision maker", "approver", "buyer", "final decision maker", "person who approves" ;
+    rdfs:comment "Links a Person to a Deal for which that person has decision-making or approval authority." ;
+    crm:queryHint "Questions asking 'who decides?', 'who approves?', 'who is the decision maker?', or 'who has final authority?' normally use Person -> decisionMakerFor -> Deal." .
+
+crm:influencerFor
+    rdfs:label "influencer for" ;
+    skos:altLabel "influencer", "influences deal", "stakeholder influence", "advisor" ;
+    rdfs:comment "Links a Person to a Deal they influence without necessarily having final approval authority." .
+
+crm:championFor
+    rdfs:label "champion for" ;
+    skos:altLabel "champion", "internal champion", "deal champion", "supporter", "internal advocate" ;
+    rdfs:comment "Links a Person to a Deal they actively support or advocate for within the customer organization." .
+
+crm:aboutDeal
+    rdfs:label "about deal" ;
+    skos:altLabel "interaction about deal", "related to deal", "activity for deal" ;
+    rdfs:comment "Links an Interaction to the Deal discussed or affected by that interaction." .
+
+crm:hasParticipant
+    rdfs:label "has participant" ;
+    skos:altLabel "participant", "attendee", "speaker", "person involved" ;
+    rdfs:comment "Links an Interaction to a participating Person." .
+
+crm:hasTranscript
+    rdfs:label "has transcript" ;
+    skos:altLabel "transcript for interaction", "conversation transcript", "meeting transcript" ;
+    rdfs:comment "Links an Interaction to its source Transcript document." ;
+    skos:scopeNote "This property links to the source transcript document. It should not replace supportedBy when the user asks for evidence supporting a semantic fact." ;
+    crm:queryHint "Use hasTranscript for questions about which transcript belongs to an interaction. For supporting evidence behind a fact, use supportedBy -> Evidence." .
+
+#################################################################
+# Sales intelligence object properties
+#################################################################
+
+crm:hasNeed
+    rdfs:label "has customer need" ;
+    skos:altLabel "needs", "requires", "has requirement", "customer wants", "customer needs" ;
+    rdfs:comment "Links a Deal to a CustomerNeed, BusinessGoal, or PainPoint relevant to the purchase." ;
+    crm:queryHint "Use for questions about customer needs, requirements, goals, desired outcomes, or pain points." .
+
+crm:hasObjection
+    rdfs:label "has objection" ;
+    skos:altLabel "has concern", "customer objected", "raised concern", "has reservation", "pushback" ;
+    rdfs:comment "Links a Deal to an Objection raised during the sales process." ;
+    crm:queryHint "Use for concerns or objections that were raised but are not necessarily blocking the deal." .
+
+crm:hasBlocker
+    rdfs:label "has blocker" ;
+    skos:altLabel "is blocked by", "has obstacle", "has roadblock", "is prevented by", "cannot progress because of" ;
+    rdfs:comment "Links a Deal to a Blocker that prevents or materially delays progress or closure." ;
+    crm:queryHint "For questions about what is blocking, stopping, delaying, or preventing a deal from closing, use Deal -> hasBlocker -> Blocker." ;
+    crm:naturalLanguageExample "What blockers are preventing D001 from closing?" .
+
+crm:hasRisk
+    rdfs:label "has risk" ;
+    skos:altLabel "is at risk because of", "has threat", "has potential problem", "could be delayed by", "could be lost because of" ;
+    rdfs:comment "Links a Deal to a Risk that may negatively affect its outcome." ;
+    crm:queryHint "Use for potential future threats, possible causes of delay, loss, or reduced deal value." .
+
+crm:hasDecisionCriterion
+    rdfs:label "has decision criterion" ;
+    skos:altLabel "has buying criterion", "requires for approval", "decision depends on", "approval depends on" ;
+    rdfs:comment "Links a Deal to a DecisionCriterion used by the customer to evaluate or approve the purchase." ;
+    crm:queryHint "Use for questions about approval conditions, buying criteria, evaluation criteria, or what must be true for the customer to approve." .
+
+crm:hasBuyingSignal
+    rdfs:label "has buying signal" ;
+    skos:altLabel "shows buying intent", "shows purchase intent", "has positive signal", "shows readiness", "shows commitment" ;
+    rdfs:comment "Links a Deal to a BuyingSignal indicating customer interest, intent, or readiness to progress." ;
+    crm:queryHint "Use for questions about buying intent, customer readiness, signs of commitment, or positive signals." .
+
+crm:hasCompetitor
+    rdfs:label "has competitor" ;
+    skos:altLabel "competes with", "alternative vendor", "competing solution", "competitor in deal" ;
+    rdfs:comment "Links a Deal to a competing vendor, product, or alternative solution." .
+
+crm:raisedBy
+    rdfs:label "raised by" ;
+    skos:altLabel "mentioned by", "stated by", "brought up by", "expressed by", "raised concern by" ;
+    rdfs:comment "Links an extracted issue such as an Objection or Blocker to the Person who raised or expressed it." ;
+    crm:queryHint "Use when the question asks who raised, mentioned, expressed, or voiced a blocker or objection." .
+
+crm:hasAction
+    rdfs:label "has sales action" ;
+    skos:altLabel "has action", "has next step", "sales did", "planned action", "follow-up action" ;
+    rdfs:comment "Links a Deal to a SalesAction taken or planned to progress the opportunity." ;
+    crm:queryHint "Use for actions, next steps, follow-ups, or things the sales team did or plans to do." .
+
+crm:addresses
+    rdfs:label "addresses issue or need" ;
+    skos:altLabel "resolves", "mitigates", "handles", "responds to", "deals with", "targets", "helps with" ;
+    rdfs:comment "Links a SalesAction to the Blocker, Objection, CustomerNeed, Risk, or other business issue that the action is intended to address." ;
+    crm:queryHint "When asking which action handled, resolved, mitigated, or responded to a blocker/objection/need, traverse SalesAction -> addresses -> issue." .
+
+crm:hasExpansionOpportunity
+    rdfs:label "has expansion opportunity" ;
+    skos:altLabel "can expand", "can increase deal value", "upsell/cross-sell opportunity", "growth opportunity", "larger rollout opportunity" ;
+    rdfs:comment "Links a Deal to an ExpansionOpportunity that could increase scope or commercial value." ;
+    crm:queryHint "Use for questions about increasing sales volume, increasing deal value, expanding rollout, upselling, cross-selling, adding users/locations/products, or extending contract duration." .
+
+crm:expansionInvolvesProduct
+    rdfs:label "expansion involves product" ;
+    skos:altLabel "additional product", "product for expansion", "cross-sell product", "upsell product" ;
+    rdfs:comment "Links an ExpansionOpportunity to a Product involved in the proposed expansion." .
+
+crm:supportedBy
+    rdfs:label "supported by evidence" ;
+    skos:altLabel "supported by", "evidenced by", "backed by", "justified by", "supported by transcript evidence", "proven by", "source evidence" ;
+    rdfs:comment "Links an extracted semantic fact, such as a Blocker, Risk, CustomerNeed, BuyingSignal, DecisionCriterion, or ExpansionOpportunity, to the Evidence that supports it." ;
+    skos:scopeNote "This is the preferred property when a user asks for evidence, supporting statements, transcript evidence, customer quotes, or why the system believes an extracted fact." ;
+    crm:queryHint "Evidence questions usually follow: semantic fact -> supportedBy -> Evidence, then retrieve evidenceText, speakerName, sourceTranscript, and optionally evidenceTimestamp." ;
+    crm:naturalLanguageExample "What evidence supports the pricing blocker?" .
+
+crm:hasOutcome
+    rdfs:label "has deal outcome" ;
+    skos:altLabel "resulted in", "deal outcome", "ended as", "was won/lost/open" ;
+    rdfs:comment "Links a Deal to its DealOutcome, such as Won, Lost, or Open." ;
+    crm:queryHint "For questions about won, lost, successful, unsuccessful, or open deals, use hasOutcome." .
+
+crm:contributedTo
+    rdfs:label "contributed to outcome" ;
+    skos:altLabel "helped cause", "contributed to result", "helped achieve", "influenced outcome" ;
+    rdfs:comment "Links a SalesAction to a DealOutcome when that action contributed to the eventual result." ;
+    skos:scopeNote "This relation expresses contribution, not strict causality." .
+
+#################################################################
+# Datatype properties
+#################################################################
+
+crm:identifier
+    rdfs:label "identifier" ;
+    skos:altLabel "ID", "record ID", "entity ID" ;
+    rdfs:comment "A source-system or stable identifier for an entity." .
+
+crm:name
+    rdfs:label "name" ;
+    skos:altLabel "label", "title", "display name" ;
+    rdfs:comment "A human-readable name or label for an entity." .
+
+crm:dealStage
+    rdfs:label "deal stage" ;
+    skos:altLabel "stage", "sales stage", "pipeline stage", "opportunity stage" ;
+    rdfs:comment "The current sales pipeline stage of a Deal." .
+
+crm:dealValue
+    rdfs:label "deal value" ;
+    skos:altLabel "value", "amount", "opportunity value", "sales value", "contract value" ;
+    rdfs:comment "The monetary value associated with a Deal." .
+
+crm:winProbability
+    rdfs:label "win probability" ;
+    skos:altLabel "probability of winning", "chance to win", "close probability" ;
+    rdfs:comment "The estimated probability that the Deal will be won." .
+
+crm:expectedCloseDate
+    rdfs:label "expected close date" ;
+    skos:altLabel "close date", "expected closing date", "target close date" ;
+    rdfs:comment "The date on which the Deal is expected to close." .
+
+crm:lossReason
+    rdfs:label "loss reason" ;
+    skos:altLabel "reason lost", "why deal was lost", "loss cause" ;
+    rdfs:comment "The recorded reason why a Deal was lost." .
+
+crm:interactionDate
+    rdfs:label "interaction date" ;
+    skos:altLabel "activity date", "meeting date", "call date", "conversation date" ;
+    rdfs:comment "The date and time of an Interaction." .
+
+crm:transcriptText
+    rdfs:label "raw transcript text" ;
+    skos:altLabel "full transcript", "raw conversation text" ;
+    rdfs:comment "The full raw text of a Transcript when that text is stored directly in the Knowledge Graph." ;
+    skos:scopeNote "This property may be unpopulated. Do not use it as a substitute for Evidence/evidenceText when answering questions about evidence supporting extracted business facts." ;
+    crm:queryHint "Use only when the user explicitly asks for the raw/full transcript and the property is populated. For supporting evidence behind an extracted fact, prefer supportedBy -> Evidence -> evidenceText." .
+
+#################################################################
+# Evidence / provenance properties
+#################################################################
+
+crm:evidenceText
+    rdfs:label "evidence text" ;
+    skos:altLabel "supporting quote", "transcript excerpt", "evidence excerpt", "supporting statement", "customer quote", "source text" ;
+    rdfs:comment "The exact or near-exact source excerpt that supports an extracted semantic fact." ;
+    crm:queryHint "Use this property when the user asks what was said, asks for supporting evidence, asks for a quote, or asks why a semantic fact was extracted." .
+
+crm:speakerName
+    rdfs:label "speaker name" ;
+    skos:altLabel "speaker", "who said it", "person speaking", "quoted person" ;
+    rdfs:comment "The name of the speaker associated with an evidence excerpt." ;
+    crm:queryHint "Use with Evidence when the question asks who said or stated the supporting evidence." .
+
+crm:evidenceTimestamp
+    rdfs:label "evidence timestamp" ;
+    skos:altLabel "timestamp", "time of evidence", "when it was said", "evidence time" ;
+    rdfs:comment "The timestamp or source interaction time associated with an Evidence item." .
+
+crm:extractionConfidence
+    rdfs:label "extraction confidence" ;
+    skos:altLabel "confidence", "model confidence", "extraction score" ;
+    rdfs:comment "A confidence score associated with an automatically extracted Evidence item or fact." .
+
+crm:sourceTranscript
+    rdfs:label "source transcript" ;
+    skos:altLabel "came from transcript", "transcript source", "source conversation" ;
+    rdfs:comment "Links Evidence to the Transcript from which the supporting excerpt was extracted." ;
+    crm:queryHint "Use to identify which transcript contains the evidence. It is normally reached from Evidence, not directly from Deal." .
+
+crm:sourceInteraction
+    rdfs:label "source interaction" ;
+    skos:altLabel "came from interaction", "source activity", "source meeting", "source call" ;
+    rdfs:comment "Links Evidence to the Interaction from which the evidence originated." .
+
+#################################################################
+# Controlled deal outcomes
+#################################################################
+
+crm:Won
+    skos:altLabel "closed won", "won deal", "successful deal", "success" ;
+    skos:definition "A DealOutcome representing a successfully closed deal." .
+
+crm:Lost
+    skos:altLabel "closed lost", "lost deal", "unsuccessful deal", "loss" ;
+    skos:definition "A DealOutcome representing a deal that was not won." .
+
+crm:Open
+    skos:altLabel "open deal", "active deal", "in progress", "ongoing opportunity" ;
+    skos:definition "A DealOutcome representing an opportunity that is still active or unresolved." .
+
+#################################################################
+# Important query-path guidance for NL -> SPARQL systems
+#################################################################
+
+crm:SalesKnowledgeGraphOntology
+    skos:scopeNote """
+Natural-language query guidance:
+
+1. 'blocker', 'obstacle', 'what is stopping the deal', 'what prevents closure'
+   -> Deal --hasBlocker--> Blocker.
+
+2. 'risk', 'what could go wrong', 'what might delay or lose the deal'
+   -> Deal --hasRisk--> Risk.
+
+3. 'objection', 'concern', 'reservation', 'pushback'
+   -> Deal --hasObjection--> Objection.
+
+4. 'customer need', 'requirement', 'goal', 'pain point'
+   -> Deal --hasNeed--> CustomerNeed.
+
+5. 'decision criterion', 'approval requirement', 'what does the buyer need to approve'
+   -> Deal --hasDecisionCriterion--> DecisionCriterion.
+
+6. 'buying signal', 'purchase intent', 'readiness', 'commitment'
+   -> Deal --hasBuyingSignal--> BuyingSignal.
+
+7. 'decision maker', 'approver', 'who decides'
+   -> Person --decisionMakerFor--> Deal.
+
+8. 'sales action', 'next step', 'what did sales do'
+   -> Deal --hasAction--> SalesAction.
+
+9. 'what action addressed/resolved/handled this blocker or objection'
+   -> SalesAction --addresses--> Blocker/Objection/Need/etc.
+
+10. 'expansion', 'increase deal value', 'increase sales volume', 'upsell', 'cross-sell',
+    'more users', 'more locations', 'larger rollout', 'longer contract'
+    -> Deal --hasExpansionOpportunity--> ExpansionOpportunity.
+
+11. 'won deals', 'successful deals', 'lost deals', 'open deals'
+    -> Deal --hasOutcome--> Won/Lost/Open.
+
+12. 'evidence', 'transcript evidence', 'supporting quote', 'what did they say',
+    'why do we believe this', 'show me the excerpt'
+    -> first identify the semantic fact, then:
+       Fact --supportedBy--> Evidence
+       Evidence --evidenceText--> literal
+       Evidence --speakerName--> literal
+       Evidence --sourceTranscript--> Transcript
+       Evidence --evidenceTimestamp--> literal (optional).
+
+Important distinction:
+Transcript is the source document.
+Evidence is the provenance object supporting an extracted semantic fact.
+For evidence questions, do not jump directly from Deal/Interaction to Transcript unless the
+user explicitly asks for the raw transcript itself.
+""" .

@@ -24,7 +24,7 @@ else:
     print("repo exists")
 
 # 2. Upload files into separate contexts
-for path, ctx in [("sales_kg_ontology_v1.ttl", "http://example.org/sales-kg/graph/ontology"),
+for path, ctx in [("sales_kg_ontology_v1_llm_friendly.ttl", "http://example.org/sales-kg/graph/ontology"),
                   ("kg.nt", "http://example.org/sales-kg/graph/crm")]:
     with open(path, "rb") as f:
         r = requests.post(f"{GRAPHDB}/repositories/{REPO}/statements",

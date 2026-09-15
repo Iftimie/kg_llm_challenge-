@@ -4,8 +4,8 @@ import os
 
 import requests
 
-OLLAMA_URL = "http://localhost:11434/api/generate"
-MODEL = "qwen3.5:9b-agent"
+OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
+MODEL = "meta/muse-spark-1.3-contributor"
 
 
 def main() -> None:
@@ -30,12 +30,16 @@ SPARQL RESULTS (JSON):
 
 Final answer:"""
 
-    r = requests.post(OLLAMA_URL,
-                      json={"model": MODEL, "prompt": prompt, "stream": False,
-                            "options": {"temperature": 0, "num_ctx": 32768}},
+    api_key = os.environ["OPENROUTER_API_KEY"]  # fails fast if missing
+    r = requests.post(OPENROUTER_URL,
+                      headers={"Authorization": f"Bearer {api_key}"},
+                      json={"model": MODEL,
+                            "messages": [{"role": "user", "content": prompt}],
+                            "temperature": 0},
                       timeout=600)
     r.raise_for_status()
-    answer = r.json()["response"].strip()
+    
+    answer = r.json()["choices"][0]["message"]["content"]
 
     with open(os.path.join("qa", "answer.txt"), "w", encoding="utf-8") as f:
         f.write(answer + "\n")

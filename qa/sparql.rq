@@ -1,20 +1,19 @@
 PREFIX crm: <https://example.org/sales-kg/>
 PREFIX res: <https://example.org/sales-kg/resource/>
 
-SELECT DISTINCT ?deal ?name
+SELECT ?dealStage ?dealValue ?blocker ?name ?speaker ?evidenceText
 WHERE {
-  ?deal a crm:Deal ;
-    crm:hasOutcome crm:Open ;
-    crm:hasBlocker ?blocker ;
-    crm:hasBuyingSignal ?signal .
+  res:Deal_D001 crm:dealStage ?dealStage ;
+                 crm:dealValue ?dealValue ;
+                 crm:hasBlocker ?blocker .
 
   OPTIONAL {
-    ?deal crm:name ?name .
+    ?blocker crm:name ?name .
   }
 
-  FILTER NOT EXISTS {
-    ?deal crm:hasAction ?action ;
-      crm:hasBlocker ?anyBlocker .
-    ?action crm:addresses ?anyBlocker .
+  OPTIONAL {
+    ?blocker crm:supportedBy ?evidence .
+    ?evidence crm:speakerName ?speaker ;
+              crm:evidenceText ?evidenceText .
   }
 }

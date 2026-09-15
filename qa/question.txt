@@ -1,1 +1,1 @@
-Which open deals have at least one blocker and at least one buying signal, but no sales action currently addressing any of their blockers?
+For deal D001, what is the current deal stage and value, and what blockers identified from the transcript could prevent it from closing? Include the supporting evidence for each blocker.

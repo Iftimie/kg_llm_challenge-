@@ -1,0 +1,25 @@
+PREFIX crm: <https://example.org/sales-kg/>
+PREFIX res: <https://example.org/sales-kg/resource/>
+
+SELECT ?blocker ?name ?speaker ?evidenceText ?transcript
+WHERE {
+    res:Deal_D001 crm:hasBlocker ?blocker .
+
+    OPTIONAL {
+        ?blocker crm:name ?name .
+    }
+
+    ?blocker crm:supportedBy ?evidence .
+
+    OPTIONAL {
+        ?evidence crm:speakerName ?speaker .
+    }
+
+    OPTIONAL {
+        ?evidence crm:evidenceText ?evidenceText .
+    }
+
+    OPTIONAL {
+        ?evidence crm:sourceTranscript ?transcript .
+    }
+}
