@@ -169,6 +169,12 @@ Return ONLY the SPARQL query, no code fences, no explanation."""
 
         answer_prompt = f"""Answer the user question using ONLY the SPARQL results below.
 If the results are empty, say so plainly instead of inventing facts.
+Style rules:
+- Lead with a short human answer (1-2 sentences a salesperson can act on).
+- Then one line: "How I checked: I ran a KG query (N rows) ..." (replace N with the row count).
+- Refer to entities as short labels in markdown links, e.g. [Deal D007](IRI), [Transcript T007](IRI). Never paste bare https://... IRIs in prose.
+- Write predicates as plain words (decision criterion, supported by, speaker), not IRIs. No IRI dumps.
+- Keep it concise and grounded, and cite quotes as "quote" — speaker, transcript.
 
 USER QUESTION:
 {question}

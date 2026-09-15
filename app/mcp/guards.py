@@ -17,15 +17,25 @@ MAX_ROWS = 100
 MAX_TOP_K = 10
 
 _COMMENT_RE = re.compile(r"#[^\n]*")
+# Prologue declarations that may legally precede the query keyword.
+_PREFIX_IRI_RE = re.compile(r"PREFIX\s+\S+\s*<[^>]*>", re.IGNORECASE)
+_PREFIX_PNAME_RE = re.compile(r"PREFIX\s+\S+:\s*\S+", re.IGNORECASE)
+_BASE_RE = re.compile(r"BASE\s+<[^>]*>", re.IGNORECASE)
 
 
 def assert_readonly(sparql) -> str:
     """Validate a SPARQL string and return its leading keyword (upper-case).
 
-    Comments and surrounding whitespace are stripped before the first keyword is
-    inspected. Raises ``ValueError`` unless that keyword is SELECT/ASK/CONSTRUCT/DESCRIBE.
+    Comments, ``PREFIX`` declarations, and ``BASE`` declarations are stripped
+    before the first keyword is inspected, so ``PREFIX crm: <...> SELECT ...``
+    is accepted. Raises ``ValueError`` unless that keyword is
+    SELECT/ASK/CONSTRUCT/DESCRIBE.
     """
-    stripped = _COMMENT_RE.sub(" ", sparql or "").strip()
+    stripped = _COMMENT_RE.sub(" ", sparql or "")
+    stripped = _PREFIX_IRI_RE.sub(" ", stripped)
+    stripped = _PREFIX_PNAME_RE.sub(" ", stripped)
+    stripped = _BASE_RE.sub(" ", stripped)
+    stripped = stripped.strip()
     keyword = stripped.split(None, 1)[0].upper() if stripped else ""
     if keyword not in READ_ONLY:
         raise ValueError(

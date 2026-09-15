@@ -25,10 +25,110 @@
   }
   header h1 { margin: 0; font-size: 18px; }
   .engine { margin-top: 2px; font-size: 12px; color: #6b7280; }
-  #chat {
+  #workspace {
     flex: 1 1 auto;
+    display: flex;
+    flex-direction: row;
+    min-height: 0;
+  }
+  #chat {
+    flex: 2 1 0;
+    min-width: 0;
     overflow-y: auto;
     padding: 16px;
+  }
+  #evidence {
+    flex: 1 1 0;
+    min-width: 280px;
+    overflow-y: auto;
+    padding: 12px 14px;
+    border-left: 1px solid #d9dce1;
+    background: #fff;
+    font-size: 13px;
+  }
+  .ev-title { font-weight: 600; font-size: 14px; }
+  .ev-hint { color: #6b7280; font-size: 12px; margin: 2px 0 8px; }
+  .ev-headline { font-weight: 600; margin-bottom: 4px; }
+  .ev-checked { color: #374151; margin-bottom: 8px; }
+  .ev-section {
+    border: 1px solid #e3e6ea;
+    border-radius: 6px;
+    padding: 4px 8px;
+    margin: 0 0 8px;
+    background: #fbfbfc;
+  }
+  .ev-section[open] { padding-bottom: 8px; }
+  .ev-summary { cursor: pointer; font-weight: 600; }
+  .ev-sub { color: #4b5563; margin: 4px 0; word-break: break-word; }
+  .ev-pre {
+    margin: 6px 0;
+    padding: 8px;
+    background: #eef1f4;
+    border: 1px solid #d9dce1;
+    border-radius: 6px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 12px;
+  }
+  .ev-empty { color: #6b7280; font-style: italic; margin: 4px 0; }
+  .ev-error {
+    margin: 4px 0;
+    padding: 6px 8px;
+    background: #fde8e8;
+    border: 1px solid #f5b5b5;
+    border-radius: 6px;
+    color: #7f1d1d;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 12px;
+  }
+  .ev-copy, .ev-preview {
+    font: inherit;
+    font-size: 12px;
+    padding: 2px 8px;
+    border: 1px solid #c7ccd3;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+  }
+  .ev-preview { margin: 0 4px 4px 0; }
+  .ev-copy:disabled, .ev-preview:disabled { opacity: 0.55; cursor: default; }
+  .ev-table { border-collapse: collapse; width: 100%; font-size: 12px; margin: 4px 0; }
+  .ev-table th, .ev-table td {
+    border: 1px solid #e3e6ea;
+    padding: 2px 6px;
+    text-align: left;
+    vertical-align: top;
+    word-break: break-word;
+  }
+  .ev-table th { background: #eef1f4; }
+  .ev-chips { margin: 4px 0; }
+  .ev-chip {
+    display: inline-block;
+    background: #eef1f4;
+    border: 1px solid #d9dce1;
+    border-radius: 10px;
+    padding: 0 8px;
+    margin: 0 4px 4px 0;
+    font-size: 12px;
+  }
+  .ev-entities { list-style: none; margin: 4px 0; padding: 0; }
+  .ev-entities li { margin: 2px 0; }
+  .ev-entities a { color: #1d4ed8; text-decoration: underline; }
+  .row.selectable { cursor: pointer; border-radius: 6px; }
+  .row.selectable:hover { background: #f0f4ff; }
+  .row.selected { background: #e8f0fe; outline: 1px solid #c3d4f7; }
+  @media (max-width: 900px) {
+    #workspace { flex-direction: column; }
+    #chat { flex: 1 1 auto; }
+    #evidence {
+      flex: 0 0 auto;
+      min-width: 0;
+      max-height: 45vh;
+      border-left: none;
+      border-top: 1px solid #d9dce1;
+    }
   }
   .row {
     margin: 0 0 12px;
@@ -48,25 +148,30 @@
     padding: 6px 8px;
   }
   .row.pending .body { color: #6b7280; font-style: italic; }
-  .evidence {
-    margin-top: 6px;
-    width: 100%;
-    font-size: 13px;
-  }
-  .evidence summary { cursor: pointer; color: #4b5563; }
-  .evidence pre {
-    margin: 6px 0 0;
-    padding: 8px;
-    background: #eef1f4;
-    border: 1px solid #d9dce1;
-    border-radius: 6px;
-    overflow-x: auto;
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
   .meta-line { margin-top: 6px; color: #6b7280; }
   .row .body a, .meta-line a { color: #1d4ed8; text-decoration: underline; }
   .meta-line a.gdb-secondary { color: #047857; }
+  .body strong { font-weight: 600; }
+  .body code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.92em;
+    background: #eef1f4;
+    border: 1px solid #d9dce1;
+    border-radius: 4px;
+    padding: 0 4px;
+  }
+  .body a.code-link {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.92em;
+    background: #eef1f4;
+    border: 1px solid #d9dce1;
+    border-radius: 4px;
+    padding: 0 4px;
+    color: #1d4ed8;
+    text-decoration: none;
+  }
+  .body a.code-link:hover { text-decoration: underline; }
+  .body .md-list { margin-left: 14px; }
   form#composer {
     display: flex;
     gap: 8px;
@@ -99,7 +204,14 @@
   <div class="engine">Retrieval engine: <span id="engine">unknown</span></div>
 </header>
 
-<main id="chat" aria-live="polite"></main>
+<div id="workspace">
+  <main id="chat" aria-live="polite"></main>
+  <aside id="evidence" aria-label="Evidence">
+    <div class="ev-title">Evidence</div>
+    <div id="evidence-hint" class="ev-hint">No answer selected yet.</div>
+    <div id="evidence-body" class="ev-body"></div>
+  </aside>
+</div>
 
 <form id="composer">
   <input id="message" type="text" placeholder="Ask a question about the sales data..." autocomplete="off">
@@ -115,44 +227,171 @@
   var input = document.getElementById("message");
   var sendBtn = document.getElementById("send");
   var engineEl = document.getElementById("engine");
+  var evidenceBody = document.getElementById("evidence-body");
+  var evidenceHint = document.getElementById("evidence-hint");
 
   // Client-side conversation history, sent with every request as `history`.
   var history = [];
 
-  var IRI_RE = /https?:\/\/[^\s<>"'`]+/;
+  // Per-answer evidence records: {answerText, sources, meta, row}.
+  var answers = [];
+  var selectedIndex = -1;
 
   function gdbBase(u) {
     return String(u || "http://localhost:7200").replace(/\/+$/, "").replace("://127.0.0.1:", "://localhost:");
   }
 
-  // Turn bare http(s) IRIs in plain text into <a> nodes without innerHTML.
-  // Links open the IRI in GraphDB using the provided GraphDB base URL.
-  function linkify(text, gdb) {
+  // HTML-escape a string (defense in depth; renderMarkdown builds DOM nodes).
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  // Render minimal XSS-safe markdown into a DocumentFragment:
+  // code spans, **bold**, [label](http url), bare IRIs (GraphDB visual links),
+  // and res:/crm: prefixed names. No innerHTML is used anywhere.
+  function renderMarkdown(text, gdb) {
     var frag = document.createDocumentFragment();
-    var re = /https?:\/\/[^\s<>"'`]+/g;
-    var last = 0;
-    var m;
-    while ((m = re.exec(text)) !== null) {
-      var raw = m[0];
-      var iri = raw.replace(/[.,;)\]`]+$/, "");
-      if (m.index > last) {
-        frag.appendChild(document.createTextNode(text.slice(last, m.index)));
+    var raw = String(text == null ? "" : text).replace(/\r\n?/g, "\n");
+    var base = gdbBase(gdb);
+
+    function addText(parent, s) {
+      if (s) {
+        parent.appendChild(document.createTextNode(s));
       }
+    }
+
+    function visualLink(iri, display) {
       var a = document.createElement("a");
-      a.href = gdbBase(gdb) + "/graphs-visualizations?uri=" + encodeURIComponent(iri) + "&role=subject";
+      a.href = base + "/graphs-visualizations?uri=" + encodeURIComponent(iri) + "&role=subject";
       a.title = iri;
-      a.textContent = iri;
+      a.textContent = display;
       a.target = "_blank";
       a.rel = "noopener";
-      frag.appendChild(a);
-      var trailing = raw.slice(iri.length);
-      if (trailing) {
-        frag.appendChild(document.createTextNode(trailing));
-      }
-      last = m.index + raw.length;
+      return a;
     }
-    if (last < text.length) {
-      frag.appendChild(document.createTextNode(text.slice(last)));
+
+    // Bare IRI (prefix group 3), markdown link (1 label / 2 url),
+    // res:/Res: (4) and crm:/CRM: (6) prefixed names.
+    var LINK_RE = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s<>"'`]+)|\b(res|Res):([A-Za-z0-9_]+)|\b(crm|CRM):([A-Za-z0-9_]+)/g;
+    var BOLD_RE = /\*\*([^*]+)\*\*/g;
+    var CODE_RE = /`([^`]+)`/g;
+
+    function appendLinked(parent, s) {
+      var last = 0;
+      var m;
+      LINK_RE.lastIndex = 0;
+      while ((m = LINK_RE.exec(s)) !== null) {
+        if (m.index > last) {
+          addText(parent, s.slice(last, m.index));
+        }
+        if (m[1] !== undefined) {
+          if (isSalesKgIri(m[2])) {
+            // Sales-kg markdown link: keep author label, point at GraphDB visual URL.
+            parent.appendChild(visualLink(m[2], m[1]));
+          } else {
+            var mdLink = document.createElement("a");
+            mdLink.href = m[2];
+            mdLink.textContent = m[1];
+            mdLink.target = "_blank";
+            mdLink.rel = "noopener";
+            parent.appendChild(mdLink);
+          }
+        } else if (m[3] !== undefined) {
+          var rawIri = m[3];
+          var iri = rawIri.replace(/[.,;:)\]`]+$/, "");
+          parent.appendChild(visualLink(iri, friendlyLabel(iri)));
+          if (iri.length < rawIri.length) {
+            addText(parent, rawIri.slice(iri.length));
+          }
+        } else if (m[5] !== undefined) {
+          var resIri = "https://example.org/sales-kg/resource/" + m[5];
+          parent.appendChild(visualLink(resIri, friendlyLabel(resIri)));
+        } else if (m[7] !== undefined) {
+          var crmIri = "https://example.org/sales-kg/" + m[7];
+          parent.appendChild(visualLink(crmIri, friendlyLabel(crmIri)));
+        }
+        last = m.index + m[0].length;
+      }
+      if (last < s.length) {
+        addText(parent, s.slice(last));
+      }
+    }
+
+    function appendInline(parent, s) {
+      var last = 0;
+      var m;
+      BOLD_RE.lastIndex = 0;
+      while ((m = BOLD_RE.exec(s)) !== null) {
+        if (m.index > last) {
+          appendLinked(parent, s.slice(last, m.index));
+        }
+        var strong = document.createElement("strong");
+        appendLinked(strong, m[1]);
+        parent.appendChild(strong);
+        last = m.index + m[0].length;
+      }
+      if (last < s.length) {
+        appendLinked(parent, s.slice(last));
+      }
+    }
+
+    // Code spans render as <code>, except a code span that is exactly one IRI,
+    // which renders as a short labeled GraphDB link (class "code-link").
+    function appendRich(parent, s) {
+      var last = 0;
+      var m;
+      CODE_RE.lastIndex = 0;
+      while ((m = CODE_RE.exec(s)) !== null) {
+        if (m.index > last) {
+          appendInline(parent, s.slice(last, m.index));
+        }
+        if (/^https?:\/\/[^\s<>"'`]+$/.test(m[1])) {
+          // A code span holding a single IRI becomes a short labeled link.
+          var codeLink = visualLink(m[1], friendlyLabel(m[1]));
+          codeLink.className = "code-link";
+          parent.appendChild(codeLink);
+        } else {
+          var code = document.createElement("code");
+          code.textContent = m[1];
+          parent.appendChild(code);
+        }
+        last = m.index + m[0].length;
+      }
+      if (last < s.length) {
+        appendInline(parent, s.slice(last));
+      }
+    }
+
+    var lines = raw.split("\n");
+    var prevWasList = false;
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i];
+      var listMatch = line.match(/^\s*(?:[-*]\s+|\d+\.\s+)(.*)$/);
+      if (i > 0 && !(prevWasList && listMatch)) {
+        frag.appendChild(document.createElement("br"));
+      }
+      if (line === "") {
+        prevWasList = false;
+        continue;
+      }
+      if (listMatch) {
+        var item = document.createElement("div");
+        item.className = "md-list";
+        var bullet = document.createElement("span");
+        bullet.textContent = "\u2022 ";
+        item.appendChild(bullet);
+        appendRich(item, listMatch[1]);
+        frag.appendChild(item);
+        prevWasList = true;
+      } else {
+        appendRich(frag, line);
+        prevWasList = false;
+      }
     }
     return frag;
   }
@@ -167,10 +406,10 @@
 
     var body = document.createElement("span");
     body.className = "body";
-    body.textContent = text;
-    if (role === "Assistant" && IRI_RE.test(text)) {
-      body.textContent = "";
-      body.appendChild(linkify(text, gdb));
+    if (role === "Assistant") {
+      body.appendChild(renderMarkdown(text, gdb));
+    } else {
+      body.textContent = text;
     }
 
     row.appendChild(label);
@@ -194,7 +433,17 @@
       var re = /https?:\/\/[^\s<>"'`]+/g;
       var m;
       while ((m = re.exec(answerText)) !== null) {
-        add(m[0].replace(/[.,;)\]`]+$/, ""));
+        add(m[0].replace(/[.,;:)\]`]+$/, ""));
+      }
+      // Also harvest res:XXX / crm:XXX prefixed names, expanded to full IRIs.
+      var pre = /\b(?:res|Res):([A-Za-z0-9_]+)|\b(?:crm|CRM):([A-Za-z0-9_]+)/g;
+      var pm;
+      while ((pm = pre.exec(answerText)) !== null) {
+        if (pm[1] !== undefined) {
+          add("https://example.org/sales-kg/resource/" + pm[1]);
+        } else if (pm[2] !== undefined) {
+          add("https://example.org/sales-kg/" + pm[2]);
+        }
       }
     }
     (sources || []).forEach(function (src) {
@@ -225,74 +474,520 @@
     return parts[parts.length - 1] || iri;
   }
 
-  function addEvidence(row, sources, meta, answerText) {
-    var details = document.createElement("details");
-    details.className = "evidence";
+  // Human-friendly label for a sales-kg IRI.
+  // resource/Deal_D007 -> "Deal D007" (underscores become spaces);
+  // sales-kg/hasDecisionCriterion -> "hasDecisionCriterion";
+  // anything else falls back to shortIri.
+  function friendlyLabel(iri) {
+    var s = String(iri == null ? "" : iri);
+    var resource = s.match(/^https:\/\/example\.org\/sales-kg\/resource\/([A-Za-z]+)_([A-Za-z0-9_]+)$/);
+    if (resource) {
+      var label = resource[1] + " " + resource[2].replace(/_/g, " ");
+      // Entity-type tokens read naturally as-is; nothing to prettify further.
+      if (/^(Deal|Transcript|Evidence|Account|Contact)$/.test(resource[1])) {
+        return label;
+      }
+      return label;
+    }
+    var term = s.match(/^https:\/\/example\.org\/sales-kg\/([A-Za-z0-9_]+)$/);
+    if (term) {
+      return term[1];
+    }
+    return shortIri(s);
+  }
 
-    var summary = document.createElement("summary");
-    summary.textContent = "Sources / evidence";
+  function isSalesKgIri(iri) {
+    return /^https:\/\/example\.org\/sales-kg\//.test(String(iri == null ? "" : iri));
+  }
+
+  // ---- Evidence pane (all DOM-built; no innerHTML) -------------------------
+
+  function domEl(tag, className, text) {
+    var node = document.createElement(tag);
+    if (className) { node.className = className; }
+    if (text !== undefined && text !== null) { node.textContent = text; }
+    return node;
+  }
+
+  function clearNode(node) {
+    while (node.firstChild) { node.removeChild(node.firstChild); }
+  }
+
+  function truncateText(value, limit) {
+    var s = String(value == null ? "" : value);
+    return s.length > limit ? s.slice(0, limit) + "\u2026" : s;
+  }
+
+  function shortModel(model) {
+    var s = String(model == null ? "" : model);
+    if (!s) { return ""; }
+    var parts = s.split("/");
+    return truncateText(parts[parts.length - 1], 28);
+  }
+
+  function firstOf(obj, keys) {
+    if (!obj || typeof obj !== "object") { return undefined; }
+    for (var i = 0; i < keys.length; i++) {
+      var v = obj[keys[i]];
+      if (v !== undefined && v !== null && v !== "") { return v; }
+    }
+    return undefined;
+  }
+
+  // Hits arrive as objects or as JSON/plain strings; normalize to objects.
+  function parseHit(hit) {
+    if (hit && typeof hit === "object") { return hit; }
+    if (typeof hit === "string") {
+      var s = hit.trim();
+      if (s.charAt(0) === "{" || s.charAt(0) === "[") {
+        try {
+          var parsed = JSON.parse(s);
+          if (parsed && typeof parsed === "object") { return parsed; }
+        } catch (ignored) {
+          // Not JSON; fall through to treating the string as a snippet.
+        }
+      }
+      return { snippet: hit };
+    }
+    return {};
+  }
+
+  // Detect a failed tool call encoded in its hit payloads (error text).
+  function errorTextOf(hit) {
+    var text;
+    if (hit && typeof hit === "object") {
+      text = firstOf(hit, ["error", "message", "detail", "snippet", "text", "content"]);
+      if (text === undefined) {
+        try { text = JSON.stringify(hit); } catch (ignored) { text = String(hit); }
+      }
+    } else {
+      text = String(hit == null ? "" : hit);
+    }
+    text = String(text);
+    return /\b(?:error|traceback|exception|refused|refusing|invalid|failed|failure)\b/i.test(text)
+      ? text : null;
+  }
+
+  function toolError(src) {
+    var hits = Array.isArray(src && src.hits) ? src.hits : [];
+    for (var i = 0; i < hits.length; i++) {
+      var text = errorTextOf(hits[i]);
+      if (text) { return text; }
+    }
+    return null;
+  }
+
+  // A raw plain-text hit (not an object, nor a JSON encoding of one).
+  function isPlainHitString(hit) {
+    if (typeof hit !== "string") { return false; }
+    var s = hit.trim();
+    if (s.charAt(0) === "{" || s.charAt(0) === "[") {
+      try {
+        var parsed = JSON.parse(s);
+        if (parsed && typeof parsed === "object") { return false; }
+      } catch (ignored) {
+        // Not JSON; treat as plain text.
+      }
+    }
+    return true;
+  }
+
+  function hitId(hit) {
+    var v = firstOf(hit, ["id", "doc_id", "docId", "transcript_id", "entity", "name", "title"]);
+    if (v !== undefined) { return String(v); }
+    var m = /\bT\d{3,}\b/.exec(JSON.stringify(hit));
+    return m ? m[0] : "";
+  }
+
+  function hitSnippet(hit) {
+    var v = firstOf(hit, ["snippet", "text", "content", "chunk", "passage", "preview", "body"]);
+    if (v !== undefined) {
+      return typeof v === "string" ? v : JSON.stringify(v);
+    }
+    return JSON.stringify(hit);
+  }
+
+  function hitNumber(hit, keys) {
+    var v = firstOf(hit, keys);
+    var n = typeof v === "number" ? v : parseFloat(v);
+    return isFinite(n) ? n : null;
+  }
+
+  function hitScore(hit) {
+    return hitNumber(hit, ["score", "_score", "similarity", "relevance"]);
+  }
+
+  function hitDistance(hit) {
+    return hitNumber(hit, ["distance", "_distance", "dist", "score"]);
+  }
+
+  function searchClause(label, hits, metric) {
+    if (!hits.length) { return label + " (no relevant hits)"; }
+    var top = parseHit(hits[0]);
+    var id = hitId(top) || "item";
+    var value = metric === "distance" ? hitDistance(top) : hitScore(top);
+    var suffix = (value === null) ? "" : " @" + value;
+    return label + " (top hit " + id + suffix + ")";
+  }
+
+  // Match a source against a known tool name, tolerating a namespaced
+  // wrapper (e.g. "sales-kg_query_kg" ends with "_query_kg").
+  var TOOL_SUFFIXES = {
+    query_kg: "_query_kg",
+    semantic_search: "_semantic_search",
+    keyword_search: "_keyword_search",
+    get_transcript: "_get_transcript",
+    describe_kg_schema: "_describe_kg_schema"
+  };
+
+  function matchesTool(src, base) {
+    var nm = (src && (src.name || src.tool)) || "";
+    nm = String(nm);
+    var suffix = TOOL_SUFFIXES[base];
+    return nm === base || (suffix !== undefined && nm.slice(-suffix.length) === suffix);
+  }
+
+  // Auto-derive the "How I checked" line from the tool trace.
+  function buildHowChecked(sources) {
+    if (!sources || !sources.length) { return null; }
+    var clauses = [];
+    sources.forEach(function (src) {
+      if (!src || !(src.name || src.tool)) { return; }
+      var hits = Array.isArray(src.hits) ? src.hits : [];
+      var total = (typeof src.total === "number") ? src.total : hits.length;
+      if (matchesTool(src, "query_kg")) {
+        clauses.push("KG query (" + total + " row" + (total === 1 ? "" : "s") + ")");
+      } else if (matchesTool(src, "keyword_search")) {
+        clauses.push(searchClause("keyword search", hits, "score"));
+      } else if (matchesTool(src, "semantic_search")) {
+        clauses.push(searchClause("vector search", hits, "distance"));
+      } else if (matchesTool(src, "get_transcript")) {
+        var tid = (src.input && src.input.transcript_id) ? src.input.transcript_id : "";
+        clauses.push("transcript lookup (" + (tid || "no transcript") + ")");
+      } else if (matchesTool(src, "describe_kg_schema")) {
+        clauses.push("schema check (" + total + " entr" + (total === 1 ? "y" : "ies") + ")");
+      } else {
+        clauses.push((src.name || src.tool) + " (" + total + " hit" + (total === 1 ? "" : "s") + ")");
+      }
+    });
+    if (!clauses.length) { return null; }
+    return "How I checked: " + clauses.join(", ") + ".";
+  }
+
+  function bindingCell(binding, col) {
+    if (!binding || typeof binding !== "object") { return ""; }
+    var cell = binding[col];
+    if (cell === undefined || cell === null) { return ""; }
+    if (typeof cell === "object") {
+      return typeof cell.value === "string" ? cell.value : JSON.stringify(cell);
+    }
+    return String(cell);
+  }
+
+  function bindingColumns(rows) {
+    var cols = [];
+    var seen = {};
+    rows.forEach(function (row) {
+      if (!row || typeof row !== "object") { return; }
+      Object.keys(row).forEach(function (k) {
+        if (!seen[k]) { seen[k] = true; cols.push(k); }
+      });
+    });
+    return cols;
+  }
+
+  function renderTable(columns, rows, cellFn) {
+    var table = domEl("table", "ev-table");
+    var thead = document.createElement("thead");
+    var headRow = document.createElement("tr");
+    columns.forEach(function (col) { headRow.appendChild(domEl("th", null, col)); });
+    thead.appendChild(headRow);
+    table.appendChild(thead);
+
+    var tbody = document.createElement("tbody");
+    rows.forEach(function (row) {
+      var tr = document.createElement("tr");
+      columns.forEach(function (col) { tr.appendChild(domEl("td", null, cellFn(row, col))); });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    return table;
+  }
+
+  function copyText(text, button) {
+    function done(ok) {
+      button.textContent = ok ? "Copied" : "Copy failed";
+      window.setTimeout(function () { button.textContent = "Copy SPARQL"; }, 1500);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, function () {
+        done(window.prompt("Copy SPARQL:", text) !== null);
+      });
+    } else {
+      done(window.prompt("Copy SPARQL:", text) !== null);
+    }
+  }
+
+  function renderKgSection(src) {
+    src = src || {};
+    var sparql = (src.input && src.input.sparql) || src.sparql || "";
+    var hits = Array.isArray(src.hits) ? src.hits : [];
+    var rows = hits.map(parseHit);
+    var rowCount = (typeof src.total === "number") ? src.total : rows.length;
+    var err = toolError(src);
+    var zero = !err && rowCount === 0 && rows.length === 0;
+    var details = domEl("details", "ev-section");
+    details.open = !zero;
+
+    var summary = domEl("summary", "ev-summary");
+    summary.textContent = "KG query \u2014 " +
+      (err ? "error" : rowCount + " row" + (rowCount === 1 ? "" : "s"));
     details.appendChild(summary);
 
-    var engine = (meta && meta.engine) ? meta.engine : "(unknown)";
-    var engineLine = document.createElement("div");
-    engineLine.className = "meta-line";
-    engineLine.textContent = "engine: " + engine;
-    details.appendChild(engineLine);
+    var copy = domEl("button", "ev-copy", "Copy SPARQL");
+    copy.type = "button";
+    copy.addEventListener("click", function () { copyText(sparql, copy); });
+    details.appendChild(copy);
 
-    if (meta && meta.sparql) {
-      var sparqlLabel = document.createElement("div");
-      sparqlLabel.className = "meta-line";
-      sparqlLabel.textContent = "sparql:";
-      details.appendChild(sparqlLabel);
+    details.appendChild(domEl("pre", "ev-pre", sparql));
 
-      var sparqlPre = document.createElement("pre");
-      sparqlPre.textContent = meta.sparql;
-      details.appendChild(sparqlPre);
+    if (err) {
+      details.appendChild(domEl("div", "ev-error", err));
+      return details;
     }
 
-    var sourcesPre = document.createElement("pre");
-    sourcesPre.textContent = "sources: " + JSON.stringify(sources || [], null, 2);
-    details.appendChild(sourcesPre);
+    var sample = rows.slice(0, 5);
+    if (sample.length) {
+      var columns = bindingColumns(sample);
+      if (!columns.length) { columns = ["value"]; }
+      details.appendChild(renderTable(columns, sample, function (row, col) {
+        return truncateText(bindingCell(row, col), 120);
+      }));
+    } else {
+      details.appendChild(domEl("div", "ev-empty", "0 rows"));
+    }
+    return details;
+  }
 
-    if (meta && meta.graphdb_url) {
-      var gdb = gdbBase(meta.graphdb_url);
-      var iris = collectIris(answerText, sources);
+  function renderSearchSection(src, kind) {
+    var query = (src.input && src.input.query) ? src.input.query : "(no query)";
+    var topK = (src.input && src.input.top_k !== undefined && src.input.top_k !== null) ? src.input.top_k : null;
+    var hits = Array.isArray(src.hits) ? src.hits : [];
+    var count = (typeof src.total === "number") ? src.total : hits.length;
+    var label = kind === "vector" ? "Vector search" : "Keyword search";
+    var err = toolError(src);
+    var zero = !err && count === 0;
 
-      var gdbLine = document.createElement("div");
-      gdbLine.className = "meta-line";
-      gdbLine.appendChild(document.createTextNode("GraphDB: "));
+    var details = domEl("details", "ev-section");
+    details.open = !zero;
 
-      if (!iris.length) {
-        gdbLine.appendChild(document.createTextNode("(no IRIs in answer)"));
-      } else {
-        iris.forEach(function (iri, i) {
-          if (i > 0) {
-            gdbLine.appendChild(document.createTextNode(" | "));
-          }
-          var primary = document.createElement("a");
-          primary.href = gdb + "/graphs-visualizations?uri=" + encodeURIComponent(iri) + "&role=subject";
-          primary.textContent = shortIri(iri);
-          primary.title = iri;
-          primary.target = "_blank";
-          primary.rel = "noopener";
-          gdbLine.appendChild(primary);
+    var summary = domEl("summary", "ev-summary");
+    summary.textContent = label + " \u2014 " +
+      (err ? "error" : count + " hit" + (count === 1 ? "" : "s"));
+    details.appendChild(summary);
 
-          gdbLine.appendChild(document.createTextNode(" "));
+    var sub = domEl("div", "ev-sub");
+    sub.textContent = "query: " + truncateText(query, 160) + (topK === null ? "" : "  \u00b7  top_k: " + topK);
+    details.appendChild(sub);
 
-          var describe = document.createElement("a");
-          describe.href = gdb + "/sparql?query=" + encodeURIComponent("DESCRIBE <" + iri + ">");
-          describe.textContent = "DESCRIBE";
-          describe.title = "DESCRIBE <" + iri + ">";
-          describe.target = "_blank";
-          describe.rel = "noopener";
-          describe.className = "gdb-secondary";
-          gdbLine.appendChild(describe);
-        });
+    if (err) {
+      details.appendChild(domEl("div", "ev-error", err));
+      return details;
+    }
+
+    if (zero) {
+      details.appendChild(domEl("div", "ev-empty", "no relevant hits"));
+      return details;
+    }
+
+    var sample = hits.slice(0, 5);
+    var stringHits = sample.filter(isPlainHitString);
+    var dictHits = sample.filter(function (h) { return !isPlainHitString(h); });
+
+    if (dictHits.length) {
+      var rows = dictHits.map(parseHit);
+      var cols = kind === "vector" ? ["id", "distance", "snippet"] : ["id", "score", "snippet"];
+      details.appendChild(renderTable(cols, rows, function (row, col) {
+        if (col === "id") { return hitId(row); }
+        if (col === "distance") {
+          var d = hitDistance(row);
+          return d === null ? "" : String(d);
+        }
+        if (col === "score") {
+          var s = hitScore(row);
+          return s === null ? "" : String(s);
+        }
+        return truncateText(hitSnippet(row), 200);
+      }));
+
+      var actions = domEl("div", "ev-actions");
+      rows.forEach(function () {
+        var preview = domEl("button", "ev-preview", "Preview");
+        preview.type = "button";
+        preview.disabled = true;
+        preview.title = "transcript inspector \u2014 upcoming";
+        actions.appendChild(preview);
+      });
+      details.appendChild(actions);
+    }
+
+    stringHits.forEach(function (text) {
+      details.appendChild(domEl("pre", "ev-pre", text));
+    });
+
+    if (!dictHits.length && !stringHits.length) {
+      details.appendChild(domEl("div", "ev-empty", "no hits to display"));
+    }
+    return details;
+  }
+
+  function collectTranscriptIds(sources) {
+    var out = [];
+    var seen = {};
+    function add(id) {
+      if (id && !seen[id]) { seen[id] = true; out.push(id); }
+    }
+    function addFromText(text) {
+      var re = /\bT\d{3,}\b/g;
+      var m;
+      while ((m = re.exec(String(text))) !== null) { add(m[0]); }
+    }
+    (sources || []).forEach(function (src) {
+      if (!src) { return; }
+      if (src.input && src.input.transcript_id) {
+        var m = /\bT\d{3,}\b/.exec(String(src.input.transcript_id));
+        add(m ? m[0] : String(src.input.transcript_id));
       }
-      details.appendChild(gdbLine);
+      addFromText(JSON.stringify(src.hits || []));
+      addFromText(JSON.stringify(src.sample || []));
+    });
+    return out;
+  }
+
+  function renderTranscriptsSection(record) {
+    var sources = Array.isArray(record.sources) ? record.sources : [];
+    var ids = collectTranscriptIds(sources);
+    var meta = record.meta || {};
+    var extra = (Array.isArray(meta.iris) && meta.iris.length) ? [{ iris: meta.iris }] : [];
+    var iris = collectIris(record.answerText, sources.concat(extra));
+    var count = ids.length + iris.length;
+
+    var details = domEl("details", "ev-section");
+    details.open = count > 0;
+
+    var summary = domEl("summary", "ev-summary");
+    summary.textContent = "Transcripts & entities \u2014 " + count + " item" + (count === 1 ? "" : "s");
+    details.appendChild(summary);
+
+    if (ids.length) {
+      var chips = domEl("div", "ev-chips");
+      ids.forEach(function (id) { chips.appendChild(domEl("span", "ev-chip", id)); });
+      details.appendChild(chips);
     }
 
-    row.appendChild(details);
+    if (iris.length) {
+      var list = domEl("ul", "ev-entities");
+      var gdb = gdbBase(meta.graphdb_url);
+      iris.forEach(function (iri) {
+        var li = document.createElement("li");
+        var a = document.createElement("a");
+        a.href = gdb + "/graphs-visualizations?uri=" + encodeURIComponent(iri) + "&role=subject";
+        a.textContent = friendlyLabel(iri);
+        a.title = iri;
+        a.target = "_blank";
+        a.rel = "noopener";
+        li.appendChild(a);
+        list.appendChild(li);
+      });
+      details.appendChild(list);
+    }
+
+    if (!count) {
+      details.appendChild(domEl("div", "ev-empty", "no transcripts or entities referenced"));
+    }
+    return details;
+  }
+
+  function selectAnswer(index) {
+    if (index < 0 || index >= answers.length) { return; }
+    selectedIndex = index;
+    answers.forEach(function (rec, i) {
+      if (rec.row) { rec.row.classList.toggle("selected", i === index); }
+    });
+    renderEvidence(answers[index]);
+  }
+
+  function renderEvidence(record) {
+    clearNode(evidenceBody);
+    if (!record) {
+      evidenceHint.textContent = "No answer selected yet.";
+      evidenceBody.appendChild(domEl("div", "ev-empty", "trace unavailable \u2014 see logs/app.log"));
+      return;
+    }
+
+    var meta = record.meta || {};
+    var sources = Array.isArray(record.sources) ? record.sources : [];
+    evidenceHint.textContent = "Selected answer " + (selectedIndex + 1) + " of " + answers.length +
+      ": " + truncateText(record.answerText, 80);
+
+    var steps = (typeof meta.steps === "number") ? meta.steps : sources.length;
+    var header = domEl("div", "ev-headline");
+    var bits = [meta.engine || "(unknown engine)"];
+    var model = shortModel(meta.model);
+    if (model) { bits.push(model); }
+    bits.push(steps + " step" + (steps === 1 ? "" : "s"));
+    header.textContent = bits.join(" \u00b7 ");
+    evidenceBody.appendChild(header);
+
+    var kgSource = null;
+    var baselineSource = null;
+    sources.forEach(function (src) {
+      if (!src) { return; }
+      if (!kgSource && matchesTool(src, "query_kg")) { kgSource = src; }
+      if (!baselineSource && src.sparql) { baselineSource = src; }
+    });
+    var sparql = (kgSource && kgSource.input && kgSource.input.sparql) ||
+                 meta.sparql ||
+                 (baselineSource && baselineSource.sparql) || "";
+
+    if (!sources.length && !sparql) {
+      evidenceBody.appendChild(domEl("div", "ev-empty", "trace unavailable \u2014 see logs/app.log"));
+      return;
+    }
+
+    var checked = buildHowChecked(sources);
+    if (checked) {
+      evidenceBody.appendChild(domEl("div", "ev-checked", checked));
+    }
+
+    var renderedKg = false;
+    sources.forEach(function (src) {
+      if (!src) { return; }
+      if (matchesTool(src, "query_kg")) {
+        renderedKg = true;
+        evidenceBody.appendChild(renderKgSection(src));
+      } else if (matchesTool(src, "keyword_search")) {
+        evidenceBody.appendChild(renderSearchSection(src, "keyword"));
+      } else if (matchesTool(src, "semantic_search")) {
+        evidenceBody.appendChild(renderSearchSection(src, "vector"));
+      }
+    });
+
+    if (!renderedKg && baselineSource && Array.isArray(baselineSource.sample)) {
+      renderedKg = true;
+      evidenceBody.appendChild(renderKgSection({
+        input: { sparql: baselineSource.sparql || sparql },
+        hits: baselineSource.sample,
+        total: (typeof baselineSource.row_count === "number")
+          ? baselineSource.row_count
+          : baselineSource.sample.length
+      }));
+    }
+    if (!renderedKg && sparql) {
+      evidenceBody.appendChild(renderKgSection({ input: { sparql: sparql }, hits: [], total: 0 }));
+    }
+
+    evidenceBody.appendChild(renderTranscriptsSection(record));
   }
 
   function setBusy(busy) {
@@ -334,7 +1029,18 @@
       var data = await res.json();
       var answer = (data && data.answer) ? data.answer : "(empty answer)";
       var row = addRow("Assistant", answer, null, data && data.meta ? data.meta.graphdb_url : null);
-      addEvidence(row, data ? data.sources : [], data ? data.meta : null, answer);
+      row.classList.add("selectable");
+
+      var record = {
+        answerText: answer,
+        sources: (data && Array.isArray(data.sources)) ? data.sources : [],
+        meta: (data && data.meta) ? data.meta : {},
+        row: row
+      };
+      answers.push(record);
+      var index = answers.length - 1;
+      row.addEventListener("click", function () { selectAnswer(index); });
+      selectAnswer(index);
 
       if (data && data.meta && data.meta.engine) {
         engineEl.textContent = data.meta.engine;
@@ -361,6 +1067,9 @@
     input.value = "";
     send(message);
   });
+
+  // Initial pane state; replaced when the first assistant answer arrives.
+  renderEvidence(null);
 
   // Show the configured answerer as the initial retrieval-engine hint.
   fetch("/health")

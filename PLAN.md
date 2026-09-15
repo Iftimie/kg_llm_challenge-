@@ -37,3 +37,8 @@ Order: M1, M5, M6, M2, M3, M4, M7, M8. One bounded change + review per milestone
 - Small, reviewable diffs; do not refactor unrelated code.
 - Reuse existing scripts; do not rewrite working logic.
 - Stop and request review after each milestone.
+
+## Deviation
+- Deviation from DESIGN: agent consults KG+keyword+vector on every factual question
+  (recall safety net: 3/10 transcripts unextracted), judges relevance instead of
+  pre-choosing; negative results shown in evidence.

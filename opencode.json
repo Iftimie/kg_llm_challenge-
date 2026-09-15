@@ -29,6 +29,13 @@
       }
     }
   },
+  "mcp": {
+    "sales-kg": {
+      "type": "local",
+      "command": [".venv\\Scripts\\python.exe", "-m", "app.mcp.server"],
+      "enabled": true
+    }
+  },
   "default_agent": "orchestrator",
   "small_model": "deepseek/deepseek-flash",
   "model": "openrouter/meta/muse-spark-1.3-contributor"

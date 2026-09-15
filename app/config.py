@@ -41,3 +41,7 @@ COMPETENCY_QUERIES = REPO_ROOT / "competency_queries.txt"
 # --- Logging ------------------------------------------------------------------
 LOG_FILE = Path(os.environ.get("LOG_FILE", REPO_ROOT / "logs" / "app.log"))
 LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO")
+
+# JSON-lines log of MCP tool calls, written by app.mcp.server and read by the
+# agent harness to rebuild the retrieval trace from server-side ground truth.
+MCP_LOG = REPO_ROOT / "logs" / "mcp_calls.jsonl"
