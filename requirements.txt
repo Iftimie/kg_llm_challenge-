@@ -4,3 +4,5 @@ requests>=2.31
 pyshacl>=0.26
 chromadb>=0.5
 rank_bm25>=0.2
+fastapi>=0.110
+uvicorn>=0.29

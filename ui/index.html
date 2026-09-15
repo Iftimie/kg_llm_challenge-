@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sales Intelligence Assistant</title>
+<style>
+  :root { color-scheme: light dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.45;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background: #f7f7f8;
+    color: #1f2328;
+  }
+  header {
+    padding: 12px 16px;
+    border-bottom: 1px solid #d9dce1;
+    background: #fff;
+  }
+  header h1 { margin: 0; font-size: 18px; }
+  .engine { margin-top: 2px; font-size: 12px; color: #6b7280; }
+  #chat {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 16px;
+  }
+  .row {
+    margin: 0 0 12px;
+    display: flex;
+    gap: 8px;
+  }
+  .row .label { font-weight: 600; flex: 0 0 auto; }
+  .row .body { white-space: pre-wrap; word-break: break-word; }
+  .row.user .label { color: #1d4ed8; }
+  .row.assistant .label { color: #047857; }
+  .row.error .label { color: #b91c1c; }
+  .row.error .body {
+    color: #7f1d1d;
+    background: #fde8e8;
+    border: 1px solid #f5b5b5;
+    border-radius: 6px;
+    padding: 6px 8px;
+  }
+  .row.pending .body { color: #6b7280; font-style: italic; }
+  .evidence {
+    margin-top: 6px;
+    width: 100%;
+    font-size: 13px;
+  }
+  .evidence summary { cursor: pointer; color: #4b5563; }
+  .evidence pre {
+    margin: 6px 0 0;
+    padding: 8px;
+    background: #eef1f4;
+    border: 1px solid #d9dce1;
+    border-radius: 6px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .meta-line { margin-top: 6px; color: #6b7280; }
+  form#composer {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    border-top: 1px solid #d9dce1;
+    background: #fff;
+  }
+  #message {
+    flex: 1 1 auto;
+    padding: 8px 10px;
+    border: 1px solid #c7ccd3;
+    border-radius: 6px;
+    font: inherit;
+  }
+  #send {
+    padding: 8px 16px;
+    border: 1px solid #1d4ed8;
+    border-radius: 6px;
+    background: #1d4ed8;
+    color: #fff;
+    font: inherit;
+    cursor: pointer;
+  }
+  #send:disabled, #message:disabled { opacity: 0.6; cursor: default; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Sales Intelligence Assistant</h1>
+  <div class="engine">Retrieval engine: <span id="engine">unknown</span></div>
+</header>
+
+<main id="chat" aria-live="polite"></main>
+
+<form id="composer">
+  <input id="message" type="text" placeholder="Ask a question about the sales data..." autocomplete="off">
+  <button id="send" type="submit">Send</button>
+</form>
+
+<script>
+(function () {
+  "use strict";
+
+  var chat = document.getElementById("chat");
+  var form = document.getElementById("composer");
+  var input = document.getElementById("message");
+  var sendBtn = document.getElementById("send");
+  var engineEl = document.getElementById("engine");
+
+  // Client-side conversation history, sent with every request as `history`.
+  var history = [];
+
+  function addRow(role, text, extraClass) {
+    var row = document.createElement("div");
+    row.className = "row " + (extraClass || role.toLowerCase());
+
+    var label = document.createElement("span");
+    label.className = "label";
+    label.textContent = role + ":";
+
+    var body = document.createElement("span");
+    body.className = "body";
+    body.textContent = text;
+
+    row.appendChild(label);
+    row.appendChild(body);
+    chat.appendChild(row);
+    chat.scrollTop = chat.scrollHeight;
+    return row;
+  }
+
+  function addEvidence(row, sources, meta) {
+    var details = document.createElement("details");
+    details.className = "evidence";
+
+    var summary = document.createElement("summary");
+    summary.textContent = "Sources / evidence";
+    details.appendChild(summary);
+
+    var engine = (meta && meta.engine) ? meta.engine : "(unknown)";
+    var engineLine = document.createElement("div");
+    engineLine.className = "meta-line";
+    engineLine.textContent = "engine: " + engine;
+    details.appendChild(engineLine);
+
+    if (meta && meta.sparql) {
+      var sparqlLabel = document.createElement("div");
+      sparqlLabel.className = "meta-line";
+      sparqlLabel.textContent = "sparql:";
+      details.appendChild(sparqlLabel);
+
+      var sparqlPre = document.createElement("pre");
+      sparqlPre.textContent = meta.sparql;
+      details.appendChild(sparqlPre);
+    }
+
+    var sourcesPre = document.createElement("pre");
+    sourcesPre.textContent = "sources: " + JSON.stringify(sources || [], null, 2);
+    details.appendChild(sourcesPre);
+
+    row.appendChild(details);
+  }
+
+  function setBusy(busy) {
+    input.disabled = busy;
+    sendBtn.disabled = busy;
+    sendBtn.textContent = busy ? "Thinking\u2026" : "Send";
+  }
+
+  async function send(message) {
+    addRow("User", message);
+    history.push({ role: "user", content: message });
+
+    var pending = addRow("Assistant", "Thinking\u2026", "assistant pending");
+    setBusy(true);
+
+    try {
+      var res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: message, history: history })
+      });
+
+      pending.remove();
+
+      if (!res.ok) {
+        var detail = "Request failed (" + res.status + ")";
+        try {
+          var errBody = await res.json();
+          if (errBody && errBody.detail) {
+            detail += ": " + errBody.detail;
+          }
+        } catch (ignored) {
+          // Non-JSON error body; keep the status-only message.
+        }
+        addRow("Assistant", detail, "error");
+        return;
+      }
+
+      var data = await res.json();
+      var answer = (data && data.answer) ? data.answer : "(empty answer)";
+      var row = addRow("Assistant", answer);
+      addEvidence(row, data ? data.sources : [], data ? data.meta : null);
+
+      if (data && data.meta && data.meta.engine) {
+        engineEl.textContent = data.meta.engine;
+      }
+      history.push({ role: "assistant", content: answer });
+    } catch (err) {
+      pending.remove();
+      var messageText = (err && err.message) ? err.message : String(err);
+      addRow("Assistant", "Network error: " + messageText, "error");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+    if (input.disabled) {
+      return;
+    }
+    var message = input.value.trim();
+    if (!message) {
+      return;
+    }
+    input.value = "";
+    send(message);
+  });
+
+  // Show the configured answerer as the initial retrieval-engine hint.
+  fetch("/health")
+    .then(function (res) { return res.ok ? res.json() : null; })
+    .then(function (data) {
+      if (data && data.answerer) {
+        engineEl.textContent = data.answerer;
+      }
+    })
+    .catch(function () {
+      // Health probe is best-effort; the chat still works without it.
+    });
+})();
+</script>
+</body>
+</html>
