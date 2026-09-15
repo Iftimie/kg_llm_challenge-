@@ -30,12 +30,13 @@ ENV PATH="/usr/local/bin:${PATH}" \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     GRAPHDB_URL="http://graphdb:7200" \
-    ANSWERER="agent" \
+    ANSWERER="pydantic" \
     PORT="8000"
 
-# entrypoint.sh does the runtime opencode config swap; ensure it is executable
-# even when the build context comes from Windows (no exec bit preserved).
-RUN chmod +x /app/docker/entrypoint.sh
+# entrypoint.sh does the runtime opencode config swap. Normalize CRLF line
+# endings (Windows checkouts can break the shebang with "exec format error")
+# and ensure it is executable even when the build context lacks the exec bit.
+RUN sed -i 's/\r$//' /app/docker/entrypoint.sh && chmod +x /app/docker/entrypoint.sh
 
 EXPOSE 8000
 

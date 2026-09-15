@@ -16,6 +16,11 @@ GRAPHDB_REPO = os.environ.get("GRAPHDB_REPO", "sales-kg")
 OPENROUTER_URL = os.environ.get("OPENROUTER_URL", "https://openrouter.ai/api/v1/chat/completions")
 OPENROUTER_MODEL = os.environ.get("OPENROUTER_MODEL", "meta/muse-spark-1.3-contributor")
 
+# PydanticAI answerer (OpenAI-compatible endpoint, default OpenRouter).
+PYDANTIC_MODEL = os.environ.get("PYDANTIC_MODEL", OPENROUTER_MODEL)
+PYDANTIC_BASE_URL = os.environ.get("PYDANTIC_BASE_URL", "https://openrouter.ai/api/v1")
+PYDANTIC_API_KEY = os.environ.get("PYDANTIC_API_KEY", os.environ.get("OPENROUTER_API_KEY", ""))
+
 # Answerer implementation selected by the QA/agent layer.
 ANSWERER = os.environ.get("ANSWERER", "baseline")
 

@@ -21,6 +21,15 @@ so the graph alone can miss evidence. After the calls, judge relevance: cite
 the sources that mattered and, in the single "How I checked:" line, explicitly
 note any source you consulted but found irrelevant.
 
+## Before answering (mandatory checklist)
+Before producing any final answer you MUST call all three retrieval tools at
+least once each: `query_kg` AND `keyword_search` AND `semantic_search`. An
+answer that is missing any one of these calls is a failure.
+
+If a source returns nothing useful, retry it ONCE with a refined query (at most
+2 refinements per source). If it is still not useful, stop retrying and report
+that source as consulted-but-irrelevant in the "How I checked:" line.
+
 ## Rules
 - Only run **read-only** SPARQL queries. Never construct INSERT, DELETE, LOAD,
   CLEAR, DROP, or CREATE statements.

@@ -75,6 +75,16 @@ def _format_history(history) -> str:
 
 def _build_prompt(question: str, history) -> str:
     system = _SYSTEM_PROMPT.read_text(encoding="utf-8").strip()
+    # Append the competency SPARQL examples (config.COMPETENCY_QUERIES); a
+    # missing or empty file degrades gracefully to the bare system prompt.
+    try:
+        examples = config.COMPETENCY_QUERIES.read_text(encoding="utf-8").strip()
+    except OSError:
+        examples = ""
+    if examples:
+        system = (
+            f"{system}\n\n## SPARQL examples (follow these patterns)\n\n{examples}"
+        )
     history_text = _format_history(history)
     return "\n".join(
         [

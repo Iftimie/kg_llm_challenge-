@@ -19,7 +19,6 @@ SELECT ?blocker ?name ?speaker ?evidenceText
 WHERE {
 res:Deal_D001 crm:hasBlocker ?blocker .
 
-```
 OPTIONAL {
     ?blocker crm:name ?name .
 }
@@ -29,7 +28,6 @@ OPTIONAL {
     ?evidence crm:speakerName ?speaker ;
               crm:evidenceText ?evidenceText .
 }
-```
 
 }
 
@@ -69,7 +67,6 @@ SELECT ?signal ?name ?evidenceText
 WHERE {
 res:Deal_D001 crm:hasBuyingSignal ?signal .
 
-```
 OPTIONAL {
     ?signal crm:name ?name .
 }
@@ -78,7 +75,6 @@ OPTIONAL {
     ?signal crm:supportedBy ?evidence .
     ?evidence crm:evidenceText ?evidenceText .
 }
-```
 
 }
 
@@ -99,14 +95,12 @@ SELECT ?wonDeal ?name ?value
 WHERE {
 res:Deal_D002 crm:involvesProduct ?product .
 
-```
 ?wonDeal
     a crm:Deal ;
     crm:involvesProduct ?product ;
     crm:hasOutcome crm:Won ;
     crm:name ?name ;
     crm:dealValue ?value .
-```
 
 }
 
@@ -127,7 +121,6 @@ SELECT ?opportunity ?name ?product ?evidenceText
 WHERE {
 res:Deal_D002 crm:hasExpansionOpportunity ?opportunity .
 
-```
 OPTIONAL {
     ?opportunity crm:name ?name .
 }
@@ -140,7 +133,6 @@ OPTIONAL {
     ?opportunity crm:supportedBy ?evidence .
     ?evidence crm:evidenceText ?evidenceText .
 }
-```
 
 }
 
@@ -180,6 +172,7 @@ When generating new queries:
 * do not invent predicates
 * return valid SPARQL only
 
+Example 6
 
 What indicates that the customer is ready to move forward with deal D007, and what statements support that?
 PREFIX crm: <https://example.org/sales-kg/>

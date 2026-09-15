@@ -6,7 +6,7 @@ callers use it uniformly as ``get_answerer().answer(...)``.
 from app import config
 
 _DEFAULT = "baseline"
-_KNOWN = ("stub", "baseline", "agent")
+_KNOWN = ("stub", "baseline", "agent", "pydantic")
 
 
 def get_answerer():
@@ -24,6 +24,10 @@ def get_answerer():
         from app.backend.answerers import agent
 
         return agent
+    if name == "pydantic":
+        from app.backend.answerers import pydantic_agent
+
+        return pydantic_agent
 
     raise ValueError(
         f"Unknown ANSWERER: {config.ANSWERER!r} (expected one of {', '.join(_KNOWN)})"

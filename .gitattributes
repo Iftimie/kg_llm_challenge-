@@ -1,0 +1,2 @@
+*.sh text eol=lf
+opencode.docker.json text eol=lf
