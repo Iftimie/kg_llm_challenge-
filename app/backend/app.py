@@ -67,6 +67,19 @@ def chat(request: ChatRequest) -> dict:
     }
 
 
+@app.get("/api/transcripts/{transcript_id}")
+def get_transcript_endpoint(transcript_id: str) -> dict:
+    # Imported lazily so startup stays light and independent of CRM data.
+    from app.retrieval.transcripts import get_transcript
+
+    try:
+        return get_transcript(transcript_id)
+    except KeyError as exc:
+        raise HTTPException(
+            status_code=404, detail=f"unknown transcript {transcript_id}"
+        ) from exc
+
+
 # Mounted last so the explicit /health and /api/chat routes keep priority.
 UI_DIR = Path(__file__).resolve().parent.parent.parent / "ui"
 app.mount("/", StaticFiles(directory=UI_DIR, html=True), name="ui")

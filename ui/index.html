@@ -196,6 +196,77 @@
     cursor: pointer;
   }
   #send:disabled, #message:disabled { opacity: 0.6; cursor: default; }
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(17, 24, 39, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    z-index: 50;
+  }
+  .modal-overlay[hidden] { display: none; }
+  .modal {
+    background: #fff;
+    border: 1px solid #d9dce1;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 720px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    padding: 14px 16px;
+  }
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .modal-title { font-weight: 600; font-size: 15px; }
+  .modal-close {
+    font: inherit;
+    font-size: 12px;
+    padding: 2px 8px;
+    border: 1px solid #c7ccd3;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+  }
+  .modal-meta {
+    margin: 6px 0;
+    font-size: 12px;
+    color: #4b5563;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+  }
+  .modal-meta-label { color: #6b7280; }
+  .modal-body {
+    margin: 6px 0 0;
+    padding: 8px;
+    background: #eef1f4;
+    border: 1px solid #d9dce1;
+    border-radius: 6px;
+    overflow: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 13px;
+    flex: 1 1 auto;
+  }
+  .modal-error {
+    margin: 6px 0 0;
+    padding: 6px 8px;
+    background: #fde8e8;
+    border: 1px solid #f5b5b5;
+    border-radius: 6px;
+    color: #7f1d1d;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 12px;
+  }
+  .modal-error[hidden] { display: none; }
 </style>
 </head>
 <body>
@@ -218,6 +289,18 @@
   <button id="send" type="submit">Send</button>
 </form>
 
+<div id="transcript-modal" class="modal-overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="transcript-modal-title">
+    <div class="modal-header">
+      <div id="transcript-modal-title" class="modal-title">Transcript</div>
+      <button id="transcript-modal-close" class="modal-close" type="button">Close</button>
+    </div>
+    <div id="transcript-modal-meta" class="modal-meta"></div>
+    <div id="transcript-modal-body" class="modal-body"></div>
+    <div id="transcript-modal-error" class="modal-error" hidden></div>
+  </div>
+</div>
+
 <script>
 (function () {
   "use strict";
@@ -238,7 +321,21 @@
   var selectedIndex = -1;
 
   function gdbBase(u) {
-    return String(u || "http://localhost:7200").replace(/\/+$/, "").replace("://127.0.0.1:", "://localhost:");
+    var base = String(u || "http://localhost:7200")
+      .replace(/\/+$/, "")
+      .replace("://127.0.0.1:", "://localhost:");
+    // A browser outside the container cannot resolve the compose hostname
+    // "graphdb"; rewrite the GraphDB host to the page's own hostname (keeping
+    // the port) so visual links open. In-container browsers (hostname
+    // "graphdb") keep the configured base unchanged.
+    var host = window.location.hostname;
+    if (host) {
+      var m = base.match(/^([A-Za-z][A-Za-z0-9+.-]*:\/\/)([^/:?#]+)(:\d+)?/);
+      if (m && (m[2] === "graphdb" || m[2] !== host)) {
+        base = m[1] + host + (m[3] || "");
+      }
+    }
+    return base;
   }
 
   // HTML-escape a string (defense in depth; renderMarkdown builds DOM nodes).
@@ -275,6 +372,29 @@
       return a;
     }
 
+    // Bare sales-kg resource short names (Deal_D007, Transcript_T007, ...).
+    // The lookbehind keeps a short name that is part of a full IRI (e.g.
+    // .../resource/Transcript_T007) from being linkified a second time.
+    var SHORT_NAME_RE = /(?<![A-Za-z0-9_/])(Deal|Transcript|Evidence|Account|Contact|DecisionCriterion|Need|Blocker|Product|SalesRep)_([A-Za-z0-9_]+)/g;
+
+    function resourceLink(match) {
+      var iri = "https://example.org/sales-kg/resource/" + match;
+      return visualLink(iri, friendlyLabel(iri));
+    }
+
+    // Linkify bare short names in a run of text, leaving the rest as text.
+    function appendShortNames(parent, s) {
+      var last = 0;
+      var m;
+      SHORT_NAME_RE.lastIndex = 0;
+      while ((m = SHORT_NAME_RE.exec(s)) !== null) {
+        if (m.index > last) { addText(parent, s.slice(last, m.index)); }
+        parent.appendChild(resourceLink(m[0]));
+        last = m.index + m[0].length;
+      }
+      if (last < s.length) { addText(parent, s.slice(last)); }
+    }
+
     // Bare IRI (prefix group 3), markdown link (1 label / 2 url),
     // res:/Res: (4) and crm:/CRM: (6) prefixed names.
     var LINK_RE = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s<>"'`]+)|\b(res|Res):([A-Za-z0-9_]+)|\b(crm|CRM):([A-Za-z0-9_]+)/g;
@@ -287,7 +407,7 @@
       LINK_RE.lastIndex = 0;
       while ((m = LINK_RE.exec(s)) !== null) {
         if (m.index > last) {
-          addText(parent, s.slice(last, m.index));
+          appendShortNames(parent, s.slice(last, m.index));
         }
         if (m[1] !== undefined) {
           if (isSalesKgIri(m[2])) {
@@ -318,7 +438,7 @@
         last = m.index + m[0].length;
       }
       if (last < s.length) {
-        addText(parent, s.slice(last));
+        appendShortNames(parent, s.slice(last));
       }
     }
 
@@ -357,7 +477,7 @@
           parent.appendChild(codeLink);
         } else {
           var code = document.createElement("code");
-          code.textContent = m[1];
+          appendShortNames(code, m[1]);
           parent.appendChild(code);
         }
         last = m.index + m[0].length;
@@ -445,6 +565,12 @@
           add("https://example.org/sales-kg/" + pm[2]);
         }
       }
+      // And bare resource short names (Deal_D007, Transcript_T007, ...).
+      var shorts = /\b(Deal|Transcript|Evidence|Account|Contact|DecisionCriterion|Need|Blocker|Product|SalesRep)_([A-Za-z0-9_]+)/g;
+      var sm;
+      while ((sm = shorts.exec(answerText)) !== null) {
+        add("https://example.org/sales-kg/resource/" + sm[0]);
+      }
     }
     (sources || []).forEach(function (src) {
       if (src && Array.isArray(src.iris)) {
@@ -512,6 +638,84 @@
   function clearNode(node) {
     while (node.firstChild) { node.removeChild(node.firstChild); }
   }
+
+  // ---- Transcript modal (all DOM-built; no innerHTML) ----------------------
+
+  var modal = document.getElementById("transcript-modal");
+  var modalTitle = document.getElementById("transcript-modal-title");
+  var modalMeta = document.getElementById("transcript-modal-meta");
+  var modalBody = document.getElementById("transcript-modal-body");
+  var modalError = document.getElementById("transcript-modal-error");
+  var modalClose = document.getElementById("transcript-modal-close");
+
+  function modalMetaItem(label, value) {
+    var item = domEl("span", "modal-meta-item");
+    item.appendChild(domEl("span", "modal-meta-label", label + ": "));
+    item.appendChild(domEl("span", "modal-meta-value", value == null ? "" : String(value)));
+    return item;
+  }
+
+  function closeTranscriptModal() {
+    modal.hidden = true;
+    modalTitle.textContent = "Transcript";
+    clearNode(modalMeta);
+    modalBody.textContent = "";
+    modalError.hidden = true;
+    modalError.textContent = "";
+  }
+
+  function transcriptError(message) {
+    modalBody.textContent = "";
+    modalError.hidden = false;
+    modalError.textContent = message;
+  }
+
+  async function openTranscript(id) {
+    modal.hidden = false;
+    modalTitle.textContent = id ? ("Transcript " + id) : "Transcript";
+    clearNode(modalMeta);
+    modalError.hidden = true;
+    modalError.textContent = "";
+    modalBody.textContent = "Loading\u2026";
+
+    if (!id) {
+      transcriptError("No transcript id available for this hit.");
+      return;
+    }
+
+    try {
+      var res = await fetch("/api/transcripts/" + encodeURIComponent(id));
+      if (!res.ok) {
+        var detail = "Request failed (" + res.status + ")";
+        try {
+          var errBody = await res.json();
+          if (errBody && errBody.detail) { detail += ": " + errBody.detail; }
+        } catch (ignored) {
+          // Non-JSON error body; keep the status-only message.
+        }
+        transcriptError(detail);
+        return;
+      }
+      var t = await res.json();
+      modalTitle.textContent = "Transcript " + (t.transcript_id || id);
+      modalMeta.appendChild(modalMetaItem("Deal", t.deal_id));
+      modalMeta.appendChild(modalMetaItem("Account", t.account_id));
+      modalMeta.appendChild(modalMetaItem("Date", t.activity_date));
+      modalMeta.appendChild(modalMetaItem("Channel", t.channel));
+      modalBody.textContent = String(t.transcript == null ? "" : t.transcript);
+    } catch (err) {
+      var message = (err && err.message) ? err.message : String(err);
+      transcriptError("Network error: " + message);
+    }
+  }
+
+  modalClose.addEventListener("click", closeTranscriptModal);
+  modal.addEventListener("click", function (event) {
+    if (event.target === modal) { closeTranscriptModal(); }
+  });
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" && !modal.hidden) { closeTranscriptModal(); }
+  });
 
   function truncateText(value, limit) {
     var s = String(value == null ? "" : value);
@@ -891,11 +1095,14 @@
       }));
 
       var actions = domEl("div", "ev-actions");
-      rows.forEach(function () {
+      rows.forEach(function (row) {
+        var transcriptId = hitId(row);
         var preview = domEl("button", "ev-preview", "Preview");
         preview.type = "button";
-        preview.disabled = true;
-        preview.title = "transcript inspector \u2014 upcoming";
+        preview.setAttribute("data-transcript-id", transcriptId);
+        preview.addEventListener("click", function () {
+          openTranscript(preview.getAttribute("data-transcript-id"));
+        });
         actions.appendChild(preview);
       });
       details.appendChild(actions);
@@ -949,15 +1156,27 @@
     summary.textContent = "Transcripts & entities \u2014 " + count + " item" + (count === 1 ? "" : "s");
     details.appendChild(summary);
 
+    var gdb = gdbBase(meta.graphdb_url);
+
     if (ids.length) {
       var chips = domEl("div", "ev-chips");
-      ids.forEach(function (id) { chips.appendChild(domEl("span", "ev-chip", id)); });
+      ids.forEach(function (id) {
+        var chip = domEl("span", "ev-chip");
+        var iri = "https://example.org/sales-kg/resource/Transcript_" + id;
+        var a = document.createElement("a");
+        a.href = gdb + "/graphs-visualizations?uri=" + encodeURIComponent(iri) + "&role=subject";
+        a.textContent = id;
+        a.title = iri;
+        a.target = "_blank";
+        a.rel = "noopener";
+        chip.appendChild(a);
+        chips.appendChild(chip);
+      });
       details.appendChild(chips);
     }
 
     if (iris.length) {
       var list = domEl("ul", "ev-entities");
-      var gdb = gdbBase(meta.graphdb_url);
       iris.forEach(function (iri) {
         var li = document.createElement("li");
         var a = document.createElement("a");

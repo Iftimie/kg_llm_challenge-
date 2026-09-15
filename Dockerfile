@@ -30,7 +30,7 @@ ENV PATH="/usr/local/bin:${PATH}" \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     GRAPHDB_URL="http://graphdb:7200" \
-    ANSWERER="pydantic" \
+    ANSWERER="agent" \
     PORT="8000"
 
 # entrypoint.sh does the runtime opencode config swap. Normalize CRLF line
