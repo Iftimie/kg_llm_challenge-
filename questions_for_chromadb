@@ -1,0 +1,17 @@
+Start with something semantic but still easy to verify:
+
+What did the customer say about security, SSO, or data residency?
+
+That should strongly retrieve T001.
+
+A few other good tests:
+
+Which customer was interested in expanding deployment to multiple factories?
+What concerns did customers raise about pricing?
+Who wanted better forecast accuracy before a larger rollout?
+Which conversation mentioned model governance and explainability?
+What customer discussed using one wind farm as a proof of value?
+
+The useful test is that the wording does not need to exactly match the transcript. For example:
+
+Which customer was worried about authentication and where their data is stored?
