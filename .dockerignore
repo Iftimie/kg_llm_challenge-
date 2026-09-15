@@ -1,0 +1,16 @@
+# Build context exclusions. Keep chroma_db/ IN the image (small, needed for
+# vector search); exclude heavy/venv/git/log/runtime artifacts.
+.venv/
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+.git/
+.gitignore
+.opencode/node_modules/
+.opencode/.gitignore
+logs/
+out.jsonl
+err.txt
+*.log
+.DS_Store
