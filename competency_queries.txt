@@ -1,81 +1,181 @@
-to get the blockers for D001, together with the evidence from the transcript:
+SPARQL EXAMPLES
 
+Use these examples as patterns for generating SPARQL queries from user questions.
+
+---
+
+Example 1
+
+User question:
+
+What are the blockers for deal D001, including transcript evidence?
+
+SPARQL:
 
 PREFIX crm: <https://example.org/sales-kg/>
 PREFIX res: <https://example.org/sales-kg/resource/>
 
 SELECT ?blocker ?name ?speaker ?evidenceText
 WHERE {
-    res:Deal_D001 crm:hasBlocker ?blocker .
+res:Deal_D001 crm:hasBlocker ?blocker .
 
-    OPTIONAL { ?blocker crm:name ?name }
-
-    OPTIONAL {
-        ?blocker crm:supportedBy ?evidence .
-        ?evidence crm:speakerName ?speaker ;
-                  crm:evidenceText ?evidenceText .
-    }
+```
+OPTIONAL {
+    ?blocker crm:name ?name .
 }
 
+OPTIONAL {
+    ?blocker crm:supportedBy ?evidence .
+    ?evidence crm:speakerName ?speaker ;
+              crm:evidenceText ?evidenceText .
+}
+```
 
-To find the decision maker for D001:
+}
+
+---
+
+Example 2
+
+User question:
+
+Who is the decision maker for deal D001?
+
+SPARQL:
 
 PREFIX crm: <https://example.org/sales-kg/>
 PREFIX res: <https://example.org/sales-kg/resource/>
 
 SELECT ?person ?name
 WHERE {
-    ?person crm:decisionMakerFor res:Deal_D001 ;
-            crm:name ?name .
+?person crm:decisionMakerFor res:Deal_D001 ;
+crm:name ?name .
 }
 
+---
 
-To inspect buying signals for D001 with their evidence:
+Example 3
+
+User question:
+
+What buying signals exist for deal D001, including evidence from the transcript?
+
+SPARQL:
+
 PREFIX crm: <https://example.org/sales-kg/>
 PREFIX res: <https://example.org/sales-kg/resource/>
 
 SELECT ?signal ?name ?evidenceText
 WHERE {
-    res:Deal_D001 crm:hasBuyingSignal ?signal .
+res:Deal_D001 crm:hasBuyingSignal ?signal .
 
-    OPTIONAL { ?signal crm:name ?name }
-
-    OPTIONAL {
-        ?signal crm:supportedBy ?evidence .
-        ?evidence crm:evidenceText ?evidenceText .
-    }
+```
+OPTIONAL {
+    ?signal crm:name ?name .
 }
 
+OPTIONAL {
+    ?signal crm:supportedBy ?evidence .
+    ?evidence crm:evidenceText ?evidenceText .
+}
+```
 
-A useful historical query is: which won deals involve the same product as D002?
+}
+
+---
+
+Example 4
+
+User question:
+
+Which won deals involve the same product as deal D002?
+
+SPARQL:
+
 PREFIX crm: <https://example.org/sales-kg/>
 PREFIX res: <https://example.org/sales-kg/resource/>
 
 SELECT ?wonDeal ?name ?value
 WHERE {
-    res:Deal_D002 crm:involvesProduct ?product .
+res:Deal_D002 crm:involvesProduct ?product .
 
-    ?wonDeal
-        a crm:Deal ;
-        crm:involvesProduct ?product ;
-        crm:hasOutcome crm:Won ;
-        crm:name ?name ;
-        crm:dealValue ?value .
+```
+?wonDeal
+    a crm:Deal ;
+    crm:involvesProduct ?product ;
+    crm:hasOutcome crm:Won ;
+    crm:name ?name ;
+    crm:dealValue ?value .
+```
+
 }
 
-And for expansion opportunities, D002 already has a good example:
+---
+
+Example 5
+
+User question:
+
+What expansion opportunities exist for deal D002, including related products and transcript evidence?
+
+SPARQL:
+
 PREFIX crm: <https://example.org/sales-kg/>
 PREFIX res: <https://example.org/sales-kg/resource/>
 
 SELECT ?opportunity ?name ?product ?evidenceText
 WHERE {
-    res:Deal_D002 crm:hasExpansionOpportunity ?opportunity .
+res:Deal_D002 crm:hasExpansionOpportunity ?opportunity .
 
-    OPTIONAL { ?opportunity crm:name ?name }
-    OPTIONAL { ?opportunity crm:expansionInvolvesProduct ?product }
-
-    OPTIONAL {
-        ?opportunity crm:supportedBy ?evidence .
-        ?evidence crm:evidenceText ?evidenceText .
-    }
+```
+OPTIONAL {
+    ?opportunity crm:name ?name .
 }
+
+OPTIONAL {
+    ?opportunity crm:expansionInvolvesProduct ?product .
+}
+
+OPTIONAL {
+    ?opportunity crm:supportedBy ?evidence .
+    ?evidence crm:evidenceText ?evidenceText .
+}
+```
+
+}
+
+---
+
+General patterns demonstrated by these examples:
+
+* Deals use canonical URIs such as:
+  res:Deal_D001
+
+* Use ontology properties exactly as defined:
+  crm:hasBlocker
+  crm:decisionMakerFor
+  crm:hasBuyingSignal
+  crm:involvesProduct
+  crm:hasExpansionOpportunity
+  crm:supportedBy
+
+* Use OPTIONAL when descriptive or evidence fields may be missing.
+
+* Evidence is typically reached using:
+  entity -> crm:supportedBy -> evidence
+
+* Transcript evidence text is retrieved using:
+  crm:evidenceText
+
+* Speaker information is retrieved using:
+  crm:speakerName
+
+* Historical successful deals can be filtered using:
+  crm:hasOutcome crm:Won
+
+When generating new queries:
+
+* follow these URI conventions
+* use only classes and properties defined in the ontology
+* do not invent predicates
+* return valid SPARQL only

@@ -1,0 +1,1 @@
+Which open deals have at least one blocker and at least one buying signal, but no sales action currently addressing any of their blockers?

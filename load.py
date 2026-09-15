@@ -4,7 +4,7 @@ import os
 
 import requests
 
-GRAPHDB = "http://localhost:7200"
+GRAPHDB = "http://127.0.0.1:7200"
 REPO = "sales-kg"
 
 # 1. Create repo if missing (minimal free-text config)

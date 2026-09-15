@@ -1,0 +1,32 @@
+{
+  "head": {
+    "vars": [
+      "deal",
+      "name"
+    ]
+  },
+  "results": {
+    "bindings": [
+      {
+        "deal": {
+          "type": "uri",
+          "value": "https://example.org/sales-kg/resource/Deal_D002"
+        },
+        "name": {
+          "type": "literal",
+          "value": "TechNova Analytics Pilot"
+        }
+      },
+      {
+        "deal": {
+          "type": "uri",
+          "value": "https://example.org/sales-kg/resource/Deal_D001"
+        },
+        "name": {
+          "type": "literal",
+          "value": "Acme Enterprise Expansion"
+        }
+      }
+    ]
+  }
+}
