@@ -102,7 +102,7 @@
 </header>
 
 <main>
-  <form id="ingest-form">
+  <form id="ingest-form" data-testid="ingest-form">
     <h2>CSV data</h2>
     <div class="field">
       <label for="files">CRM tables (<span class="hint">.csv only</span>)</label>
@@ -114,7 +114,7 @@
     <button id="submit" type="submit">Submit CSVs</button>
   </form>
 
-  <form id="transcript-form">
+  <form id="transcript-form" data-testid="transcript-form">
     <h2>Transcript rows (CSV)</h2>
     <div class="field">
       <label for="t_file">Transcripts .csv (transcripts.csv format)</label>
@@ -124,7 +124,7 @@
     <button id="submit-transcript" type="submit">Add transcript rows</button>
   </form>
 
-  <div id="result" hidden></div>
+  <div id="result" data-testid="result" hidden></div>
 </main>
 
 <script>
@@ -224,7 +224,9 @@
     clear(result);
     result.hidden = false;
     result.appendChild(el("h2", "status-bad", "Status: " + status));
-    result.appendChild(el("div", "error-line", String(message)));
+    var errorLine = el("div", "error-line", String(message));
+    errorLine.setAttribute("data-testid", "upload-error");
+    result.appendChild(errorLine);
   }
 
   function submitRequest(url, fd, button, busyText, idleText) {

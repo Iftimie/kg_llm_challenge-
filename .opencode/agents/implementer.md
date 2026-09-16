@@ -1,7 +1,7 @@
 ---
 description: Execute one small task, verify it, report exact results.
 mode: subagent
-model: deepseek/deepseek-flash
+model: deepseek/deepseek-v4-pro
 temperature: 0.2
 permission:
   read: allow

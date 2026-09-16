@@ -286,11 +286,11 @@
 </div>
 
 <form id="composer">
-  <input id="message" type="text" placeholder="Ask a question about the sales data..." autocomplete="off">
-  <button id="send" type="submit">Send</button>
+  <input id="message" type="text" placeholder="Ask a question about the sales data..." autocomplete="off" data-testid="chat-input">
+  <button id="send" type="submit" data-testid="send-button">Send</button>
 </form>
 
-<div id="transcript-modal" class="modal-overlay" hidden>
+<div id="transcript-modal" class="modal-overlay" data-testid="transcript-modal" hidden>
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="transcript-modal-title">
     <div class="modal-header">
       <div id="transcript-modal-title" class="modal-title">Transcript</div>
@@ -370,6 +370,7 @@
       a.textContent = display;
       a.target = "_blank";
       a.rel = "noopener";
+      a.setAttribute("data-testid", "visual-link");
       return a;
     }
 
@@ -520,6 +521,17 @@
   function addRow(role, text, extraClass, gdb) {
     var row = document.createElement("div");
     row.className = "row " + (extraClass || role.toLowerCase());
+    // Assistant rows are the clickable answer cards; user rows are just turns.
+    // The transient "Thinking…" placeholder (extraClass contains "pending") is
+    // not the real answer, so it gets its own testid. Every other assistant row
+    // is "assistant-answer"; non-assistant rows are "message-row".
+    if (role === "Assistant" && (extraClass || "").indexOf("pending") !== -1) {
+      row.setAttribute("data-testid", "assistant-pending");
+    } else if (role === "Assistant") {
+      row.setAttribute("data-testid", "assistant-answer");
+    } else {
+      row.setAttribute("data-testid", "message-row");
+    }
 
     var label = document.createElement("span");
     label.className = "label";
@@ -1012,6 +1024,7 @@
     var err = toolError(src) || recordError(src);
     var zero = !err && rowCount === 0 && rows.length === 0;
     var details = domEl("details", "ev-section");
+    details.setAttribute("data-testid", "evidence-section");
     details.open = !zero;
 
     var summary = domEl("summary", "ev-summary");
@@ -1054,6 +1067,7 @@
     var zero = !err && count === 0;
 
     var details = domEl("details", "ev-section");
+    details.setAttribute("data-testid", "evidence-section");
     details.open = !zero;
 
     var summary = domEl("summary", "ev-summary");
@@ -1151,6 +1165,7 @@
     var count = ids.length + iris.length;
 
     var details = domEl("details", "ev-section");
+    details.setAttribute("data-testid", "evidence-section");
     details.open = count > 0;
 
     var summary = domEl("summary", "ev-summary");
@@ -1170,6 +1185,7 @@
         a.title = iri;
         a.target = "_blank";
         a.rel = "noopener";
+        a.setAttribute("data-testid", "visual-link");
         chip.appendChild(a);
         chips.appendChild(chip);
       });
@@ -1186,6 +1202,7 @@
         a.title = iri;
         a.target = "_blank";
         a.rel = "noopener";
+        a.setAttribute("data-testid", "visual-link");
         li.appendChild(a);
         list.appendChild(li);
       });
@@ -1222,6 +1239,7 @@
 
     var steps = (typeof meta.steps === "number") ? meta.steps : sources.length;
     var header = domEl("div", "ev-headline");
+    header.setAttribute("data-testid", "evidence-headline");
     var bits = [meta.engine || "(unknown engine)"];
     var model = shortModel(meta.model);
     if (model) { bits.push(model); }
@@ -1247,7 +1265,9 @@
 
     var checked = buildHowChecked(sources);
     if (checked) {
-      evidenceBody.appendChild(domEl("div", "ev-checked", checked));
+      var checkedEl = domEl("div", "ev-checked", checked);
+      checkedEl.setAttribute("data-testid", "evidence-checked");
+      evidenceBody.appendChild(checkedEl);
     }
 
     var renderedKg = false;

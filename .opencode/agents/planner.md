@@ -1,7 +1,7 @@
 ---
 description: Analyze a task and return a short concrete implementation plan. No code changes.
 mode: subagent
-model: deepseek/deepseek-flash
+model: deepseek/deepseek-v4-pro
 temperature: 0.2
 permission:
   read: allow

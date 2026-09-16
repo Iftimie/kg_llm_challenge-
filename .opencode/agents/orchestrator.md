@@ -1,7 +1,7 @@
 ---
 description: Turn a project description into a plan, delegate to cheap DeepSeek workers, verify and checkpoint.
 mode: primary
-model: openrouter/meta/muse-spark-1.3-contributor
+model: deepseek/deepseek-v4-pro
 temperature: 0.2
 permission:
   read: allow

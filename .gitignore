@@ -3,3 +3,6 @@ __pycache__
 chroma_db
 logs
 data/
+node_modules/
+test-results/
+playwright-report/
