@@ -306,7 +306,7 @@ erDiagram
 - **Read-only GraphDB** — `BLOCKED` keywords reject writes:
   `INSERT DELETE CLEAR DROP CREATE LOAD MOVE COPY ADD` (uppercase only).
 - **Prompt safety (3 layers)** — L1 always-on validator: max 4000 chars,
-  jailbreak phrases, SPARQL-write regex → 400. L2 sandbox (static test).
+  jailbreak phrases, SPARQL-write regex → 400. L2 sandbox . Agent is only in read mode.
   L3 optional classifier (`PROMPT_GUARD=off|classifier`).
 - **GraphDB** — security ON with demo creds `reader`/`reader` (read-only) and
   `admin`/`admin` (ingest). Auto-secure at boot, auto-provision a reader per
@@ -319,7 +319,6 @@ erDiagram
 sequenceDiagram
     participant U as User
     participant B as Backend
-    participant F as Answerer factory
     participant A as OpenCode agent
     participant M as MCP tools
     participant D as GraphDB/Chroma/BM25
@@ -327,15 +326,13 @@ sequenceDiagram
 
     U->>B: POST /api/chat {message, history}
     B->>B: validate (400 on jailbreak/SPARQL-write/too long)
-    B->>F: get_answerer()
-    F->>A: answer(message, history)
+    B->>A: answer(message, history)
     A->>A: run "opencode run --format json" (subprocess)
     A->>M: tool calls (query_kg / keyword / semantic / get_transcript)
     M->>D: read-only queries
     D-->>M: results
     M-->>A: results (also logged to mcp_calls.jsonl)
-    A-->>F: {answer, sources, meta}
-    F-->>B: ChatResponse
+    A-->>B: {answer, sources, meta}
     B->>P: persist user + assistant messages
     B-->>U: {answer, sources, meta}
 ```
@@ -463,7 +460,7 @@ discovery / maintenance" component plus a review step. It would sit alongside
 the existing ingestion pipeline as a new component, leaving the current
 read-only retrieval path unchanged.
 
-## 14. Trade-offs (from prior sessions)
+## 14. Trade-offs (from prior experiments)
 
 - **Agent harness = OpenCode**, not a custom loop or LangChain/LlamaIndex.
   Reason: don't build a framework; keep the tool loop, JSON trace and grounding.
@@ -471,4 +468,53 @@ read-only retrieval path unchanged.
   tool use is "model writes + executes Python" (CodeAct), which is a security
   downgrade vs our structured read-only MCP tools. Its typed-output win is
   already covered by PydanticAI, which we already ship.
+
+## 15. Production & scale considerations
+
+This is a prototype. The points below are the delta between "runs on one box"
+and "runs safely at scale" — what a real deployment would have to address.
+
+- **Identity & secrets.** Hand-rolled JWT + `bcrypt` and demo GraphDB creds
+  (`reader`/`reader`, `admin`/`admin`) are explicitly *not* production security.
+   A real system needs an OIDC/OAuth2 identity provider, a secret
+  manager with rotation, per-service credentials, and no shared demo accounts.
+- **Multi-user correctness.** The agent harness assumes a *single user/session
+  at a time*: `opencode.py` attributes tool calls by reading the shared MCP log
+  by byte offset, so concurrent requests would mis-attribute traces. Production
+  needs per-request isolation, no shared mutable trace files, and tenant-scoped
+  data (chats/jobs are already user-scoped; retrieval data is global).
+- **Agent execution.** One `opencode run` subprocess per request, capped at a
+  300s timeout, with no concurrency control, streaming, retry/backoff, or
+  circuit breaker. At scale this needs queued/concurrent agent runs, streaming
+  responses, bounded latency and per-request LLM cost budgets, plus a query
+  cache (none exists today).
+- **Read-only KG boundary.** The SPARQL-write guard is a coarse uppercase
+  keyword blocklist; the real boundary is the read-only GraphDB user plus the
+  5-tool sandbox. Production would move to GraphDB ACL/roles, query timeouts and
+  result-row caps, and a proper SPARQL firewall (parse + allowlist) rather than
+  a string filter.
+- **Storage & durability.** Chroma, BM25, `kg.nt` and the CSVs all live on local
+  disk; MinIO and persistence (M7/M8) were skipped. Production needs object
+  storage for uploads/artifacts, persistent volumes, database high availability
+  (Postgres replicas, GraphDB cluster), and backups.
+- **Ingestion & data quality.** A single worker with a `SKIP LOCKED` queue, the
+  known ingest-credential 403 issue, and slow/expensive LLM transcript
+  extraction (3 of 10 transcripts never extracted). Production needs multiple
+  workers, idempotent + retried jobs with a dead-letter queue, extraction cost
+  control (batching, caching, caps), and data-quality monitoring.
+- **Safety at scale.** The deterministic blocklist is brittle; upload/rate
+  hardening (M6) was skipped and CORS is `*`. Production adds edge rate
+  limiting/WAF, upload size and count caps, semantic moderation, locked-down
+  CORS — while keeping the deterministic fail-closed validator.
+- **Observability.** Today's only telemetry is JSON-lines files on disk
+  (`mcp_calls.jsonl`, `tool_calls.jsonl`). Production needs structured logging,
+  metrics, distributed tracing (OpenTelemetry), LLM cost tracking, and alerting
+  on failures, latency and answer quality.
+- **Privacy / PII.** Transcripts contain real customer PII (names, emails,
+  quotes). Production requires encryption at rest and in transit, retention and
+  deletion policies, access controls, and consent/redaction (GDPR).
+- **Schema & ontology governance.** The fixed CSV schema and pregenerated
+  ontology (§3) would need versioning and migration tooling, and — if the
+  experimental auto-discovery path (§13) is pursued — an approval workflow with
+  rollback before new terms are committed automatically.
 
