@@ -38,7 +38,7 @@ flowchart LR
     M --> KG[(GraphDB)]
     M --> V[(Chroma)]
     M --> K[(BM25)]
-    M --> T[(transcripts.csv)]
+    M --> T[ObjectStorage]
     B --> Q[(Postgres: users/chats/messages/jobs)]
     B --> W[Ingest job queue]
     W --> I[Worker]
@@ -46,6 +46,8 @@ flowchart LR
     ING --> KG
     ING --> V
     ING --> K
+    ING --> T
+
 ```
 
 - **UI** — two static pages (`index.html` chat, `ingest.html`). Vanilla JS, no
