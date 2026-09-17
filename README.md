@@ -7,9 +7,7 @@ knowledge graph, a vector index and a keyword index.
 
 ## Demo
 
-<video src="tutorial.mp4" controls width="720"></video>
-
-[Watch the demo tutorial](tutorial.mp4)
+[![Watch the demo](preview.png)](tutorial.mp4)
 
 ## 1. What it does
 
@@ -36,7 +34,8 @@ knowledge graph, a vector index and a keyword index.
 
 The system expects two kinds of input, both expressed as CSVs.
 
-<div style="max-height: 400px; overflow-y: auto; border: 1px solid #ccc; padding: 8px 12px;">
+<details>
+<summary><strong>View fixed CRM schema examples</strong></summary>
 
 <p><strong>Structured CRM tables</strong> — five files joined by <code>account_id</code> / <code>deal_id</code> / <code>contact_id</code> / <code>owner_id</code>. One real sample record per file (<code>datasets/first_ingestion/</code>):</p>
 
@@ -78,7 +77,7 @@ Sarah: What's preventing that decision?
 Anna Keller: Mostly pricing. If we deploy at all three locations, procurement expects a better price than what is currently in the proposal.
 Markus Vogel: From my side, I also still need confirmation regarding SSO and data residency.</pre>
 
-</div>
+</details>
 
 **Transcripts** — the raw call/meeting/email text (`transcript` column) plus
 metadata tying it to a deal, account and contacts. Each transcript is ingested
@@ -186,7 +185,9 @@ also shown a handful of worked SPARQL examples (`competency_queries.txt`).
 Because the ontology is fixed, the agent only ever queries against known terms —
 it is told *not* to invent predicates.
 
-<div style="max-height: 400px; overflow-y: auto; border: 1px solid #ccc; padding: 8px 12px;">
+<details>
+<summary><strong>View fixed ontology</strong></summary>
+
 @prefix crm:  <https://example.org/sales-kg/> . <br>
 @prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> . <br>
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> . <br>
@@ -235,7 +236,7 @@ crm:Email <br>
  <br>
 crm:Transcript a owl:Class . <br>
  <br>
-</div>
+</details>
 
 The full TTL lives at
 [`sales_kg_ontology_v1_llm_friendly.ttl`](sales_kg_ontology_v1_llm_friendly.ttl);
@@ -464,26 +465,29 @@ ontology per CSV, the pipeline could ask:
 
 ```mermaid
 sequenceDiagram
-    participant U as Upload (new CSV)
-    participant I as Ingestion pipeline
-    participant O as Ontology service
-    participant K as KG (GraphDB)
+    participant U as "Upload (new CSV)"
+    participant I as "Ingestion pipeline"
+    participant O as "Ontology service"
+    participant K as "KG (GraphDB)"
 
     U->>I: new_table.csv (unknown shape)
-    I->>O: do we have an ontology for this shape?
-    alt ontology known (today)
-        O-->>I: yes -> reuse mappings
-        I->>I: map CSV -> RDF with known ontology
-    else ontology unknown (experimental)
-        O-->>I: no
-        I->>O: inspect CSV; propose entities + relationships (LLM)
-        O->>O: draft ontology fragment + triples
-        O->>O: approval gate (human / policy)
-        Note over O: approve / edit / reject
-        O-->>I: approved ontology fragment
-        I->>I: append ontology + generate triples
+    I->>O: Do we already have an ontology for this schema?
+
+    alt Ontology known
+        O-->>I: Yes, reuse existing mappings
+        I->>I: Map CSV to RDF using known ontology
+
+    else Ontology unknown
+        O-->>I: No
+        I->>O: Inspect CSV and propose entities and relationships
+        O->>O: Draft ontology fragment
+        O->>O: Run approval gate
+        Note over O: Human or policy approval<br/>Approve / edit / reject
+        O-->>I: Return approved ontology fragment
+        I->>I: Generate RDF triples using approved ontology
     end
-    I->>K: load triples (+ new ontology terms)
+
+    I->>K: Load triples and ontology terms
 ```
 
 This is the direction a *flexible* schema would take: the static CSV mapping
