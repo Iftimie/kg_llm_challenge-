@@ -224,7 +224,7 @@ def ensure_transcripts_csv(target_dir) -> Path:
     return path
 
 
-_TRANSCRIPT_FIELDS = [
+TRANSCRIPT_FIELDS = (
     "transcript_id",
     "deal_id",
     "account_id",
@@ -232,7 +232,9 @@ _TRANSCRIPT_FIELDS = [
     "activity_date",
     "channel",
     "transcript",
-]
+)
+
+_TRANSCRIPT_FIELDS = list(TRANSCRIPT_FIELDS)
 
 
 def append_transcript_rows(target_dir, rows) -> list:

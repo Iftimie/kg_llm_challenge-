@@ -18,7 +18,6 @@ from __future__ import annotations
 
 import json
 import logging
-import re
 from pathlib import Path
 
 from pydantic_ai import Agent
@@ -40,6 +39,12 @@ except ImportError:  # pragma: no cover - older pydantic-ai
 from pydantic_ai.providers.openai import OpenAIProvider
 
 from app import config
+from app.backend.trace_helpers import (
+    extract_iris as _extract_iris,
+    normalize_hit as _normalize_hit,
+    sparql_bindings as _sparql_bindings,
+    truncate as _truncate,
+)
 from app.backend.schemas import ChatResponse
 from app.mcp.guards import MAX_ROWS, MAX_TOP_K, SPARQL_TIMEOUT, assert_readonly, clamp_top_k
 from app.retrieval import keyword, kg, transcripts, vector
@@ -52,7 +57,6 @@ _SYSTEM_PROMPT = Path(__file__).resolve().parents[2] / "agent" / "system.md"
 # Trace-shaping caps, matching app.agent.opencode: hits lists capped at 5 and the
 # longest string kept per hit is 500 chars.
 _MAX_HITS = 5
-_HIT_CHARS = 500
 # Input keys kept in the source record (same set the MCP call log keeps).
 _INPUT_KEEP = ("sparql", "query", "top_k", "transcript_id")
 _INPUT_CHARS = 2000
@@ -160,49 +164,6 @@ def _history_messages(history):
     return messages or None
 
 
-def _truncate(value, limit: int = _HIT_CHARS) -> str:
-    """Render ``value`` as a string no longer than ``limit`` characters."""
-    if isinstance(value, str):
-        text = value
-    else:
-        try:
-            text = json.dumps(value, ensure_ascii=False, default=str)
-        except (TypeError, ValueError):
-            text = str(value)
-    return text[:limit]
-
-
-def _normalize_hit(item, limit: int = _HIT_CHARS):
-    """Keep dict hits as dicts (truncate long string values); stringify the rest."""
-    if isinstance(item, dict):
-        return {
-            key: (value[:limit] if isinstance(value, str) and len(value) > limit else value)
-            for key, value in item.items()
-        }
-    return _truncate(item, limit)
-
-
-def _sparql_bindings(value):
-    """Return ``results.bindings`` if ``value`` looks like SPARQL JSON."""
-    node = value
-    if isinstance(node, str):
-        stripped = node.strip()
-        if not stripped.startswith("{"):
-            return None
-        try:
-            node = json.loads(stripped)
-        except (ValueError, TypeError):
-            return None
-    if not isinstance(node, dict):
-        return None
-    results = node.get("results")
-    if isinstance(results, dict) and isinstance(results.get("bindings"), list):
-        return results.get("bindings")
-    if isinstance(node.get("bindings"), list):
-        return node.get("bindings")
-    return None
-
-
 def _hits_total(value):
     """Return ``(hits, total)`` for a tool return value, capped and truncated."""
     bindings = _sparql_bindings(value)
@@ -284,24 +245,6 @@ def _sources_from_messages(messages) -> list:
                 record["ok"] = True
             sources.append(record)
     return sources
-
-
-def _extract_iris(*texts, limit=20):
-    """Pull absolute http(s) IRIs out of arbitrary text, deduped in order.
-
-    Copied from the baseline answerer's helper so this module stays standalone.
-    """
-    seen = set()
-    iris = []
-    for text in texts:
-        for match in re.findall(r"https?://[^\s<>\"']+", text or ""):
-            iri = match.rstrip(".,;)]`")
-            if iri and iri not in seen:
-                seen.add(iri)
-                iris.append(iri)
-                if len(iris) >= limit:
-                    return iris
-    return iris
 
 
 def answer(question: str, history=None) -> ChatResponse:

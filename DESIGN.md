@@ -1,4 +1,12 @@
 Sales Intelligence KG + Hybrid Retrieval — Refactor / Productization Plan
+
+> **Status (M0–M12):** the plan below is largely implemented. M0 net
+> (pytest + Playwright + UI), M1 read-only guards, M2 Postgres, M3 auth, M4
+> GraphDB security/proxy, M5 prompt safety, M9 async ingestion queue + worker,
+> M11 `contact_ids` required, and M12 cleanup/dedup are done. M6/M7/M8/M10 were
+> skipped and M13 (final E2E) is not started. See `README.md` for the runbook
+> and `PLAN.md` for per-milestone detail.
+
 Objective
 
 Take the current experimental repository and evolve it into a tidy, understandable, moderately scalable application while preserving the working pieces that already exist.

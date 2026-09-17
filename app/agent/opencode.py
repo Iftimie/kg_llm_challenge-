@@ -13,11 +13,17 @@ provider when the host actually runs it.
 from __future__ import annotations
 
 import json
-import re
 import subprocess
 from pathlib import Path
 
 from app import config
+
+from app.backend.trace_helpers import (
+    extract_iris as _extract_iris,
+    normalize_hit as _normalize_hit,
+    sparql_bindings as _sparql_bindings,
+    truncate as _truncate,
+)
 
 _ENGINE = "agent"
 _SYSTEM_PROMPT = Path(__file__).with_name("system.md")
@@ -40,10 +46,7 @@ _TEXT_BLOCK_TYPES = ("text",)
 # Trace-shaping caps: hits lists and the longest string kept per hit.
 _KG_HITS = 5
 _SEARCH_HITS = 5
-_HIT_CHARS = 500
 _COLOCATED_LINES = 3
-
-_IRI_RE = re.compile(r"https?://[^\s<>\"'`]+")
 
 
 def _resolve_model() -> str:
@@ -287,54 +290,6 @@ def _payload_tool(node, events, index):
     return names
 
 
-def _truncate(value, limit=_HIT_CHARS):
-    """Render ``value`` as a string no longer than ``limit`` characters."""
-    if isinstance(value, str):
-        text = value
-    else:
-        try:
-            text = json.dumps(value, ensure_ascii=False, default=str)
-        except (TypeError, ValueError):
-            text = str(value)
-    return text[:limit]
-
-
-def _normalize_hit(item, limit=_HIT_CHARS):
-    """Keep dict hits as dicts; truncate only long string values.
-
-    List payloads (keyword/vector search) carry dict hits whose ``id``/``score``
-    columns the UI renders directly. Stringifying the whole item would blank
-    those columns, so dicts are preserved with their keys intact.
-    """
-    if isinstance(item, dict):
-        return {
-            key: (value[:limit] if isinstance(value, str) and len(value) > limit else value)
-            for key, value in item.items()
-        }
-    return _truncate(item, limit)
-
-
-def _sparql_bindings(value):
-    """Return ``results.bindings`` if ``value`` looks like SPARQL JSON."""
-    node = value
-    if isinstance(node, str):
-        stripped = node.strip()
-        if not stripped.startswith("{"):
-            return None
-        try:
-            node = json.loads(stripped)
-        except (ValueError, TypeError):
-            return None
-    if not isinstance(node, dict):
-        return None
-    results = node.get("results")
-    if isinstance(results, dict) and isinstance(results.get("bindings"), list):
-        return results.get("bindings")
-    if isinstance(node.get("bindings"), list):
-        return node.get("bindings")
-    return None
-
-
 def _unwrap_payload(value):
     """Unwrap a FastMCP ``{"content": [{"type": "text", ...}]}`` envelope.
 
@@ -530,20 +485,6 @@ def _parse_events(text):
                 break
 
     return answer, sources
-
-
-def _extract_iris(text, limit=20):
-    """Pull absolute http(s) IRIs out of ``text``, deduped in order."""
-    seen = set()
-    iris = []
-    for match in _IRI_RE.findall(text or ""):
-        iri = match.rstrip(".,;:)]`")
-        if iri and iri not in seen:
-            seen.add(iri)
-            iris.append(iri)
-            if len(iris) >= limit:
-                break
-    return iris
 
 
 def _diff_calls(path, since):
