@@ -5,7 +5,7 @@ import pathlib
 
 import requests
 
-REPO_ROOT = pathlib.Path(__file__).parent
+REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 
 
 def load(kg_nt=None, ontology=None, extracted_dir=None) -> dict:
@@ -18,8 +18,8 @@ def load(kg_nt=None, ontology=None, extracted_dir=None) -> dict:
     Returns a summary dict: {repo, total_triples, loaded}.
     """
     kg_nt = pathlib.Path(kg_nt) if kg_nt is not None else REPO_ROOT / "kg.nt"
-    ontology = pathlib.Path(ontology) if ontology is not None else REPO_ROOT / "sales_kg_ontology_v1_llm_friendly.ttl"
-    data_dir = pathlib.Path(os.environ.get("DATA_DIR", str(REPO_ROOT / "mock_crm_dataset")))
+    ontology = pathlib.Path(ontology) if ontology is not None else REPO_ROOT / "ontology" / "sales_kg_ontology_v1_llm_friendly.ttl"
+    data_dir = pathlib.Path(os.environ.get("DATA_DIR", str(REPO_ROOT / "datasets" / "first_ingestion")))
     extracted_dir = pathlib.Path(extracted_dir) if extracted_dir is not None else data_dir / "extracted"
 
     GRAPHDB = os.environ.get("GRAPHDB_URL", "http://127.0.0.1:7200")

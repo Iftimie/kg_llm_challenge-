@@ -290,7 +290,7 @@ Kubernetes, microservices, LangChain/LlamaIndex, custom agent framework, CI/CD.
   Files: `app/ingestion/service.py` (header, `_TRANSCRIPT_FIELDS`, required list),
   `app/backend/ingest.py` (reject rows missing `contact_ids` instead of inserting `""`),
   `app/retrieval/transcripts.py` (`_FIELDS` gains `contact_ids`, returned as list),
-  backfill script (invent `C000`) applied to `mock_crm_dataset/transcripts.csv`,
+  backfill script (invent `C000`) applied to `datasets/first_ingestion/transcripts.csv`,
   `data/ingest/transcripts.csv`, `data/new_crm/transcripts.csv`,
   `tests/fixtures/new_crm/transcripts.csv`, `ui/index.html` (transcript modal shows
   contacts + `transcript-modal/contact-ids` hooks).

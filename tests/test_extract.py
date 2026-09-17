@@ -6,7 +6,7 @@ import csv
 
 import pytest
 
-import extract
+from app.ingestion import extract
 from app import config
 
 VALID_TURTLE = (
@@ -58,6 +58,8 @@ def test_generate_missing_key_raises(monkeypatch):
 
 def test_extract_loop_writes_ttl_and_failures(monkeypatch, tmp_path):
     # Minimal repo-root fixtures used by extract().
+    (tmp_path / "prompts").mkdir()
+    (tmp_path / "ontology").mkdir()
     prompt_template = (
         "ONTOLOGY\n{{ONTOLOGY\\_TTL}}\n"
         "CONTEXT\n{{CRM\\_CONTEXT}}\n"
@@ -65,8 +67,8 @@ def test_extract_loop_writes_ttl_and_failures(monkeypatch, tmp_path):
         "date {{ACTIVITY\\_DATE}} channel {{CHANNEL}}\n"
         "TRANSCRIPT\n{{TRANSCRIPT}}\n"
     )
-    (tmp_path / "TranscriptRDFTurtleExtractionPrompt.md").write_text(prompt_template, encoding="utf-8")
-    (tmp_path / "sales_kg_ontology_v1.ttl").write_text(
+    (tmp_path / "prompts" / "TranscriptRDFTurtleExtractionPrompt.md").write_text(prompt_template, encoding="utf-8")
+    (tmp_path / "ontology" / "sales_kg_ontology_v1.ttl").write_text(
         "@prefix crm: <https://example.org/sales-kg/> .\n", encoding="utf-8"
     )
     (tmp_path / "kg.nt").write_text(
@@ -134,10 +136,12 @@ def test_extract_loop_writes_ttl_and_failures(monkeypatch, tmp_path):
 
 def test_extract_ids_filters_rows(monkeypatch, tmp_path):
     """A non-empty ``ids`` list extracts only those transcript_ids."""
-    (tmp_path / "TranscriptRDFTurtleExtractionPrompt.md").write_text(
+    (tmp_path / "prompts").mkdir()
+    (tmp_path / "ontology").mkdir()
+    (tmp_path / "prompts" / "TranscriptRDFTurtleExtractionPrompt.md").write_text(
         "id {{TRANSCRIPT\\_ID}} body {{TRANSCRIPT}}\n", encoding="utf-8"
     )
-    (tmp_path / "sales_kg_ontology_v1.ttl").write_text(
+    (tmp_path / "ontology" / "sales_kg_ontology_v1.ttl").write_text(
         "@prefix crm: <https://example.org/sales-kg/> .\n", encoding="utf-8"
     )
     (tmp_path / "kg.nt").write_text(

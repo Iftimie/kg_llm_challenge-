@@ -85,18 +85,16 @@ ANSWERER = os.environ.get("ANSWERER", "agent")
 EMBEDDING_MODEL = os.environ.get("EMBEDDING_MODEL", "chroma-default")
 
 # --- Paths (relative to the repository root) ----------------------------------
-ONTOLOGY_PATH = REPO_ROOT / "sales_kg_ontology_v1_llm_friendly.ttl"  # canonical ontology
-BASE_ONTOLOGY_PATH = REPO_ROOT / "sales_kg_ontology_v1.ttl"
-SHAPES_PATH = REPO_ROOT / "shapes.ttl"
-MAPPINGS_PATH = REPO_ROOT / "mappings.ttl"
-MORPH_INI = REPO_ROOT / "morph.ini"
-CRM_DIR = REPO_ROOT / "mock_crm_dataset"
-DATA_DIR = Path(os.environ.get("DATA_DIR", str(REPO_ROOT / "mock_crm_dataset")))
+ONTOLOGY_PATH = REPO_ROOT / "ontology" / "sales_kg_ontology_v1_llm_friendly.ttl"  # canonical ontology
+BASE_ONTOLOGY_PATH = REPO_ROOT / "ontology" / "sales_kg_ontology_v1.ttl"
+SHAPES_PATH = REPO_ROOT / "ontology" / "shapes.ttl"
+MAPPINGS_PATH = REPO_ROOT / "ontology" / "mappings.ttl"
+DATA_DIR = Path(os.environ.get("DATA_DIR", str(REPO_ROOT / "datasets" / "first_ingestion")))
 KG_NT = REPO_ROOT / "kg.nt"
 EXTRACTED_DIR = DATA_DIR / "extracted"
 CHROMA_DIR = REPO_ROOT / "chroma_db"
 QA_DIR = REPO_ROOT / "qa"
-COMPETENCY_QUERIES = REPO_ROOT / "competency_queries.txt"
+COMPETENCY_QUERIES = REPO_ROOT / "prompts" / "competency_queries.txt"
 
 # --- Logging ------------------------------------------------------------------
 LOG_FILE = Path(os.environ.get("LOG_FILE", REPO_ROOT / "logs" / "app.log"))

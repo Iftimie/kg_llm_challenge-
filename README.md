@@ -59,7 +59,7 @@ to set:
 | `GRAPHDB_AUTO_SECURE` | `1` | auto-enable GraphDB security at boot (`0` to skip) |
 | `GRAPHDB_AUTO_PROVISION` | `1` | provision a read-only GraphDB user per registration (`0` to skip) |
 | `DATABASE_URL` | `postgresql+psycopg://sales:sales@localhost:5432/sales` | app DB |
-| `DATA_DIR` | `mock_crm_dataset` | working CSV dir (compose mounts `./data/ingest`) |
+| `DATA_DIR` | `datasets/first_ingestion` | working CSV dir (compose mounts `./data/ingest`) |
 | `PROMPT_GUARD` | `off` | `off` or `classifier` (a deterministic validator is always on) |
 | `INGEST_CONCURRENCY` | `2` | max concurrently-running ingest jobs per worker |
 | `RATE_LIMIT_CHAT_PER_MIN` | `10` | per-user chat requests/min (`0` disables) |
@@ -93,12 +93,15 @@ app/
   agent/            OpenCode harness + system.md agent instructions
   mcp/              MCP server (5 tools) + guards
   retrieval/        kg (SPARQL), vector (Chroma), keyword (BM25), transcripts
-  ingestion/        service.run / merge / append / process_job
+  ingestion/        service.run / merge / append / process_job + pipeline scripts
   auth/             JWT + GraphDB provisioning
   safety/           prompt validator + optional classifier
   queue/            DB-backed job queue + worker
   db/               SQLAlchemy models/engine/session
-build.py ...        root pipeline scripts (build, extract, index_transcripts, load)
+ontology/            TTL ontology, SHACL shapes, R2RML mappings
+prompts/             extraction prompt + SPARQL example queries
+datasets/            CRM source data (first_ingestion/ = seed, second_ingestion/ = extra)
+docs/                challenge/notes documents
 ui/                 static chat + ingest pages
 tests/              pytest (offline default) + Playwright e2e + ui.test.mjs
 ```

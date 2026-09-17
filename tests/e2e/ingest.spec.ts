@@ -1,5 +1,5 @@
 // Real-backend ingest specs. These are the one place the browser suite writes
-// to the live dev DATA_DIR (mock_crm_dataset/). Ids A999 and T990 are reserved
+// to the live dev DATA_DIR (datasets/first_ingestion/). Ids A999 and T990 are reserved
 // for this spec; M9 will move ingestion behind an isolated job/staging dir.
 //
 // The accounts.csv payload must repeat the existing table header: merge_csv_files

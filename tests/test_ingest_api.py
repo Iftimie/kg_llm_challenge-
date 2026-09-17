@@ -12,8 +12,8 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
-import extract
-import load as load_mod
+from app.ingestion import extract
+from app.ingestion import load as load_mod
 from app import config
 from app.backend.app import app
 from app.queue.worker import wait_for_job
@@ -62,10 +62,12 @@ def transcript_env(tmp_path, monkeypatch):
     monkeypatch.setattr(extract, "REPO_ROOT", tmp_path)
 
     # extract() reads the prompt template, ontology and kg.nt from REPO_ROOT.
-    (tmp_path / "TranscriptRDFTurtleExtractionPrompt.md").write_text(
+    (tmp_path / "prompts").mkdir()
+    (tmp_path / "ontology").mkdir()
+    (tmp_path / "prompts" / "TranscriptRDFTurtleExtractionPrompt.md").write_text(
         "id {{TRANSCRIPT\\_ID}} body {{TRANSCRIPT}}\n", encoding="utf-8"
     )
-    (tmp_path / "sales_kg_ontology_v1.ttl").write_text(
+    (tmp_path / "ontology" / "sales_kg_ontology_v1.ttl").write_text(
         "@prefix crm: <https://example.org/sales-kg/> .\n", encoding="utf-8"
     )
     (tmp_path / "kg.nt").write_text(

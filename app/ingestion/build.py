@@ -10,12 +10,12 @@ from rdflib import Graph, Namespace
 CRM = Namespace("https://example.org/sales-kg/")
 RES = Namespace("https://example.org/sales-kg/resource/")
 
-REPO_ROOT = pathlib.Path(__file__).parent
+REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 
 
 def _materialize(data_dir: pathlib.Path) -> Graph:
     """Materialize mappings.ttl (repo root) with sources pointing at data_dir (absolute paths)."""
-    mappings_src = (REPO_ROOT / "mappings.ttl").read_text(encoding="utf-8")
+    mappings_src = (REPO_ROOT / "ontology" / "mappings.ttl").read_text(encoding="utf-8")
     replaced = mappings_src.replace("mock_crm_dataset/", data_dir.as_posix() + "/")
 
     with tempfile.TemporaryDirectory() as tmp:
@@ -39,7 +39,7 @@ def build(data_dir: pathlib.Path | None = None) -> tuple[int, str]:
     """
     if data_dir is None:
         data_dir = pathlib.Path(
-            os.environ.get("DATA_DIR", str(REPO_ROOT / "mock_crm_dataset"))
+            os.environ.get("DATA_DIR", str(REPO_ROOT / "datasets" / "first_ingestion"))
         )
     data_dir = pathlib.Path(data_dir)
 
@@ -67,7 +67,7 @@ def build(data_dir: pathlib.Path | None = None) -> tuple[int, str]:
     # 3. SHACL validation (shapes.ttl)
     from pyshacl import validate
     sh = Graph()
-    sh.parse(REPO_ROOT / "shapes.ttl", format="turtle")
+    sh.parse(REPO_ROOT / "ontology" / "shapes.ttl", format="turtle")
     conforms, _, report = validate(g, shacl_graph=sh)
     print(report.strip().splitlines()[0] if report else conforms)
     if not conforms:

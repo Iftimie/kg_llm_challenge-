@@ -5,7 +5,7 @@ import pathlib
 
 import chromadb
 
-REPO_ROOT = pathlib.Path(__file__).parent
+REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 
 
 def index_transcripts(transcripts_csv=None, chroma_dir=None) -> int:
@@ -14,7 +14,7 @@ def index_transcripts(transcripts_csv=None, chroma_dir=None) -> int:
     Returns the number of transcripts indexed.
     """
     if transcripts_csv is None:
-        data_dir = pathlib.Path(os.environ.get("DATA_DIR", str(REPO_ROOT / "mock_crm_dataset")))
+        data_dir = pathlib.Path(os.environ.get("DATA_DIR", str(REPO_ROOT / "datasets" / "first_ingestion")))
         transcripts_csv = data_dir / "transcripts.csv"
     else:
         transcripts_csv = pathlib.Path(transcripts_csv)

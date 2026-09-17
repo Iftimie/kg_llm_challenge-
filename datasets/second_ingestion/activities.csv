@@ -1,0 +1,2 @@
+activity_id,deal_id,account_id,contact_id,activity_type,activity_at,channel,subject,sentiment,next_step,transcript_text
+ACT101,D101,A101,C101,Call,2026-09-20 10:00,Phone,Technical evaluation,Positive,Schedule proof of value,"Ingrid said the platform must ingest two million sensor events per minute and keep data within the EEA. She will sign this quarter if we can prove both."

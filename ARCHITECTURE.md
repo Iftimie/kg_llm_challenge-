@@ -32,7 +32,7 @@ The system expects two kinds of input, both expressed as CSVs.
 
 <div style="max-height: 400px; overflow-y: auto; border: 1px solid #ccc; padding: 8px 12px;">
 
-<p><strong>Structured CRM tables</strong> — five files joined by <code>account_id</code> / <code>deal_id</code> / <code>contact_id</code> / <code>owner_id</code>. One real sample record per file (<code>mock_crm_dataset/</code>):</p>
+<p><strong>Structured CRM tables</strong> — five files joined by <code>account_id</code> / <code>deal_id</code> / <code>contact_id</code> / <code>owner_id</code>. One real sample record per file (<code>datasets/first_ingestion/</code>):</p>
 
 <strong><code>accounts.csv</code></strong>
 <table>
@@ -124,6 +124,32 @@ Example (question: *"What is blocking deal D001, and what's the evidence?"*):
 >
 > How I checked: KG SPARQL (`hasBlocker` + `supportedBy` → 2 blockers with
 > evidence), keyword search (3 hits), semantic search (2 hits).
+
+### More example questions
+
+A quick catalog of questions the assistant handles, spanning semantic, lexical
+and structured retrieval (worded the way a salesperson would ask):
+
+**Semantic / topic** — retrieved even when the wording does not match the
+transcript exactly:
+
+- "What did the customer say about security, SSO, or data residency?"
+- "Which customer was worried about authentication and where their data is stored?"
+- "Which customer was interested in expanding deployment to multiple factories?"
+- "What concerns did customers raise about pricing?"
+- "Who wanted better forecast accuracy before a larger rollout?"
+- "Which conversation mentioned model governance and explainability?"
+- "What customer discussed using one wind farm as a proof of value?"
+
+**Structured / multi-hop** — grounded in the KG:
+
+- "What decision criteria are associated with deal D007?"
+- "Which open deals have at least one blocker and at least one buying signal, but no sales action currently addressing any of their blockers?"
+- "What blockers were identified for deal D001, and what transcript evidence supports each blocker?"
+
+The useful property to test is that wording need not match the transcript
+exactly — e.g. "worried about authentication and where their data is stored"
+should still surface T001's SSO/data-residency discussion.
 
 ### Links into the database
 

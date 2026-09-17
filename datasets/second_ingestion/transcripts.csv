@@ -1,0 +1,4 @@
+transcript_id,deal_id,account_id,contact_ids,activity_date,channel,transcript
+T101,D101,A101,C000,2026-09-20,Phone,"Olav (Head of Platform): We stream telemetry from our hydropower turbines in real time.
+Ingrid (Chief Data Officer): The platform must ingest at least two million sensor events per minute, and all data must stay within the EEA for compliance. If you can demonstrate both in the proof of value, we will sign this quarter.
+"

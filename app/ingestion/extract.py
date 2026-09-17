@@ -13,7 +13,7 @@ from rdflib import Graph, Namespace, URIRef
 
 from app import config
 
-REPO_ROOT = pathlib.Path(__file__).parent
+REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 
 CRM = Namespace("https://example.org/sales-kg/")
 RES = Namespace("https://example.org/sales-kg/resource/")
@@ -78,7 +78,7 @@ def extract(data_dir=None, limit=None, ids=None) -> dict:
     ``{ok: [ids], failed: [ids]}``.
     """
     if data_dir is None:
-        data_dir = pathlib.Path(os.environ.get("DATA_DIR", str(REPO_ROOT / "mock_crm_dataset")))
+        data_dir = pathlib.Path(os.environ.get("DATA_DIR", str(REPO_ROOT / "datasets" / "first_ingestion")))
     else:
         data_dir = pathlib.Path(data_dir)
 
@@ -86,9 +86,9 @@ def extract(data_dir=None, limit=None, ids=None) -> dict:
     os.makedirs(extracted_dir, exist_ok=True)
     os.makedirs(extracted_dir / "failed", exist_ok=True)
 
-    with open(REPO_ROOT / "TranscriptRDFTurtleExtractionPrompt.md", encoding="utf-8") as f:
+    with open(REPO_ROOT / "prompts" / "TranscriptRDFTurtleExtractionPrompt.md", encoding="utf-8") as f:
         template = f.read()
-    with open(REPO_ROOT / "sales_kg_ontology_v1.ttl", encoding="utf-8") as f:
+    with open(REPO_ROOT / "ontology" / "sales_kg_ontology_v1.ttl", encoding="utf-8") as f:
         ontology = f.read()
     kg = Graph()
     kg.parse(str(REPO_ROOT / "kg.nt"))  # run build.py first

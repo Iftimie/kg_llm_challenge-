@@ -1,17 +1,14 @@
 """Ingestion orchestrator for the Sales Intelligence KG.
 
-Wraps the repo-root build/load/index_transcripts/extract scripts into a single
-entry point that never raises: each step is run independently and degrades into
-``{"error": ...}`` on failure. The repo-root scripts are plain top-level modules
-(not part of the ``app`` package), so they are imported with a guarded helper
-that ensures ``REPO_ROOT`` is on ``sys.path``.
+Wraps the ``app.ingestion`` pipeline modules (build/load/index_transcripts/
+extract) into a single entry point that never raises: each step is run
+independently and degrades into ``{"error": ...}`` on failure.
 """
 import csv
 import importlib
 import io
 import logging
 import shutil
-import sys
 from pathlib import Path
 
 from app import config
@@ -19,13 +16,9 @@ from app import config
 logger = logging.getLogger(__name__)
 
 
-def _import_root(mod: str):
-    """Import a repo-root top-level module, adding REPO_ROOT to sys.path if needed."""
-    try:
-        return importlib.import_module(mod)
-    except ImportError:
-        sys.path.insert(0, str(config.REPO_ROOT))
-        return importlib.import_module(mod)
+def _import_pipeline(mod: str):
+    """Lazily import a pipeline module under ``app.ingestion``."""
+    return importlib.import_module(f"app.ingestion.{mod}")
 
 
 def run(
@@ -54,14 +47,14 @@ def run(
 def _run_step(step: str, data_dir: Path, extract_limit, extract_ids=None):
     try:
         if step == "build":
-            build_mod = _import_root("build")
+            build_mod = _import_pipeline("build")
             ensure_transcripts_csv(data_dir)
             triples, _ = build_mod.build(data_dir)
             logger.info("build: %s triples", triples)
             return (triples, True)
 
         if step == "load":
-            load_mod = _import_root("load")
+            load_mod = _import_pipeline("load")
             result = load_mod.load(extracted_dir=data_dir / "extracted")
             repo = result["repo"]
             total = result["total_triples"]
@@ -69,7 +62,7 @@ def _run_step(step: str, data_dir: Path, extract_limit, extract_ids=None):
             return (repo, total)
 
         if step == "index":
-            index_mod = _import_root("index_transcripts")
+            index_mod = _import_pipeline("index_transcripts")
             count = index_mod.index_transcripts(
                 transcripts_csv=data_dir / "transcripts.csv",
                 chroma_dir=config.CHROMA_DIR,
@@ -81,7 +74,7 @@ def _run_step(step: str, data_dir: Path, extract_limit, extract_ids=None):
             return count
 
         if step == "extract":
-            extract_mod = _import_root("extract")
+            extract_mod = _import_pipeline("extract")
             result = extract_mod.extract(data_dir, limit=extract_limit, ids=extract_ids)
             ok = list(result.get("ok", []))
             failed = list(result.get("failed", []))
@@ -89,7 +82,7 @@ def _run_step(step: str, data_dir: Path, extract_limit, extract_ids=None):
             return {"ok": ok, "failed": failed}
 
         if step == "clear":
-            load_mod = _import_root("load")
+            load_mod = _import_pipeline("load")
             result = load_mod.clear()
             logger.info("clear: %s graphs", result.get("cleared"))
             return result

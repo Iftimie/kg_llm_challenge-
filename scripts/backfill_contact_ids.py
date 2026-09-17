@@ -12,14 +12,14 @@ Usage::
 
     python scripts/backfill_contact_ids.py [path/to/transcripts.csv]
 
-Defaults to ``mock_crm_dataset/transcripts.csv``.
+Defaults to ``datasets/first_ingestion/transcripts.csv``.
 """
 import csv
 import sys
 from pathlib import Path
 
 DEFAULT_PATH = (
-    Path(__file__).resolve().parent.parent / "mock_crm_dataset" / "transcripts.csv"
+    Path(__file__).resolve().parent.parent / "datasets" / "first_ingestion" / "transcripts.csv"
 )
 
 FALLBACK = "C000"

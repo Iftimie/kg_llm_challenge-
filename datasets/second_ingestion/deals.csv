@@ -1,0 +1,2 @@
+deal_id,account_id,deal_name,deal_stage,deal_value_eur,product,lead_source,owner_id,created_at,expected_close_date,win_probability,status,loss_reason
+D101,A101,Nordic Analytics Data Platform,Negotiation,240000,Data Platform,Referral,S099,2026-06-01,2026-11-30,0.8,Open,

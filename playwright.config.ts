@@ -6,7 +6,7 @@ import { defineConfig, devices } from "@playwright/test";
 // Run-unique artifacts so every browser run is deterministic and self-contained:
 //  * a fresh sqlite DB (chat-history restore must never see stale rows), and
 //  * an isolated DATA_DIR/KG_NT (the ingest specs write A999/T990; pointing them
-//    at the tracked mock_crm_dataset/ would collide on the next run and dirty
+//    at the tracked datasets/first_ingestion/ would collide on the next run and dirty
 //    the working tree).
 const RUN_DIR = path.join(os.tmpdir(), `sales-e2e-${process.pid}`);
 const DB_URL = `sqlite:///./test-e2e-${process.pid}.db`;

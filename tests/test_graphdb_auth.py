@@ -79,7 +79,7 @@ def test_proxy_sends_auth(monkeypatch, auth_headers):
 
 
 def test_load_sends_auth(monkeypatch, tmp_path):
-    import load as load_module
+    from app.ingestion import load as load_module
 
     ontology = tmp_path / "ont.ttl"
     ontology.write_text("@prefix : <urn:> .\n", encoding="utf-8")
