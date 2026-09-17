@@ -19,6 +19,9 @@ GRAPHDB_PASSWORD = os.environ.get("GRAPHDB_PASSWORD", "")
 # Admin creds for auto-provisioning a GraphDB user per app registration (interview challenge, not production)
 GRAPHDB_ADMIN_USER = os.environ.get("GRAPHDB_ADMIN_USER", "admin")
 GRAPHDB_ADMIN_PASSWORD = os.environ.get("GRAPHDB_ADMIN_PASSWORD", "admin")
+# "1" (default) provisions a read-only GraphDB user on every registration; set
+# "0" to skip (offline unit tests) so register never touches GraphDB.
+GRAPHDB_AUTO_PROVISION = os.environ.get("GRAPHDB_AUTO_PROVISION", "1")
 # Upstream timeout (seconds) for the authenticated GraphDB visual proxy.
 GRAPHDB_TIMEOUT_S = float(os.environ.get("GRAPHDB_TIMEOUT_S", "10"))
 

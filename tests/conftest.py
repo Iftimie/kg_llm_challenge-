@@ -12,6 +12,19 @@ import requests
 from app import config
 
 
+@pytest.fixture(autouse=True)
+def _offline_register(monkeypatch):
+    """Keep the default suite offline: skip GraphDB auto-provisioning.
+
+    ``register()`` synchronously provisions a read-only GraphDB user, which
+    would otherwise make every ``/api/auth/register`` call in the suite issue a
+    real POST+PUT to GraphDB (~10s each). Tests that need the real provisioning
+    call ``app.auth.graphdb_provision.provision_user`` directly (with mocked
+    ``requests``) or set ``config.GRAPHDB_AUTO_PROVISION`` back to ``"1"``.
+    """
+    monkeypatch.setattr(config, "GRAPHDB_AUTO_PROVISION", "0")
+
+
 @pytest.fixture
 def session():
     """Fresh in-memory SQLite session (full schema per test, not autouse)."""

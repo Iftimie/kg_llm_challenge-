@@ -7,6 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app import config
 from app.auth.deps import get_current_user
 from app.auth.schemas import LoginIn, MeOut, RegisterIn, TokenOut
 from app.auth.security import create_token, hash_password, verify_password
@@ -26,12 +27,13 @@ def register(payload: RegisterIn, db: Session = Depends(get_db)) -> MeOut:
     db.add(user)
     db.commit()
     db.refresh(user)
-    try:
-        from app.auth.graphdb_provision import provision_user
+    if config.GRAPHDB_AUTO_PROVISION != "0":
+        try:
+            from app.auth.graphdb_provision import provision_user
 
-        provision_user(payload.email, payload.password)
-    except Exception:
-        logging.warning("graphdb provision failed; continuing", exc_info=True)
+            provision_user(payload.email, payload.password)
+        except Exception:
+            logging.warning("graphdb provision failed; continuing", exc_info=True)
     return MeOut(id=user.id, email=user.email)
 
 

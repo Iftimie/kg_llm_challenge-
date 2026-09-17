@@ -105,6 +105,9 @@ def test_register_succeeds_despite_graphdb_down(monkeypatch):
     from app.backend.app import app
 
     _fresh_engine(monkeypatch)
+    # Re-enable provisioning so this test actually exercises the swallow path
+    # (the default-suite autouse fixture disables it to stay offline).
+    monkeypatch.setattr(config, "GRAPHDB_AUTO_PROVISION", "1")
 
     def boom(username, password_plaintext):
         raise ConnectionError("graphdb down")
