@@ -79,6 +79,38 @@
     background: #fff;
     font-size: 13px;
   }
+  #questions {
+    flex: 0 0 300px;
+    min-width: 0;
+    overflow-y: auto;
+    padding: 12px 14px;
+    border-right: 1px solid #d9dce1;
+    background: #fbfbfc;
+    font-size: 13px;
+  }
+  .questions-title { font-weight: 600; font-size: 14px; margin: 0 0 10px; }
+  .q-item { margin: 0 0 14px; }
+  .q-question {
+    font: inherit;
+    font-size: 13px;
+    text-align: left;
+    border: none;
+    background: none;
+    padding: 0;
+    color: #1d4ed8;
+    cursor: pointer;
+    word-break: break-word;
+  }
+  .q-question:hover { text-decoration: underline; }
+  .q-answer {
+    color: #6b7280;
+    font-size: 12px;
+    margin-top: 3px;
+    padding-left: 8px;
+    border-left: 2px solid #e3e6ea;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
   .ev-title { font-weight: 600; font-size: 14px; }
   .ev-hint { color: #6b7280; font-size: 12px; margin: 2px 0 8px; }
   .ev-headline { font-weight: 600; margin-bottom: 4px; }
@@ -161,6 +193,13 @@
       max-height: 45vh;
       border-left: none;
       border-top: 1px solid #d9dce1;
+    }
+    #questions {
+      flex: 0 0 auto;
+      min-width: 0;
+      max-height: 40vh;
+      border-right: none;
+      border-bottom: 1px solid #d9dce1;
     }
   }
   .row {
@@ -314,6 +353,10 @@
 </header>
 
 <div id="workspace">
+  <aside id="questions" aria-label="Sample questions" data-testid="questions-panel">
+    <div class="questions-title">Sample questions</div>
+    <div id="questions-body"></div>
+  </aside>
   <main id="chat" aria-live="polite" data-testid="chat-history"></main>
   <aside id="evidence" aria-label="Evidence">
     <div class="ev-title">Evidence</div>
@@ -487,9 +530,26 @@
         });
         messages.forEach(function (m) {
           var role = m.role === "assistant" ? "Assistant" : "User";
-          addRow(role, m.content || "", null);
+          var row = addRow(role, m.content || "", null);
           history.push({ role: m.role, content: m.content });
+          // Rebuild the evidence records for assistant turns that still carry
+          // their trace, so the evidence pane survives a reload.
+          if (role === "Assistant" && (m.sources || m.meta)) {
+            row.classList.add("selectable");
+            var record = {
+              answerText: m.content || "",
+              sources: Array.isArray(m.sources) ? m.sources : [],
+              meta: m.meta || {},
+              row: row
+            };
+            answers.push(record);
+            var index = answers.length - 1;
+            row.addEventListener("click", function () { selectAnswer(index); });
+          }
         });
+        if (answers.length) {
+          selectAnswer(answers.length - 1);
+        }
       })
       .catch(function () {
         // History load is best-effort; the chat still works without it.
@@ -1550,8 +1610,52 @@
     send(message);
   });
 
+  // ---- Left panel: clickable sample questions with example answers ----------
+
+  var SAMPLE_QUESTIONS = [
+    {
+      q: "What decision criteria are associated with deal D007?",
+      a: "D007 (FinPeak Risk Analytics) is gated on model governance: James Carter wants clear explainability and model governance before approval, and Priya Shah wants data lineage and model monitoring in the implementation plan. Commercially, a multi-year commitment needs a meaningful pricing incentive."
+    },
+    {
+      q: "Which open deals have at least one blocker and at least one buying signal, but no sales action currently addressing any of their blockers?",
+      a: "e.g. D001 (Acme Enterprise Expansion): it has open blockers (pricing for three factories, SSO/data residency) plus buying signals, and no sales action is yet recorded as addressing those blockers \u2014 the query filters open deals on exactly these three conditions."
+    },
+    {
+      q: "What blockers were identified for deal D001, and what transcript evidence supports each blocker?",
+      a: "Two blockers: (1) Pricing \u2014 \u201cprocurement expects a better price than what is currently in the proposal\u201d (Anna Keller, T001); (2) SSO and data residency \u2014 \u201cI also still need confirmation regarding SSO and data residency\u201d (Markus Vogel, T001)."
+    },
+    {
+      q: "I'm meeting Anna Keller (the decision maker at Acme) next week to close D001. What should I prepare so she's ready to move to procurement?",
+      a: "Bring two things: a revised three-factory price and the SSO/data-residency security documentation \u2014 those are her two open blockers. Anna already said clearing both would let her take it to procurement, so end by agreeing a procurement review date."
+    },
+    {
+      q: "Give me an account strategy for Acme Manufacturing. They have an open Enterprise Expansion (D001) and an early Predictive Maintenance add-on (D009) \u2014 how should I run each conversation using our history with them?",
+      a: "Close D001 first by resolving pricing and security, then ride that momentum into D009. For the add-on, lead with measurable downtime reduction (Anna is interested) and come ready for Markus's questions on sensor telemetry and historical data import."
+    }
+  ];
+
+  function renderQuestions() {
+    var body = document.getElementById("questions-body");
+    SAMPLE_QUESTIONS.forEach(function (item) {
+      var entry = domEl("div", "q-item");
+      var qBtn = domEl("button", "q-question", item.q);
+      qBtn.type = "button";
+      qBtn.setAttribute("data-testid", "sample-question");
+      qBtn.addEventListener("click", function () {
+        if (input.disabled) { return; }
+        send(item.q);
+      });
+      entry.appendChild(qBtn);
+      entry.appendChild(domEl("div", "q-answer", item.a));
+      body.appendChild(entry);
+    });
+  }
+
   // Initial pane state; replaced when the first assistant answer arrives.
   renderEvidence(null);
+
+  renderQuestions();
 
   // Restore the persisted conversation when the page loads already logged in.
   loadHistory();

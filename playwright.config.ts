@@ -18,6 +18,7 @@ const SHARED_ENV = {
   DATA_DIR: E2E_DATA_DIR,
   KG_NT: E2E_KG_NT,
   GRAPHDB_AUTO_PROVISION: "0",
+  ADMIN_EMAILS: "admin@example.com",
   PATH: process.env.PATH,
 };
 

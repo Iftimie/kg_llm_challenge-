@@ -21,7 +21,7 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from app.auth.deps import get_current_user
+from app.auth.deps import require_admin
 from app.db.models import User
 from app.db.session import get_db
 from app.ingestion import service
@@ -40,7 +40,7 @@ class JobAccepted(BaseModel):
 @router.post("/api/ingest", status_code=202)
 async def ingest(
     files: list[UploadFile] = File(...),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> JobAccepted:
     if not files:
@@ -84,7 +84,7 @@ async def ingest(
 @router.post("/api/ingest/transcript", status_code=202)
 async def ingest_transcript(
     file: UploadFile = File(...),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> JobAccepted:
     """Parse a ``.csv`` transcript upload and enqueue ``ingest_transcript``.
@@ -143,7 +143,7 @@ async def ingest_transcript(
 
 @router.post("/api/ingest/clear", status_code=202)
 async def clear_kg(
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ) -> JobAccepted:
     """Clear the knowledge graph and the on-disk data (no upload).

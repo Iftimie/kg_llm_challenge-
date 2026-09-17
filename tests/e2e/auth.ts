@@ -20,3 +20,7 @@ export async function loginAs(page: Page, email: string, password: string) {
   await page.getByTestId("login-submit").click();
   await expect(page.getByTestId("login-form")).toBeHidden({ timeout: 15000 });
 }
+
+export async function loginAsAdmin(page: Page) {
+  await loginAs(page, "admin@example.com", "password123");
+}

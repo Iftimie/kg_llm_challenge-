@@ -23,7 +23,11 @@ def register(payload: RegisterIn, db: Session = Depends(get_db)) -> MeOut:
     if existing is not None:
         raise HTTPException(status_code=409, detail="email already registered")
 
-    user = User(email=payload.email, password_hash=hash_password(payload.password))
+    user = User(
+        email=payload.email,
+        password_hash=hash_password(payload.password),
+        is_admin=payload.email.lower() in config.ADMIN_EMAILS,
+    )
     db.add(user)
     db.commit()
     db.refresh(user)
@@ -34,7 +38,7 @@ def register(payload: RegisterIn, db: Session = Depends(get_db)) -> MeOut:
             provision_user(payload.email, payload.password)
         except Exception:
             logging.warning("graphdb provision failed; continuing", exc_info=True)
-    return MeOut(id=user.id, email=user.email)
+    return MeOut(id=user.id, email=user.email, is_admin=user.is_admin)
 
 
 @router.post("/login", response_model=TokenOut)
@@ -44,6 +48,12 @@ def login(
     user = db.scalar(select(User).where(User.email == payload.email))
     if user is None or not verify_password(payload.password, user.password_hash):
         raise HTTPException(status_code=401, detail="invalid credentials")
+
+    # Self-heal: promote a user whose email is an admin email but who registered
+    # before admin support existed.
+    if user.email.lower() in config.ADMIN_EMAILS and not user.is_admin:
+        user.is_admin = True
+        db.commit()
 
     token = create_token(user.id, user.email)
     # httpOnly cookie enables cookie-fallback auth for plain <a> visual links.
@@ -65,4 +75,4 @@ def logout(response: Response) -> dict:
 
 @router.get("/me", response_model=MeOut)
 def me(current_user: User = Depends(get_current_user)) -> MeOut:
-    return MeOut(id=current_user.id, email=current_user.email)
+    return MeOut(id=current_user.id, email=current_user.email, is_admin=current_user.is_admin)

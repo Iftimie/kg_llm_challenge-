@@ -54,6 +54,7 @@ to set:
 | `DEEPSEEK_APIKEY` | *(empty)* | model provider key (required for live answers/extraction) |
 | `DEEPSEEK_MODEL` | `deepseek-flash` | DeepSeek model id for answers + transcript extraction |
 | `ANSWERER` | `agent` | answerer backend: `agent` (OpenCode) or `pydantic` |
+| `ADMIN_EMAILS` | *(empty)* | comma-separated emails granted admin rights (clear/ingest) |
 | `GRAPHDB_URL` / `GRAPHDB_REPO` | `http://localhost:7200` / `sales-kg` | GraphDB endpoint |
 | `GRAPHDB_AUTO_SECURE` | `1` | auto-enable GraphDB security at boot (`0` to skip) |
 | `GRAPHDB_AUTO_PROVISION` | `1` | provision a read-only GraphDB user per registration (`0` to skip) |

@@ -98,7 +98,7 @@ def _read_transcripts(data_dir: Path) -> list:
         return list(csv.DictReader(fh))
 
 
-def test_ingest_success(tmp_path, monkeypatch, auth_headers):
+def test_ingest_success(tmp_path, monkeypatch, admin_headers):
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
     monkeypatch.setenv("KG_NT", str(tmp_path / "kg.nt"))
     # No GraphDB in tests: the load step is stubbed.
@@ -108,14 +108,14 @@ def test_ingest_success(tmp_path, monkeypatch, auth_headers):
         lambda *args, **kwargs: {"repo": "test", "total_triples": 0, "loaded": []},
     )
 
-    response = client.post("/api/ingest", files=_crm_files(), headers=auth_headers)
+    response = client.post("/api/ingest", files=_crm_files(), headers=admin_headers)
 
     assert response.status_code == 202
     body = response.json()
     assert body["status"] == "queued"
     job_id = body["job_id"]
 
-    job = _wait_job(job_id, auth_headers)
+    job = _wait_job(job_id, admin_headers)
     assert job["status"] == "done"
     result = job["result"]
     # Merge is reported per table; every uploaded row is new in the empty DATA_DIR.
@@ -138,7 +138,7 @@ def test_ingest_success(tmp_path, monkeypatch, auth_headers):
     assert "load" in result
 
 
-def test_ingest_csv_duplicate_fails_job(tmp_path, monkeypatch, auth_headers):
+def test_ingest_csv_duplicate_fails_job(tmp_path, monkeypatch, admin_headers):
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
     monkeypatch.setenv("KG_NT", str(tmp_path / "kg.nt"))
     monkeypatch.setattr(
@@ -147,18 +147,18 @@ def test_ingest_csv_duplicate_fails_job(tmp_path, monkeypatch, auth_headers):
         lambda *args, **kwargs: {"repo": "test", "total_triples": 0, "loaded": []},
     )
 
-    first = client.post("/api/ingest", files=_crm_files(), headers=auth_headers)
+    first = client.post("/api/ingest", files=_crm_files(), headers=admin_headers)
     assert first.status_code == 202
-    first_job = _wait_job(first.json()["job_id"], auth_headers)
+    first_job = _wait_job(first.json()["job_id"], admin_headers)
     assert first_job["status"] == "done"
 
     path = tmp_path / "accounts.csv"
     before = path.read_bytes()
 
-    second = client.post("/api/ingest", files=_crm_files(), headers=auth_headers)
+    second = client.post("/api/ingest", files=_crm_files(), headers=admin_headers)
     assert second.status_code == 202
 
-    second_job = _wait_job(second.json()["job_id"], auth_headers)
+    second_job = _wait_job(second.json()["job_id"], admin_headers)
     assert second_job["status"] == "failed"
     assert "duplicate" in second_job["error"]
     assert "account_id" in second_job["error"]
@@ -166,7 +166,7 @@ def test_ingest_csv_duplicate_fails_job(tmp_path, monkeypatch, auth_headers):
     assert path.read_bytes() == before
 
 
-def test_ingest_clear_wipes_data_and_graph(tmp_path, monkeypatch, auth_headers):
+def test_ingest_clear_wipes_data_and_graph(tmp_path, monkeypatch, admin_headers):
     data_dir = tmp_path / "crm"
     data_dir.mkdir()
     for name in ("accounts.csv", "contacts.csv", "deals.csv", "activities.csv", "transcripts.csv"):
@@ -175,10 +175,10 @@ def test_ingest_clear_wipes_data_and_graph(tmp_path, monkeypatch, auth_headers):
     monkeypatch.setattr(config, "DATA_DIR", data_dir)
     monkeypatch.setattr(load_mod, "clear", lambda: {"cleared": 3})
 
-    response = client.post("/api/ingest/clear", headers=auth_headers)
+    response = client.post("/api/ingest/clear", headers=admin_headers)
 
     assert response.status_code == 202
-    job = _wait_job(response.json()["job_id"], auth_headers)
+    job = _wait_job(response.json()["job_id"], admin_headers)
     assert job["status"] == "done"
     assert job["result"] == {"clear": {"cleared": 3}}
     # The source CSVs are gone, so the same files can be re-ingested.
@@ -186,7 +186,7 @@ def test_ingest_clear_wipes_data_and_graph(tmp_path, monkeypatch, auth_headers):
     assert not (data_dir / "transcripts.csv").exists()
 
 
-def test_ingest_rejects_transcripts_csv(tmp_path, monkeypatch, auth_headers):
+def test_ingest_rejects_transcripts_csv(tmp_path, monkeypatch, admin_headers):
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
 
     response = client.post(
@@ -201,7 +201,7 @@ def test_ingest_rejects_transcripts_csv(tmp_path, monkeypatch, auth_headers):
                 ),
             )
         ],
-        headers=auth_headers,
+        headers=admin_headers,
     )
 
     assert response.status_code == 400
@@ -210,35 +210,35 @@ def test_ingest_rejects_transcripts_csv(tmp_path, monkeypatch, auth_headers):
     assert "transcripts.csv" in detail
 
 
-def test_ingest_rejects_bad_extension(tmp_path, monkeypatch, auth_headers):
+def test_ingest_rejects_bad_extension(tmp_path, monkeypatch, admin_headers):
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
 
     response = client.post(
         "/api/ingest",
         files=[("files", ("evil.exe", b"MZ\x90\x00", "application/octet-stream"))],
-        headers=auth_headers,
+        headers=admin_headers,
     )
 
     assert response.status_code == 400
 
 
-def test_ingest_rejects_txt(tmp_path, monkeypatch, auth_headers):
+def test_ingest_rejects_txt(tmp_path, monkeypatch, admin_headers):
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
 
     response = client.post(
         "/api/ingest",
         files=[("files", ("T101.txt", _fixture_bytes("T101.txt"), "text/plain"))],
-        headers=auth_headers,
+        headers=admin_headers,
     )
 
     assert response.status_code == 400
     assert "/api/ingest/transcript" in response.json()["detail"]
 
 
-def test_ingest_empty(tmp_path, monkeypatch, auth_headers):
+def test_ingest_empty(tmp_path, monkeypatch, admin_headers):
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
 
-    response = client.post("/api/ingest", headers=auth_headers)
+    response = client.post("/api/ingest", headers=admin_headers)
 
     assert response.status_code != 200
 
@@ -252,18 +252,18 @@ def _csv_text(*rows: str) -> str:
     return "\n".join((TRANSCRIPT_HEADER, *rows)) + "\n"
 
 
-def test_ingest_transcript_file_success(transcript_env, tmp_path, auth_headers):
+def test_ingest_transcript_file_success(transcript_env, tmp_path, admin_headers):
     content = _csv_text("T910,D910,A910,C910,2026-09-23,Phone,uploaded body")
     files = {"file": ("transcripts.csv", content.encode("utf-8"), "text/csv")}
 
-    response = client.post("/api/ingest/transcript", files=files, headers=auth_headers)
+    response = client.post("/api/ingest/transcript", files=files, headers=admin_headers)
 
     assert response.status_code == 202
     body = response.json()
     assert body["status"] == "queued"
     job_id = body["job_id"]
 
-    job = _wait_job(job_id, auth_headers)
+    job = _wait_job(job_id, admin_headers)
     assert job["status"] == "done"
     result = job["result"]
     assert result["appended"] == ["T910"]
@@ -284,50 +284,50 @@ def test_ingest_transcript_file_success(transcript_env, tmp_path, auth_headers):
     assert rows[0]["transcript"] == "uploaded body"
 
 
-def test_ingest_transcript_duplicate(transcript_env, tmp_path, auth_headers):
+def test_ingest_transcript_duplicate(transcript_env, tmp_path, admin_headers):
     content = _csv_text("T900,D900,A900,C900,2026-09-22,Email,first body")
     files = {"file": ("transcripts.csv", content.encode("utf-8"), "text/csv")}
 
-    first = client.post("/api/ingest/transcript", files=files, headers=auth_headers)
+    first = client.post("/api/ingest/transcript", files=files, headers=admin_headers)
     assert first.status_code == 202
-    first_job = _wait_job(first.json()["job_id"], auth_headers)
+    first_job = _wait_job(first.json()["job_id"], admin_headers)
     assert first_job["status"] == "done"
     assert (tmp_path / "chroma").exists()
 
-    second = client.post("/api/ingest/transcript", files=files, headers=auth_headers)
+    second = client.post("/api/ingest/transcript", files=files, headers=admin_headers)
     assert second.status_code == 202
 
-    second_job = _wait_job(second.json()["job_id"], auth_headers)
+    second_job = _wait_job(second.json()["job_id"], admin_headers)
     assert second_job["status"] == "failed"
     assert "duplicate transcript_id" in second_job["error"]
 
 
-def test_ingest_transcript_empty(tmp_path, monkeypatch, auth_headers):
+def test_ingest_transcript_empty(tmp_path, monkeypatch, admin_headers):
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
 
     files = {"file": ("transcripts.csv", b"   \n  ", "text/csv")}
-    response = client.post("/api/ingest/transcript", files=files, headers=auth_headers)
+    response = client.post("/api/ingest/transcript", files=files, headers=admin_headers)
 
     assert response.status_code == 400
     assert "upload a transcripts .csv file" in response.json()["detail"]
 
 
-def test_ingest_transcript_too_few_columns(tmp_path, monkeypatch, auth_headers):
+def test_ingest_transcript_too_few_columns(tmp_path, monkeypatch, admin_headers):
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
 
     files = {"file": ("transcripts.csv", b"T900,D900,A900\n", "text/csv")}
-    response = client.post("/api/ingest/transcript", files=files, headers=auth_headers)
+    response = client.post("/api/ingest/transcript", files=files, headers=admin_headers)
 
     assert response.status_code == 400
     assert "expected 7" in response.json()["detail"]
 
 
-def test_ingest_transcript_non_csv(tmp_path, monkeypatch, auth_headers):
+def test_ingest_transcript_non_csv(tmp_path, monkeypatch, admin_headers):
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
 
     content = _csv_text("T920,D920,A920,,2026-09-24,Email,body")
     files = {"file": ("transcripts.txt", content.encode("utf-8"), "text/plain")}
 
-    response = client.post("/api/ingest/transcript", files=files, headers=auth_headers)
+    response = client.post("/api/ingest/transcript", files=files, headers=admin_headers)
 
     assert response.status_code == 400

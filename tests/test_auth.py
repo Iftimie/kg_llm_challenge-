@@ -135,3 +135,30 @@ def test_user_a_cannot_read_user_b_chat(monkeypatch, stub_env):
     assert len(chats) == 1
     assert [m["role"] for m in chats[0]["messages"]] == ["user", "assistant"]
     assert chats[0]["messages"][0]["content"] == "ping"
+
+
+def test_ingest_and_clear_require_admin(monkeypatch):
+    from app import config
+
+    _fresh_engine(monkeypatch)
+    monkeypatch.setattr(config, "ADMIN_EMAILS", {"admin@example.com"})
+    client = TestClient(app)
+
+    user_headers = _register_and_login(client, "user@example.com")
+    admin_headers = _register_and_login(client, "admin@example.com")
+
+    # Non-admin users cannot mutate the shared KG.
+    assert client.post("/api/ingest/clear", headers=user_headers).status_code == 403
+    assert client.post("/api/ingest", headers=user_headers).status_code == 403
+    transcript = client.post(
+        "/api/ingest/transcript",
+        headers=user_headers,
+        files={"file": ("t.csv", b"", "text/csv")},
+    )
+    assert transcript.status_code == 403
+
+    # The admin can enqueue a clear job (202).
+    assert client.post("/api/ingest/clear", headers=admin_headers).status_code == 202
+
+    # Unauthenticated requests still get 401, not 403 (fresh client, no cookie).
+    assert TestClient(app).post("/api/ingest/clear").status_code == 401

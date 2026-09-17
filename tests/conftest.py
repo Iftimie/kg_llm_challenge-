@@ -67,14 +67,8 @@ def stub_env(monkeypatch):
     return "stub"
 
 
-@pytest.fixture
-def auth_headers(monkeypatch):
-    """Register+login a user against a fresh in-memory engine; return auth headers.
-
-    Patches ``app.db.engine.get_engine`` (read at request time by ``get_db``)
-    to a fresh in-memory SQLite engine for the test's duration, then registers
-    ``test@example.com`` and returns a valid ``Authorization: Bearer`` header.
-    """
+def _setup_client(monkeypatch):
+    """Patch a fresh in-memory engine and return a ``TestClient`` for the app."""
     from sqlalchemy import create_engine
     from sqlalchemy.pool import StaticPool
     from fastapi.testclient import TestClient
@@ -90,20 +84,36 @@ def auth_headers(monkeypatch):
     )
     Base.metadata.create_all(engine)
     monkeypatch.setattr(db_engine, "get_engine", lambda: engine)
+    return TestClient(app)
 
-    client = TestClient(app)
+
+def _register_login(client, email: str) -> dict:
     register = client.post(
         "/api/auth/register",
-        json={"email": "test@example.com", "password": "password123"},
+        json={"email": email, "password": "password123"},
     )
     assert register.status_code == 201, register.text
     login = client.post(
         "/api/auth/login",
-        json={"email": "test@example.com", "password": "password123"},
+        json={"email": email, "password": "password123"},
     )
     assert login.status_code == 200, login.text
-    token = login.json()["access_token"]
-    return {"Authorization": f"Bearer {token}"}
+    return {"Authorization": f"Bearer {login.json()['access_token']}"}
+
+
+@pytest.fixture
+def auth_headers(monkeypatch):
+    """Register+login a regular (non-admin) user; return auth headers."""
+    client = _setup_client(monkeypatch)
+    return _register_login(client, "test@example.com")
+
+
+@pytest.fixture
+def admin_headers(monkeypatch):
+    """Register+login an admin user (email in ``ADMIN_EMAILS``); return headers."""
+    monkeypatch.setattr(config, "ADMIN_EMAILS", {"admin@example.com"})
+    client = _setup_client(monkeypatch)
+    return _register_login(client, "admin@example.com")
 
 
 def needs_live():

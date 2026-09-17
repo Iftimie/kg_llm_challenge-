@@ -115,10 +115,10 @@ def test_clear_chats_requires_auth():
     assert response.status_code == 401
 
 
-def test_list_jobs_has_status_and_created_at(auth_headers):
-    client.post("/api/ingest/clear", headers=auth_headers)
+def test_list_jobs_has_status_and_created_at(admin_headers):
+    client.post("/api/ingest/clear", headers=admin_headers)
 
-    jobs = client.get("/api/jobs", headers=auth_headers).json()["jobs"]
+    jobs = client.get("/api/jobs", headers=admin_headers).json()["jobs"]
 
     assert len(jobs) == 1
     assert jobs[0]["kind"] == "clear_kg"

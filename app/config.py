@@ -50,6 +50,14 @@ JWT_SECRET = os.environ.get("JWT_SECRET", "dev-only-secret-change-me-in-producti
 JWT_ALGORITHM = os.environ.get("JWT_ALGORITHM", "HS256")
 JWT_EXPIRE_MINUTES = int(os.environ.get("JWT_EXPIRE_MINUTES", "60"))
 
+# Comma-separated emails that are granted admin rights (clear/ingest) at
+# registration. Matching is case-insensitive.
+ADMIN_EMAILS = {
+    e.strip().lower()
+    for e in os.environ.get("ADMIN_EMAILS", "").split(",")
+    if e.strip()
+}
+
 OPENROUTER_URL = os.environ.get("OPENROUTER_URL", "https://openrouter.ai/api/v1/chat/completions")
 OPENROUTER_MODEL = os.environ.get("OPENROUTER_MODEL", "meta/muse-spark-1.3-contributor")
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")

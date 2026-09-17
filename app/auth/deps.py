@@ -44,3 +44,10 @@ def get_current_user(
     if user is None:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
     return user
+
+
+def require_admin(current_user: User = Depends(get_current_user)) -> User:
+    """Allow only admin users (403 otherwise) for shared-state mutations."""
+    if not getattr(current_user, "is_admin", False):
+        raise HTTPException(status_code=403, detail="admin access required")
+    return current_user

@@ -124,6 +124,15 @@
     white-space: pre-wrap;
     word-break: break-word;
   }
+  .admin-notice {
+    background: #fef3c7;
+    border: 1px solid #f0d48a;
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin: 0 0 16px;
+    color: #92400e;
+    font-size: 14px;
+  }
   pre {
     margin: 8px 0 0;
     padding: 8px;
@@ -147,6 +156,7 @@
 </header>
 
 <main>
+  <div id="admin-notice" class="admin-notice" hidden>You need admin access to ingest or clear data.</div>
   <form id="ingest-form" data-testid="ingest-form">
     <h2>CSV data</h2>
     <div class="field">
@@ -222,6 +232,21 @@
     if (loginStatus) { loginStatus.textContent = ""; }
   }
 
+  var adminNotice = document.getElementById("admin-notice");
+
+  function applyAdminState(isAdmin) {
+    [form, transcriptForm, clearForm].forEach(function (f) { f.hidden = !isAdmin; });
+    if (adminNotice) { adminNotice.hidden = isAdmin; }
+  }
+
+  function refreshAdminState() {
+    if (!token) { applyAdminState(true); return; }
+    fetch("/api/auth/me", { headers: authHeaders() })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (data) { applyAdminState(Boolean(data && data.is_admin)); })
+      .catch(function () { applyAdminState(false); });
+  }
+
   async function doLogin(email, password) {
     var res = await fetch("/api/auth/login", {
       method: "POST",
@@ -271,6 +296,7 @@
         loginPassword.value = "";
         refreshLoginUI();
         loadJobs();
+        refreshAdminState();
       }).catch(function (err) {
         loginStatus.textContent = (err && err.message) ? err.message : String(err);
       });
@@ -288,6 +314,7 @@
 
   refreshLoginUI();
   loadJobs();
+  refreshAdminState();
 
   function el(tag, className, text) {
     var node = document.createElement(tag);

@@ -59,6 +59,18 @@ async def lifespan(_app: FastAPI):
                         "user_id INTEGER REFERENCES users(id)"
                     )
                 )
+                conn.execute(
+                    _text("ALTER TABLE messages ADD COLUMN IF NOT EXISTS sources JSON")
+                )
+                conn.execute(
+                    _text("ALTER TABLE messages ADD COLUMN IF NOT EXISTS meta JSON")
+                )
+                conn.execute(
+                    _text(
+                        "ALTER TABLE users ADD COLUMN IF NOT EXISTS "
+                        "is_admin BOOLEAN NOT NULL DEFAULT false"
+                    )
+                )
     except Exception:
         logging.getLogger(__name__).warning(
             "schema create_all failed; continuing without a live database",
@@ -110,8 +122,18 @@ def health() -> dict:
     return body
 
 
-def _persist_chat(user_id: int, user_message: str, assistant_message: str) -> None:
-    """Best-effort persist of one exchange; never raises into the caller."""
+def _persist_chat(
+    user_id: int,
+    user_message: str,
+    assistant_message: str,
+    sources: list | None = None,
+    meta: dict | None = None,
+) -> None:
+    """Best-effort persist of one exchange; never raises into the caller.
+
+    ``sources``/``meta`` are the assistant turn's evidence trace, stored so the
+    evidence pane can be reconstructed after a page reload.
+    """
     try:
         from sqlalchemy.orm import sessionmaker
 
@@ -129,7 +151,13 @@ def _persist_chat(user_id: int, user_message: str, assistant_message: str) -> No
                 db.flush()
             db.add(Message(chat_id=chat.id, role="user", content=user_message))
             db.add(
-                Message(chat_id=chat.id, role="assistant", content=assistant_message)
+                Message(
+                    chat_id=chat.id,
+                    role="assistant",
+                    content=assistant_message,
+                    sources=sources,
+                    meta=meta,
+                )
             )
             db.commit()
         finally:
@@ -167,7 +195,14 @@ def chat(
     except RuntimeError as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from exc
 
-    _persist_chat(current_user.id, message, response.answer)
+    # Persist a trimmed meta: drop the bulky `command` argv (it embeds the whole
+    # system prompt + examples) which the evidence pane never uses.
+    persist_meta = {
+        k: v for k, v in (response.meta or {}).items() if k != "command"
+    }
+    _persist_chat(
+        current_user.id, message, response.answer, response.sources, persist_meta
+    )
 
     return {
         "answer": response.answer,
@@ -193,7 +228,15 @@ def list_chats(
         result.append(
             {
                 "id": chat.id,
-                "messages": [{"role": m.role, "content": m.content} for m in messages],
+                "messages": [
+                    {
+                        "role": m.role,
+                        "content": m.content,
+                        "sources": m.sources,
+                        "meta": m.meta,
+                    }
+                    for m in messages
+                ],
             }
         )
 

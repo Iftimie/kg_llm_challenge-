@@ -20,3 +20,4 @@ class TokenOut(BaseModel):
 class MeOut(BaseModel):
     id: int
     email: str
+    is_admin: bool = False

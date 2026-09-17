@@ -32,6 +32,7 @@ services:
       # Overridable from the host; stub runs need no API key.
       DEEPSEEK_APIKEY: ${DEEPSEEK_APIKEY:-}
       ANSWERER: ${ANSWERER:-agent}
+      ADMIN_EMAILS: ${ADMIN_EMAILS:-}
       GRAPHDB_URL: http://graphdb:7200
       GRAPHDB_REPO: ${GRAPHDB_REPO:-sales-kg}
       # Demo creds (interview challenge, not production). GRAPHDB_AUTO_SECURE=0 to skip.
@@ -63,6 +64,7 @@ services:
       # Overridable from the host; stub runs need no API key.
       DEEPSEEK_APIKEY: ${DEEPSEEK_APIKEY:-}
       ANSWERER: ${ANSWERER:-agent}
+      ADMIN_EMAILS: ${ADMIN_EMAILS:-}
       GRAPHDB_URL: http://graphdb:7200
       GRAPHDB_REPO: ${GRAPHDB_REPO:-sales-kg}
       # Demo creds (interview challenge, not production). GRAPHDB_AUTO_SECURE=0 to skip.
