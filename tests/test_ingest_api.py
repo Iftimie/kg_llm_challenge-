@@ -89,7 +89,7 @@ def _read_transcripts(data_dir: Path) -> list:
         return list(csv.DictReader(fh))
 
 
-def test_ingest_success(tmp_path, monkeypatch):
+def test_ingest_success(tmp_path, monkeypatch, auth_headers):
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
     monkeypatch.setenv("KG_NT", str(tmp_path / "kg.nt"))
     # No GraphDB in tests: the load step is stubbed.
@@ -99,7 +99,7 @@ def test_ingest_success(tmp_path, monkeypatch):
         lambda *args, **kwargs: {"repo": "test", "total_triples": 0, "loaded": []},
     )
 
-    response = client.post("/api/ingest", files=_crm_files())
+    response = client.post("/api/ingest", files=_crm_files(), headers=auth_headers)
 
     assert response.status_code == 200
     body = response.json()
@@ -133,7 +133,7 @@ def test_ingest_success(tmp_path, monkeypatch):
     assert body["transcripts_indexed"] is None
 
 
-def test_ingest_csv_conflict_returns_400(tmp_path, monkeypatch):
+def test_ingest_csv_conflict_returns_400(tmp_path, monkeypatch, auth_headers):
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
     monkeypatch.setenv("KG_NT", str(tmp_path / "kg.nt"))
     monkeypatch.setattr(
@@ -142,13 +142,13 @@ def test_ingest_csv_conflict_returns_400(tmp_path, monkeypatch):
         lambda *args, **kwargs: {"repo": "test", "total_triples": 0, "loaded": []},
     )
 
-    first = client.post("/api/ingest", files=_crm_files())
+    first = client.post("/api/ingest", files=_crm_files(), headers=auth_headers)
     assert first.status_code == 200
 
     path = tmp_path / "accounts.csv"
     before = path.read_bytes()
 
-    second = client.post("/api/ingest", files=_crm_files())
+    second = client.post("/api/ingest", files=_crm_files(), headers=auth_headers)
 
     assert second.status_code == 400
     assert "duplicate account_id" in second.json()["detail"]
@@ -156,7 +156,7 @@ def test_ingest_csv_conflict_returns_400(tmp_path, monkeypatch):
     assert path.read_bytes() == before
 
 
-def test_ingest_rejects_transcripts_csv(tmp_path, monkeypatch):
+def test_ingest_rejects_transcripts_csv(tmp_path, monkeypatch, auth_headers):
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
 
     response = client.post(
@@ -171,6 +171,7 @@ def test_ingest_rejects_transcripts_csv(tmp_path, monkeypatch):
                 ),
             )
         ],
+        headers=auth_headers,
     )
 
     assert response.status_code == 400
@@ -179,33 +180,35 @@ def test_ingest_rejects_transcripts_csv(tmp_path, monkeypatch):
     assert "transcripts.csv" in detail
 
 
-def test_ingest_rejects_bad_extension(tmp_path, monkeypatch):
+def test_ingest_rejects_bad_extension(tmp_path, monkeypatch, auth_headers):
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
 
     response = client.post(
         "/api/ingest",
         files=[("files", ("evil.exe", b"MZ\x90\x00", "application/octet-stream"))],
+        headers=auth_headers,
     )
 
     assert response.status_code == 400
 
 
-def test_ingest_rejects_txt(tmp_path, monkeypatch):
+def test_ingest_rejects_txt(tmp_path, monkeypatch, auth_headers):
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
 
     response = client.post(
         "/api/ingest",
         files=[("files", ("T101.txt", _fixture_bytes("T101.txt"), "text/plain"))],
+        headers=auth_headers,
     )
 
     assert response.status_code == 400
     assert "/api/ingest/transcript" in response.json()["detail"]
 
 
-def test_ingest_empty(tmp_path, monkeypatch):
+def test_ingest_empty(tmp_path, monkeypatch, auth_headers):
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
 
-    response = client.post("/api/ingest")
+    response = client.post("/api/ingest", headers=auth_headers)
 
     assert response.status_code != 200
 
@@ -219,12 +222,12 @@ def _csv_text(*rows: str) -> str:
     return "\n".join((TRANSCRIPT_HEADER, *rows)) + "\n"
 
 
-def test_ingest_transcript_file_success(transcript_env, tmp_path):
+def test_ingest_transcript_file_success(transcript_env, tmp_path, auth_headers):
     # 6-column row: contact_ids omitted, so it defaults to "".
     content = _csv_text("T910,D910,A910,2026-09-23,Phone,uploaded body")
     files = {"file": ("transcripts.csv", content.encode("utf-8"), "text/csv")}
 
-    response = client.post("/api/ingest/transcript", files=files)
+    response = client.post("/api/ingest/transcript", files=files, headers=auth_headers)
 
     assert response.status_code == 200
     body = response.json()
@@ -249,46 +252,46 @@ def test_ingest_transcript_file_success(transcript_env, tmp_path):
     assert rows[0]["transcript"] == "uploaded body"
 
 
-def test_ingest_transcript_duplicate(transcript_env, tmp_path):
+def test_ingest_transcript_duplicate(transcript_env, tmp_path, auth_headers):
     content = _csv_text("T900,D900,A900,,2026-09-22,Email,first body")
     files = {"file": ("transcripts.csv", content.encode("utf-8"), "text/csv")}
 
-    first = client.post("/api/ingest/transcript", files=files)
+    first = client.post("/api/ingest/transcript", files=files, headers=auth_headers)
     assert first.status_code == 200
     assert (tmp_path / "chroma").exists()
 
-    second = client.post("/api/ingest/transcript", files=files)
+    second = client.post("/api/ingest/transcript", files=files, headers=auth_headers)
 
     assert second.status_code == 400
     assert "duplicate transcript_id" in second.json()["detail"]
 
 
-def test_ingest_transcript_empty(tmp_path, monkeypatch):
+def test_ingest_transcript_empty(tmp_path, monkeypatch, auth_headers):
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
 
     files = {"file": ("transcripts.csv", b"   \n  ", "text/csv")}
-    response = client.post("/api/ingest/transcript", files=files)
+    response = client.post("/api/ingest/transcript", files=files, headers=auth_headers)
 
     assert response.status_code == 400
     assert "upload a transcripts .csv file" in response.json()["detail"]
 
 
-def test_ingest_transcript_too_few_columns(tmp_path, monkeypatch):
+def test_ingest_transcript_too_few_columns(tmp_path, monkeypatch, auth_headers):
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
 
     files = {"file": ("transcripts.csv", b"T900,D900,A900\n", "text/csv")}
-    response = client.post("/api/ingest/transcript", files=files)
+    response = client.post("/api/ingest/transcript", files=files, headers=auth_headers)
 
     assert response.status_code == 400
     assert "at least 6" in response.json()["detail"]
 
 
-def test_ingest_transcript_non_csv(tmp_path, monkeypatch):
+def test_ingest_transcript_non_csv(tmp_path, monkeypatch, auth_headers):
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
 
     content = _csv_text("T920,D920,A920,,2026-09-24,Email,body")
     files = {"file": ("transcripts.txt", content.encode("utf-8"), "text/plain")}
 
-    response = client.post("/api/ingest/transcript", files=files)
+    response = client.post("/api/ingest/transcript", files=files, headers=auth_headers)
 
     assert response.status_code == 400

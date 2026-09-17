@@ -13,10 +13,73 @@ from app import config
 
 
 @pytest.fixture
+def session():
+    """Fresh in-memory SQLite session (full schema per test, not autouse)."""
+    from sqlalchemy import create_engine
+    from sqlalchemy.orm import sessionmaker
+    from sqlalchemy.pool import StaticPool
+
+    from app.db.models import Base
+
+    engine = create_engine(
+        "sqlite:///:memory:",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
+    Base.metadata.create_all(engine)
+    SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+        engine.dispose()
+
+
+@pytest.fixture
 def stub_env(monkeypatch):
     """Force the offline ``stub`` answerer for the duration of a test."""
     monkeypatch.setattr(config, "ANSWERER", "stub")
     return "stub"
+
+
+@pytest.fixture
+def auth_headers(monkeypatch):
+    """Register+login a user against a fresh in-memory engine; return auth headers.
+
+    Patches ``app.db.engine.get_engine`` (read at request time by ``get_db``)
+    to a fresh in-memory SQLite engine for the test's duration, then registers
+    ``test@example.com`` and returns a valid ``Authorization: Bearer`` header.
+    """
+    from sqlalchemy import create_engine
+    from sqlalchemy.pool import StaticPool
+    from fastapi.testclient import TestClient
+
+    from app.backend.app import app
+    from app.db import engine as db_engine
+    from app.db.models import Base
+
+    engine = create_engine(
+        "sqlite:///:memory:",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
+    Base.metadata.create_all(engine)
+    monkeypatch.setattr(db_engine, "get_engine", lambda: engine)
+
+    client = TestClient(app)
+    register = client.post(
+        "/api/auth/register",
+        json={"email": "test@example.com", "password": "password123"},
+    )
+    assert register.status_code == 201, register.text
+    login = client.post(
+        "/api/auth/login",
+        json={"email": "test@example.com", "password": "password123"},
+    )
+    assert login.status_code == 200, login.text
+    token = login.json()["access_token"]
+    return {"Authorization": f"Bearer {token}"}
 
 
 def needs_live():

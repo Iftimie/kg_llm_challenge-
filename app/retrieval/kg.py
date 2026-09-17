@@ -2,6 +2,7 @@
 import requests
 
 from app import config
+from app.mcp.guards import assert_readonly
 
 _ACCEPT = "application/sparql-results+json"
 
@@ -11,7 +12,9 @@ def run_sparql(sparql, timeout=60, max_rows=100) -> dict:
 
     Bindings are truncated to ``max_rows``. Raises ``RuntimeError`` with a clean
     message when GraphDB is unreachable, returns a bad status, or sends non-JSON.
+    The read-only guard runs first so no update query can reach GraphDB.
     """
+    assert_readonly(sparql)
     url = f"{config.GRAPHDB_URL.rstrip('/')}/repositories/{config.GRAPHDB_REPO}"
 
     try:

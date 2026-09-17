@@ -5,6 +5,7 @@
 // The accounts.csv payload must repeat the existing table header: merge_csv_files
 // rejects an upload missing any column already present in the on-disk table.
 import { test, expect } from "@playwright/test";
+import { loginAs } from "./auth";
 
 test.setTimeout(180_000);
 
@@ -15,6 +16,10 @@ const ACCOUNTS_CSV =
 
 const TRANSCRIPT_CSV =
   "T990,D007,A007,C007,2026-01-02,Sales Call,hello world test transcript\n";
+
+test.beforeEach(async ({ page }) => {
+  await loginAs(page, "ingest-spec@example.com", "password123");
+});
 
 test("CRM CSV upload reaches /api/ingest and is staged", async ({ page }) => {
   await page.goto("/ingest.html");

@@ -1,6 +1,7 @@
 // Deterministic evidence-pane specs: POST /api/chat is served by CHAT_FIXTURE.
 import { test, expect } from "@playwright/test";
 
+import { loginAs } from "./auth";
 import { CHAT_FIXTURE, VISUAL_LINK_RE } from "./fixtures";
 
 async function openWithFixture(page: import("@playwright/test").Page) {
@@ -12,6 +13,10 @@ async function openWithFixture(page: import("@playwright/test").Page) {
   await page.getByTestId("send-button").click();
   await expect(page.getByTestId("evidence-headline")).toBeVisible();
 }
+
+test.beforeEach(async ({ page }) => {
+  await loginAs(page, "evidence-spec@example.com", "password123");
+});
 
 test("headline reports the fixture engine and step count", async ({ page }) => {
   await openWithFixture(page);

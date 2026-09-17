@@ -13,8 +13,8 @@ from app.backend.app import app
 client = TestClient(app)
 
 
-def test_chat_stub_contract_shape(stub_env):
-    response = client.post("/api/chat", json={"message": "ping"})
+def test_chat_stub_contract_shape(stub_env, auth_headers):
+    response = client.post("/api/chat", json={"message": "ping"}, headers=auth_headers)
 
     assert response.status_code == 200
     body = response.json()
@@ -24,8 +24,8 @@ def test_chat_stub_contract_shape(stub_env):
     assert isinstance(body["meta"], dict)
 
 
-def test_chat_stub_meta_evidence_fields(stub_env):
-    response = client.post("/api/chat", json={"message": "ping"})
+def test_chat_stub_meta_evidence_fields(stub_env, auth_headers):
+    response = client.post("/api/chat", json={"message": "ping"}, headers=auth_headers)
 
     assert response.status_code == 200
     meta = response.json()["meta"]
@@ -35,39 +35,41 @@ def test_chat_stub_meta_evidence_fields(stub_env):
     assert meta["iris"] == []
 
 
-def test_chat_history_accepted(stub_env):
+def test_chat_history_accepted(stub_env, auth_headers):
     history = [
         {"role": "user", "content": "hi"},
         {"role": "assistant", "content": "hello"},
     ]
 
-    response = client.post("/api/chat", json={"message": "ping", "history": history})
+    response = client.post(
+        "/api/chat", json={"message": "ping", "history": history}, headers=auth_headers
+    )
 
     assert response.status_code == 200
     assert response.json()["answer"] == "stub answer to: ping"
 
 
 @pytest.mark.parametrize("message", ["", "   "])
-def test_chat_empty_message_400(message):
-    response = client.post("/api/chat", json={"message": message})
+def test_chat_empty_message_400(message, auth_headers):
+    response = client.post("/api/chat", json={"message": message}, headers=auth_headers)
     assert response.status_code == 400
 
 
-def test_chat_runtime_error_maps_502(monkeypatch):
+def test_chat_runtime_error_maps_502(monkeypatch, auth_headers):
     def _boom():
         raise RuntimeError("boom")
 
     # app.py imports get_answerer by name, so patch the app module's binding.
     monkeypatch.setattr("app.backend.app.get_answerer", _boom)
 
-    response = client.post("/api/chat", json={"message": "ping"})
+    response = client.post("/api/chat", json={"message": "ping"}, headers=auth_headers)
 
     assert response.status_code == 502
     assert response.json()["detail"] == "boom"
 
 
-def test_transcript_contract_fields():
-    response = client.get("/api/transcripts/T007")
+def test_transcript_contract_fields(auth_headers):
+    response = client.get("/api/transcripts/T007", headers=auth_headers)
 
     assert response.status_code == 200
     body = response.json()
@@ -77,8 +79,8 @@ def test_transcript_contract_fields():
     assert body["deal_id"] == "D007"
 
 
-def test_transcript_unknown_404():
-    response = client.get("/api/transcripts/NOPE")
+def test_transcript_unknown_404(auth_headers):
+    response = client.get("/api/transcripts/NOPE", headers=auth_headers)
     assert response.status_code == 404
 
 

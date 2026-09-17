@@ -7,6 +7,22 @@ services:
       - graphdb-data:/opt/graphdb/home
     restart: unless-stopped
 
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: sales
+      POSTGRES_PASSWORD: sales
+      POSTGRES_DB: sales
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sales -d sales"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    # Internal-only: no host ports published.
+
   app:
     build: .
     image: sales-intelligence:local
@@ -19,6 +35,7 @@ services:
       GRAPHDB_URL: http://graphdb:7200
       GRAPHDB_REPO: ${GRAPHDB_REPO:-sales-kg}
       DATA_DIR: /app/data
+      DATABASE_URL: postgresql+psycopg://sales:sales@postgres:5432/sales
     volumes:
       # Persist logs on the host; chroma_db is copied into the image (~0.5 MB).
       - ./logs:/app/logs
@@ -26,8 +43,12 @@ services:
       # from the host so the image never ships stale extracted demo facts.
       - ./data/ingest:/app/data
     depends_on:
-      - graphdb
+      graphdb:
+        condition: service_started
+      postgres:
+        condition: service_healthy
     restart: unless-stopped
 
 volumes:
   graphdb-data:
+  postgres-data:

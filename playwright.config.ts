@@ -30,6 +30,7 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     env: {
       ANSWERER: "stub",
+      DATABASE_URL: "sqlite:///./test-e2e.db",
       PATH: process.env.PATH,
     },
     timeout: 60_000,

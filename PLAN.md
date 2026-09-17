@@ -131,27 +131,39 @@ Kubernetes, microservices, LangChain/LlamaIndex, custom agent framework, CI/CD.
   `npx playwright test` (after one-time `npx playwright install chromium`); live:
   `python -m pytest -m live -q`.
 
-- **M1 — Read-only guard at retrieval boundary.**
-  Goal: no SPARQL write can reach GraphDB from any path.
-  Files: `app/retrieval/kg.py` (call `assert_readonly` inside `run_sparql`),
-  `app/mcp/guards.py`, `app/mcp/server.py`, `app/backend/answerers/pydantic_agent.py`
-  (dedupe guard calls).
+- **M1 — Read-only guard at retrieval boundary + remove baseline.**
+  Goal: no SPARQL write can reach GraphDB from any path; `baseline.py` deleted.
+  Files: DELETE `app/backend/answerers/baseline.py`; `app/backend/factory.py`
+  (drop `baseline` branch, default -> `agent`, `_KNOWN = (stub, agent, pydantic)`);
+  `app/config.py` (ANSWERER default `agent`); `app/retrieval/kg.py` (call
+  `assert_readonly` inside `run_sparql` — single choke point); `app/mcp/guards.py`
+  (activate dead `BLOCKED` tuple: scan stripped query for standalone update keywords
+  so stacked `SELECT ...; DELETE ...` and comment-hidden writes are refused);
+  `app/mcp/server.py`, `app/backend/answerers/pydantic_agent.py` (leave redundant
+  pre-guards as defense in depth — no change).
   Tests — RUN `tests/test_guards.py`, `tests/test_retrieval.py`; MOD `test_retrieval.py`:
-  `test_run_sparql_rejects_insert/_delete` (spy `requests.get`, assert never called),
-  `test_run_sparql_select_still_returns`.
-  Verify: `python -m pytest tests/test_guards.py tests/test_retrieval.py -q`.
+  `test_run_sparql_rejects_insert/_delete/_stacked/_comment_hidden` (spy `requests.get`,
+  assert never called), `test_run_sparql_select_still_returns`; ADD factory test:
+  `ANSWERER=baseline` now raises ValueError, default resolves to agent.
+  Verify: `python -m pytest tests/test_guards.py tests/test_retrieval.py -q` + full
+  `python -m pytest -q` (M0 net still green).
 
 - **M2 — Postgres + base infra.**
-  Goal: database and migrations running; nothing else changes behavior.
-  Files: `docker-compose.yml` (postgres service + volume), `requirements.txt`
-  (`sqlalchemy`, `psycopg[binary]`, `alembic`), `app/config.py` (DSN), new `app/db/`
-  (engine/session/models `User,Chat,Message,Job`/migrations), `app/backend/app.py`
-  (lifespan/health), new `tests/conftest.py` (shared offline fixture).
+  Goal: database and schema running; nothing else changes behavior.
+  Schema via `create_all` in lifespan (NO Alembic); Postgres is internal-only
+  (no host ports) and there is NO SQLite fallback — `DATABASE_URL` is required
+  and the app fails fast if unset (documented local default
+  `postgresql+psycopg://sales:sales@localhost:5432/sales`; offline tests
+  override via env/monkeypatch to in-memory SQLite).
+  Files: `docker-compose.yml` (postgres service + volume + app healthcheck dep),
+  `requirements.txt` (`sqlalchemy`, `psycopg[binary]`), `app/config.py` (DSN),
+  new `app/db/` (engine/session/models `User,Chat,Message,Job`),
+  `app/backend/app.py` (lifespan/health), new `tests/conftest.py`
+  (session fixture).
   Tests — RUN `tests/test_api.py` (health); ADD `tests/test_db.py`:
-  `test_migrations_apply`, `test_user_chat_message_roundtrip` (SQLite unit),
+  `test_tables_created`, `test_user_chat_message_roundtrip` (SQLite unit),
   `test_health_reports_db`.
-  Verify: `docker compose config`, `docker compose up -d postgres`,
-  `docker compose exec postgres pg_isready`, `python -m pytest tests/test_db.py tests/test_api.py -q`.
+  Verify: `docker compose config`, `python -m pytest tests/test_db.py tests/test_api.py -q`.
 
 - **M3 — Registration + authentication (extends M0 net).**
   Goal: email register/login/me with JWT; chats user-scoped; browser spec logs in first.
@@ -166,6 +178,7 @@ Kubernetes, microservices, LangChain/LlamaIndex, custom agent framework, CI/CD.
   chat/transcript calls to use `auth_headers` fixture; MOD `tests/e2e/chat.spec.ts`
   to log in first.
   Verify: `python -m pytest tests/test_auth.py tests/test_api.py tests/test_api_e2e.py -q` + `npx playwright test tests/e2e/chat.spec.ts`.
+  M3 actual: bcrypt used directly (NO passlib; unmaintained, breaks with bcrypt>=4.1); requirements add bcrypt/PyJWT/email-validator. JWT sub=user_id, persist each /api/chat exchange + GET /api/chats history; ingest routes protected too so ui/ingest.html + tests/test_ingest_api.py got auth headers. Playwright webServer uses file SQLite test-e2e.db (gitignored) + shared tests/e2e/auth.ts loginAs helper; engine.py StaticPool only for :memory:.
 
 - **M4 — GraphDB isolation + visual-link proxy.**
   Goal: GraphDB unreachable from host; UI visual links keep working via auth'd proxy.
@@ -268,7 +281,7 @@ Kubernetes, microservices, LangChain/LlamaIndex, custom agent framework, CI/CD.
 - **M12 — Cleanup / dedup.**
   Goal: smaller, clearer codebase; `pydantic_ai` kept but non-default.
   Files: shared helpers module for `_extract_iris`/`_sparql_bindings`/`_normalize_hit`/
-  `_truncate`/`clean` (used by `baseline.py`, `pydantic_agent.py`, `opencode.py`);
+  `_truncate`/`clean` (used by `pydantic_agent.py`, `opencode.py`);
   unify transcript field constants; retire obsolete root scripts
   (`ask_step1.py`, `ask_step2.py`, `search_transcripts*.py`); update `DESIGN.md` notes;
   add missing `README.md` runbook.
@@ -283,8 +296,8 @@ Kubernetes, microservices, LangChain/LlamaIndex, custom agent framework, CI/CD.
   Files: new `tests/test_e2e.py`, remaining `data-testid` hooks (`chat-history`),
   Playwright config/specs finalized.
   Tests — RUN everything: `python -m pytest -q`, `node --test tests/ui.test.mjs`,
-  `npx playwright test`; ADD `tests/test_e2e.py`: `test_ingest_then_chat_cites_transcript`,
-  `test_known_d001_question` (stub/baseline, offline).
+  `npx playwright test`;   ADD `tests/test_e2e.py`: `test_ingest_then_chat_cites_transcript`,
+  `test_known_d001_question` (stub/agent, offline).
   Verify: `python -m pytest tests/test_e2e.py -q` + `npx playwright test`.
 
 ## Rules

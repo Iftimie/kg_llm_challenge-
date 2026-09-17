@@ -13,6 +13,19 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 GRAPHDB_URL = os.environ.get("GRAPHDB_URL", "http://localhost:7200")
 GRAPHDB_REPO = os.environ.get("GRAPHDB_REPO", "sales-kg")
 
+# --- Database -----------------------------------------------------------------
+# Postgres is the only supported backend; there is no SQLite fallback. Offline
+# tests override this via env/monkeypatch to an in-memory SQLite engine.
+DATABASE_URL = os.environ.get(
+    "DATABASE_URL", "postgresql+psycopg://sales:sales@localhost:5432/sales"
+)
+
+# --- Auth ---------------------------------------------------------------------
+# dev-only default; set JWT_SECRET env in production
+JWT_SECRET = os.environ.get("JWT_SECRET", "dev-only-secret-change-me-in-production-0123456789")
+JWT_ALGORITHM = os.environ.get("JWT_ALGORITHM", "HS256")
+JWT_EXPIRE_MINUTES = int(os.environ.get("JWT_EXPIRE_MINUTES", "60"))
+
 OPENROUTER_URL = os.environ.get("OPENROUTER_URL", "https://openrouter.ai/api/v1/chat/completions")
 OPENROUTER_MODEL = os.environ.get("OPENROUTER_MODEL", "meta/muse-spark-1.3-contributor")
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
@@ -26,7 +39,7 @@ PYDANTIC_BASE_URL = os.environ.get("PYDANTIC_BASE_URL", "https://openrouter.ai/a
 PYDANTIC_API_KEY = os.environ.get("PYDANTIC_API_KEY", os.environ.get("OPENROUTER_API_KEY", ""))
 
 # Answerer implementation selected by the QA/agent layer.
-ANSWERER = os.environ.get("ANSWERER", "baseline")
+ANSWERER = os.environ.get("ANSWERER", "agent")
 
 # Reserved for a future DeepSeek-backed answerer.
 DEEPSEEK_MODEL = os.environ.get("DEEPSEEK_MODEL", "")

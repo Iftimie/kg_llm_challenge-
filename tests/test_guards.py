@@ -53,6 +53,20 @@ def test_assert_readonly_rejects_mutations(query):
         assert_readonly(query)
 
 
+def test_assert_readonly_rejects_stacked_select_delete():
+    with pytest.raises(ValueError):
+        assert_readonly("SELECT ?s WHERE { ?s ?p ?o } ; DELETE WHERE { ?s ?p ?o }")
+
+
+def test_assert_readonly_rejects_comment_hidden_insert():
+    query = (
+        "SELECT ?s WHERE { ?s ?p ?o } # comment\n"
+        "INSERT DATA { <urn:x> <urn:p> <urn:o> }"
+    )
+    with pytest.raises(ValueError):
+        assert_readonly(query)
+
+
 def test_assert_readonly_rejects_empty():
     with pytest.raises(ValueError):
         assert_readonly("")

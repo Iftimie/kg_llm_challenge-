@@ -4,11 +4,16 @@
 // "Thinking…" placeholder no longer matches data-testid="assistant-answer"
 // (it is "assistant-pending"), so these expectations wait for the real answer.
 import { test, expect } from "@playwright/test";
+import { loginAs } from "./auth";
 
 async function ask(page: import("@playwright/test").Page, message: string) {
   await page.getByTestId("chat-input").fill(message);
   await page.getByTestId("send-button").click();
 }
+
+test.beforeEach(async ({ page }) => {
+  await loginAs(page, "chat-spec@example.com", "password123");
+});
 
 test("renders user and assistant rows", async ({ page }) => {
   await page.goto("/");

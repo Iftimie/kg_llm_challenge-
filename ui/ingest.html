@@ -98,6 +98,7 @@
 <body>
 <header>
   <h1>Ingest CRM Data</h1>
+  <form id="login-form" data-testid="login-form"><input id="login-email" type="email" placeholder="Email" data-testid="login-email"><input id="login-password" type="password" placeholder="Password" data-testid="login-password"><button type="submit" data-testid="login-submit">Log in</button></form><button id="logout" type="button" hidden>Log out</button><span id="login-status"></span>
   <a href="/index.html">Back to chat</a>
 </header>
 
@@ -139,6 +140,90 @@
   var transcriptBtn = document.getElementById("submit-transcript");
 
   var result = document.getElementById("result");
+
+  // ---- Auth (login/register; token kept in localStorage) ------------------
+  var loginForm = document.getElementById("login-form");
+  var loginEmail = document.getElementById("login-email");
+  var loginPassword = document.getElementById("login-password");
+  var loginStatus = document.getElementById("login-status");
+  var logoutBtn = document.getElementById("logout");
+
+  var token = localStorage.getItem("sales_token");
+
+  function authHeaders() {
+    return token ? { Authorization: "Bearer " + token } : {};
+  }
+
+  function refreshLoginUI() {
+    var loggedIn = Boolean(token);
+    if (loginForm) { loginForm.hidden = loggedIn; }
+    if (logoutBtn) { logoutBtn.hidden = !loggedIn; }
+    if (loginStatus) { loginStatus.textContent = ""; }
+  }
+
+  async function doLogin(email, password) {
+    var res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email, password: password })
+    });
+    if (res.status === 401 || res.status === 404) {
+      // No account yet: register, then log in again.
+      await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email, password: password })
+      });
+      res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email, password: password })
+      });
+    }
+    if (!res.ok) {
+      var detail = "Login failed (" + res.status + ")";
+      try {
+        var body = await res.json();
+        if (body && body.detail) { detail += ": " + body.detail; }
+      } catch (ignored) {
+        // Non-JSON error body; keep the status-only message.
+      }
+      throw new Error(detail);
+    }
+    var data = await res.json();
+    return data.access_token;
+  }
+
+  if (loginForm) {
+    loginForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var email = loginEmail.value.trim();
+      var password = loginPassword.value;
+      if (!email || !password) {
+        loginStatus.textContent = "Email and password are required.";
+        return;
+      }
+      loginStatus.textContent = "Logging in\u2026";
+      doLogin(email, password).then(function (accessToken) {
+        token = accessToken;
+        localStorage.setItem("sales_token", token);
+        loginPassword.value = "";
+        refreshLoginUI();
+      }).catch(function (err) {
+        loginStatus.textContent = (err && err.message) ? err.message : String(err);
+      });
+    });
+  }
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", function () {
+      token = null;
+      localStorage.removeItem("sales_token");
+      refreshLoginUI();
+    });
+  }
+
+  refreshLoginUI();
 
   function el(tag, className, text) {
     var node = document.createElement(tag);
@@ -233,14 +318,16 @@
     button.disabled = true;
     button.textContent = busyText;
 
-    fetch(url, { method: "POST", body: fd })
+    fetch(url, { method: "POST", body: fd, headers: authHeaders() })
       .then(function (res) {
         return res.json().catch(function () { return null; }).then(function (body) {
           return { ok: res.ok, status: res.status, body: body };
         });
       })
       .then(function (res) {
-        if (res.ok && res.body) {
+        if (res.status === 401) {
+          showError(401, "Not authenticated \u2014 log in first.");
+        } else if (res.ok && res.body) {
           render(res.body);
         } else if (res.body && res.body.detail) {
           showError(res.status, res.body.detail);

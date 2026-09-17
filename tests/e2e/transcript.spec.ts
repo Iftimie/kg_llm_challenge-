@@ -1,6 +1,7 @@
 // Transcript modal specs: chat + transcript lookups are served by fixtures.
 import { test, expect } from "@playwright/test";
 
+import { loginAs } from "./auth";
 import { CHAT_FIXTURE, TRANSCRIPT_FIXTURE } from "./fixtures";
 
 async function openWithFixture(page: import("@playwright/test").Page) {
@@ -20,6 +21,10 @@ async function openModal(page: import("@playwright/test").Page) {
   await page.locator('.ev-preview[data-transcript-id="T007"]').click();
   await expect(page.getByTestId("transcript-modal")).toBeVisible();
 }
+
+test.beforeEach(async ({ page }) => {
+  await loginAs(page, "transcript-spec@example.com", "password123");
+});
 
 test("preview opens the modal with the transcript contents", async ({ page }) => {
   await openWithFixture(page);

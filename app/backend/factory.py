@@ -5,8 +5,8 @@ callers use it uniformly as ``get_answerer().answer(...)``.
 """
 from app import config
 
-_DEFAULT = "baseline"
-_KNOWN = ("stub", "baseline", "agent", "pydantic")
+_DEFAULT = "agent"
+_KNOWN = ("stub", "agent", "pydantic")
 
 
 def get_answerer():
@@ -16,10 +16,6 @@ def get_answerer():
         from app.backend.answerers import stub
 
         return stub
-    if name == "baseline":
-        from app.backend.answerers import baseline
-
-        return baseline
     if name == "agent":
         from app.backend.answerers import agent
 

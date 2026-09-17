@@ -20,10 +20,10 @@ def test_health_ok_and_has_answerer_key():
     assert "answerer" in body
 
 
-def test_chat_uses_stub_answerer(monkeypatch):
+def test_chat_uses_stub_answerer(monkeypatch, auth_headers):
     monkeypatch.setattr(config, "ANSWERER", "stub")
 
-    response = client.post("/api/chat", json={"message": "ping"})
+    response = client.post("/api/chat", json={"message": "ping"}, headers=auth_headers)
 
     assert response.status_code == 200
     body = response.json()
@@ -32,17 +32,17 @@ def test_chat_uses_stub_answerer(monkeypatch):
 
 
 @pytest.mark.parametrize("message", ["", "   ", "\n"])
-def test_chat_empty_message_is_400(message):
-    response = client.post("/api/chat", json={"message": message})
+def test_chat_empty_message_is_400(message, auth_headers):
+    response = client.post("/api/chat", json={"message": message}, headers=auth_headers)
     assert response.status_code == 400
 
 
-def test_transcript_endpoint_known():
-    response = client.get("/api/transcripts/T007")
+def test_transcript_endpoint_known(auth_headers):
+    response = client.get("/api/transcripts/T007", headers=auth_headers)
     assert response.status_code == 200
     assert response.json()["deal_id"] == "D007"
 
 
-def test_transcript_endpoint_unknown_is_404():
-    response = client.get("/api/transcripts/NOPE")
+def test_transcript_endpoint_unknown_is_404(auth_headers):
+    response = client.get("/api/transcripts/NOPE", headers=auth_headers)
     assert response.status_code == 404

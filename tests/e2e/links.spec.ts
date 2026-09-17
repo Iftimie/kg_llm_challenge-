@@ -1,6 +1,7 @@
 // GraphDB visual-link shape specs (chat answer + evidence entities).
 import { test, expect } from "@playwright/test";
 
+import { loginAs } from "./auth";
 import { CHAT_FIXTURE, VISUAL_LINK_RE } from "./fixtures";
 
 async function openWithFixture(page: import("@playwright/test").Page) {
@@ -12,6 +13,10 @@ async function openWithFixture(page: import("@playwright/test").Page) {
   await page.getByTestId("send-button").click();
   await expect(page.getByTestId("evidence-headline")).toBeVisible();
 }
+
+test.beforeEach(async ({ page }) => {
+  await loginAs(page, "links-spec@example.com", "password123");
+});
 
 test("answer visual link matches the GraphDB href shape", async ({ page }) => {
   await openWithFixture(page);

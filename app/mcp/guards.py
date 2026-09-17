@@ -11,6 +11,15 @@ READ_ONLY = ("SELECT", "ASK", "CONSTRUCT", "DESCRIBE")
 # Update/DDL keywords that must never reach GraphDB.
 BLOCKED = ("INSERT", "DELETE", "CLEAR", "DROP", "CREATE", "LOAD", "MOVE", "COPY", "ADD")
 
+# Standalone update keyword anywhere in the (comment/prologue-stripped) query.
+# The lookarounds ignore ``?delete`` variables, ``:add`` local names, and
+# prefixed names such as ``ex:drop`` while still catching stacked
+# ``SELECT ... ; DELETE ...`` and comment-hidden writes.
+_BLOCKED_RE = re.compile(
+    r"(?<![\w:?])(?:" + "|".join(BLOCKED) + r")(?![\w:])",
+    re.IGNORECASE,
+)
+
 # Shared limits for the MCP tools.
 SPARQL_TIMEOUT = 30
 MAX_ROWS = 100
@@ -68,6 +77,12 @@ def assert_readonly(sparql) -> str:
         raise ValueError(
             f"refusing {keyword or '<empty>'} query: only "
             "SELECT/ASK/CONSTRUCT/DESCRIBE allowed"
+        )
+    blocked = _BLOCKED_RE.search(stripped)
+    if blocked:
+        raise ValueError(
+            f"refusing {keyword} query: update keyword "
+            f"{blocked.group(0).upper()} not allowed"
         )
     return keyword
 
