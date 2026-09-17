@@ -19,12 +19,45 @@
     color: #1f2328;
   }
   header {
-    padding: 12px 16px;
-    border-bottom: 1px solid #d9dce1;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 20px;
+    border-bottom: 1px solid #e3e6ea;
     background: #fff;
   }
-  header h1 { margin: 0; font-size: 18px; }
-  .engine { margin-top: 2px; font-size: 12px; color: #6b7280; }
+  .brand { margin: 0; font-size: 16px; font-weight: 600; color: #111827; white-space: nowrap; }
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: auto;
+    flex-wrap: wrap;
+  }
+  .engine { font-size: 12px; color: #6b7280; }
+  .nav-link { color: #1d4ed8; text-decoration: none; font-size: 14px; white-space: nowrap; }
+  .nav-link:hover { text-decoration: underline; }
+  header button, header input { font: inherit; font-size: 13px; }
+  header input {
+    padding: 6px 8px;
+    border: 1px solid #c7ccd3;
+    border-radius: 6px;
+    background: #fff;
+  }
+  header button {
+    padding: 6px 12px;
+    border: 1px solid #c7ccd3;
+    border-radius: 6px;
+    background: #fff;
+    color: #374151;
+    cursor: pointer;
+  }
+  header button:hover { background: #f3f4f6; }
+  #login-submit { background: #1d4ed8; border-color: #1d4ed8; color: #fff; }
+  #login-submit:hover { background: #1e40af; }
+  #clear-chat { color: #b91c1c; border-color: #f3d0d0; }
+  #clear-chat:hover { background: #fdf2f2; }
+  #login-status { font-size: 13px; color: #b91c1c; }
   #workspace {
     flex: 1 1 auto;
     display: flex;
@@ -271,10 +304,13 @@
 </head>
 <body>
 <header>
-  <h1>Sales Intelligence Assistant</h1>
-  <form id="login-form" data-testid="login-form"><input id="login-email" type="email" placeholder="Email" data-testid="login-email"><input id="login-password" type="password" placeholder="Password" data-testid="login-password"><button type="submit" data-testid="login-submit">Log in</button></form><button id="logout" type="button" hidden>Log out</button><span id="login-status"></span>
-  <div class="engine">Retrieval engine: <span id="engine">unknown</span></div>
-  <a href="/ingest.html">Ingest data</a>
+  <h1 class="brand">Sales Intelligence Assistant</h1>
+  <div class="header-actions">
+    <div class="engine">Retrieval engine: <span id="engine">unknown</span></div>
+    <a class="nav-link" href="/ingest.html">Ingest data</a>
+    <button id="clear-chat" type="button" hidden>Clear chat</button>
+    <form id="login-form" data-testid="login-form"><input id="login-email" type="email" placeholder="Email" data-testid="login-email"><input id="login-password" type="password" placeholder="Password" data-testid="login-password"><button type="submit" data-testid="login-submit">Log in</button></form><button id="logout" type="button" hidden>Log out</button><span id="login-status"></span>
+  </div>
 </header>
 
 <div id="workspace">
@@ -321,6 +357,7 @@
   var loginPassword = document.getElementById("login-password");
   var loginStatus = document.getElementById("login-status");
   var logoutBtn = document.getElementById("logout");
+  var clearBtn = document.getElementById("clear-chat");
 
   var token = localStorage.getItem("sales_token");
 
@@ -332,6 +369,7 @@
     var loggedIn = Boolean(token);
     if (loginForm) { loginForm.hidden = loggedIn; }
     if (logoutBtn) { logoutBtn.hidden = !loggedIn; }
+    if (clearBtn) { clearBtn.hidden = !loggedIn; }
     if (loginStatus) { loginStatus.textContent = ""; }
   }
 
@@ -401,6 +439,17 @@
     });
   }
 
+  if (clearBtn) {
+    clearBtn.addEventListener("click", function () {
+      clearChat();
+      // Also clear the persisted history so a refresh does not restore it.
+      if (token) {
+        fetch("/api/chats", { method: "DELETE", headers: authHeaders() })
+          .catch(function () {});
+      }
+    });
+  }
+
   refreshLoginUI();
 
   // Client-side conversation history, sent with every request as `history`.
@@ -415,6 +464,7 @@
     history = [];
     answers = [];
     selectedIndex = -1;
+    renderEvidence(null);
   }
 
   // Restore the persisted conversation from GET /api/chats into the pane.

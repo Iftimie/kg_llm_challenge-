@@ -94,3 +94,22 @@ def test_logout_clears_cookie(monkeypatch):
     set_cookie = response.headers.get("set-cookie", "")
     assert "sales_token=" in set_cookie
     assert "Max-Age=0" in set_cookie
+
+
+def test_clear_chats_deletes_history(monkeypatch, auth_headers):
+    monkeypatch.setattr(config, "ANSWERER", "stub")
+
+    client.post("/api/chat", json={"message": "ping"}, headers=auth_headers)
+    listed = client.get("/api/chats", headers=auth_headers).json()
+    assert len(listed["chats"]) == 1
+
+    cleared = client.delete("/api/chats", headers=auth_headers)
+
+    assert cleared.status_code == 200
+    assert cleared.json() == {"cleared": 1}
+    assert client.get("/api/chats", headers=auth_headers).json()["chats"] == []
+
+
+def test_clear_chats_requires_auth():
+    response = client.delete("/api/chats")
+    assert response.status_code == 401

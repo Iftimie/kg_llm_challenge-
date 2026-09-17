@@ -10,7 +10,7 @@ from pathlib import Path
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from sqlalchemy import select, text
+from sqlalchemy import delete, select, text
 from sqlalchemy.orm import Session
 
 from app import config
@@ -194,6 +194,22 @@ def list_chats(
         )
 
     return {"chats": result}
+
+
+@app.delete("/api/chats")
+def clear_chats(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict:
+    """Delete the caller's persisted conversation history."""
+    chat_ids = db.scalars(
+        select(Chat.id).where(Chat.user_id == current_user.id)
+    ).all()
+    if chat_ids:
+        db.execute(delete(Message).where(Message.chat_id.in_(chat_ids)))
+        db.execute(delete(Chat).where(Chat.id.in_(chat_ids)))
+        db.commit()
+    return {"cleared": len(chat_ids)}
 
 
 @app.get("/api/transcripts/{transcript_id}")
