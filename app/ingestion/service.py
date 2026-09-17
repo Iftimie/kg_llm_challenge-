@@ -239,10 +239,10 @@ def append_transcript_rows(target_dir, rows) -> list:
     """Append transcript rows (dicts) to ``target_dir/transcripts.csv``.
 
     ``rows`` is a list of dicts whose keys come from ``_TRANSCRIPT_FIELDS``;
-    ``contact_ids`` is optional and defaults to ``""``. Every row must have a
-    non-empty ``transcript_id``, ``deal_id``, ``account_id``, ``activity_date``,
-    ``channel`` and ``transcript``. Duplicate ``transcript_id`` values are
-    rejected both within the batch and against the existing file.
+    ``contact_ids`` is required and must be non-empty. Every row must have a
+    non-empty ``transcript_id``, ``deal_id``, ``account_id``, ``contact_ids``,
+    ``activity_date``, ``channel`` and ``transcript``. Duplicate ``transcript_id``
+    values are rejected both within the batch and against the existing file.
 
     Creates the directory/file with the standard 7-column header when the file
     is new or empty, and appends otherwise. Returns the appended transcript ids.
@@ -255,6 +255,7 @@ def append_transcript_rows(target_dir, rows) -> list:
         "transcript_id",
         "deal_id",
         "account_id",
+        "contact_ids",
         "activity_date",
         "channel",
         "transcript",

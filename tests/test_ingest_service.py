@@ -135,13 +135,17 @@ def test_append_transcript_rows_creates_file_with_header(tmp_path):
     assert rows[0]["transcript"] == "hello"
 
 
-def test_append_transcript_rows_contact_ids_optional(tmp_path):
+def test_append_transcript_rows_contact_ids_required(tmp_path):
     row = _row()
     del row["contact_ids"]
 
-    service.append_transcript_rows(tmp_path, [row])
+    with pytest.raises(ValueError, match="missing required field: contact_ids"):
+        service.append_transcript_rows(tmp_path, [row])
 
-    assert _read_rows(tmp_path / "transcripts.csv")[0]["contact_ids"] == ""
+    with pytest.raises(ValueError, match="missing required field: contact_ids"):
+        service.append_transcript_rows(tmp_path, [_row(contact_ids="")])
+
+    assert not (tmp_path / "transcripts.csv").exists()
 
 
 def test_append_transcript_rows_appends_without_repeating_header(tmp_path):

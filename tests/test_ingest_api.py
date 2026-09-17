@@ -223,8 +223,7 @@ def _csv_text(*rows: str) -> str:
 
 
 def test_ingest_transcript_file_success(transcript_env, tmp_path, auth_headers):
-    # 6-column row: contact_ids omitted, so it defaults to "".
-    content = _csv_text("T910,D910,A910,2026-09-23,Phone,uploaded body")
+    content = _csv_text("T910,D910,A910,C910,2026-09-23,Phone,uploaded body")
     files = {"file": ("transcripts.csv", content.encode("utf-8"), "text/csv")}
 
     response = client.post("/api/ingest/transcript", files=files, headers=auth_headers)
@@ -246,14 +245,14 @@ def test_ingest_transcript_file_success(transcript_env, tmp_path, auth_headers):
     rows = _read_transcripts(transcript_env)
     assert len(rows) == 1
     assert rows[0]["transcript_id"] == "T910"
-    assert rows[0]["contact_ids"] == ""
+    assert rows[0]["contact_ids"] == "C910"
     assert rows[0]["activity_date"] == "2026-09-23"
     assert rows[0]["channel"] == "Phone"
     assert rows[0]["transcript"] == "uploaded body"
 
 
 def test_ingest_transcript_duplicate(transcript_env, tmp_path, auth_headers):
-    content = _csv_text("T900,D900,A900,,2026-09-22,Email,first body")
+    content = _csv_text("T900,D900,A900,C900,2026-09-22,Email,first body")
     files = {"file": ("transcripts.csv", content.encode("utf-8"), "text/csv")}
 
     first = client.post("/api/ingest/transcript", files=files, headers=auth_headers)
@@ -283,7 +282,7 @@ def test_ingest_transcript_too_few_columns(tmp_path, monkeypatch, auth_headers):
     response = client.post("/api/ingest/transcript", files=files, headers=auth_headers)
 
     assert response.status_code == 400
-    assert "at least 6" in response.json()["detail"]
+    assert "expected 7" in response.json()["detail"]
 
 
 def test_ingest_transcript_non_csv(tmp_path, monkeypatch, auth_headers):

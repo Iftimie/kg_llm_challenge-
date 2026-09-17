@@ -51,6 +51,7 @@ def test_keyword_search_returns_top_chunk():
 def test_get_transcript_t007():
     transcript = get_transcript("T007")
     assert transcript["deal_id"] == "D007"
+    assert transcript["contact_ids"] == ["C013", "C014"]
 
 
 def test_list_transcript_ids_contains_t001():

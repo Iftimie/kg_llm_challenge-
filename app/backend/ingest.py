@@ -134,7 +134,7 @@ async def ingest_transcript(file: UploadFile = File(...)) -> IngestResponse:
     """Append transcript rows from a ``.csv`` upload and re-index.
 
     Rows use the canonical 7-column ``transcripts.csv`` layout (a header row is
-    optional). ``contact_ids`` is optional per row and defaults to ``""``.
+    optional). ``contact_ids`` is required per row and must be non-empty.
     """
     filename = (file.filename or "").strip()
     if not filename.lower().endswith(".csv"):
@@ -164,18 +164,15 @@ async def ingest_transcript(file: UploadFile = File(...)) -> IngestResponse:
 
     rows: list[dict] = []
     for position, raw in enumerate(parsed, start=1):
-        if len(raw) < 6:
+        if len(raw) < 7:
             raise HTTPException(
                 status_code=400,
                 detail=(
-                    f"row {position} has {len(raw)} columns; expected at least 6 "
+                    f"row {position} has {len(raw)} columns; expected 7 "
                     "in transcripts.csv format (transcript_id,deal_id,account_id,"
                     "contact_ids,activity_date,channel,transcript)"
                 ),
             )
-        if len(raw) < len(service._TRANSCRIPT_FIELDS):
-            # contact_ids omitted: insert the optional empty column.
-            raw = raw[:3] + [""] + raw[3:]
         rows.append(dict(zip(service._TRANSCRIPT_FIELDS, raw)))
 
     try:

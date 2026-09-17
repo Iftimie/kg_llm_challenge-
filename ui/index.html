@@ -785,6 +785,12 @@
       modalTitle.textContent = "Transcript " + (t.transcript_id || id);
       modalMeta.appendChild(modalMetaItem("Deal", t.deal_id));
       modalMeta.appendChild(modalMetaItem("Account", t.account_id));
+      var contactDisplay = Array.isArray(t.contact_ids)
+        ? t.contact_ids.join(", ")
+        : t.contact_ids;
+      var contactsItem = modalMetaItem("Contacts", contactDisplay);
+      contactsItem.lastChild.setAttribute("data-testid", "contact-ids");
+      modalMeta.appendChild(contactsItem);
       modalMeta.appendChild(modalMetaItem("Date", t.activity_date));
       modalMeta.appendChild(modalMetaItem("Channel", t.channel));
       modalBody.textContent = String(t.transcript == null ? "" : t.transcript);
