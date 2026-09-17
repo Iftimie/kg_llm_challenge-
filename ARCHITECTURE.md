@@ -7,6 +7,7 @@ knowledge graph, a vector index and a keyword index.
 
 ## 1. What it does
 
+- For this challenge, it was assumed that data has the format below, but a general solution for flexible schemas is discussed at the end.
 - Answers sales questions about CRM data such as deals, accounts, contacts and transcripts.
 - Grounds every answer in real data (KG + transcripts), not the model's memory.
 - Lets you upload CRM CSVs and transcript rows (async jobs).
@@ -25,7 +26,190 @@ knowledge graph, a vector index and a keyword index.
 - **Deterministic safety first.** A hard validator always runs; the classifier
   is optional.
 
-## 3. Components
+## 3. Input data — fixed CRM schema
+
+The system expects two kinds of input, both expressed as CSVs.
+
+<div style="max-height: 400px; overflow-y: auto; border: 1px solid #ccc; padding: 8px 12px;">
+
+<p><strong>Structured CRM tables</strong> — five files joined by <code>account_id</code> / <code>deal_id</code> / <code>contact_id</code> / <code>owner_id</code>. One real sample record per file (<code>mock_crm_dataset/</code>):</p>
+
+<strong><code>accounts.csv</code></strong>
+<table>
+  <thead><tr><th>account_id</th><th>account_name</th><th>industry</th><th>country</th><th>employee_count</th><th>annual_revenue_eur</th><th>account_tier</th><th>created_at</th></tr></thead>
+  <tbody><tr><td>A001</td><td>Acme Manufacturing</td><td>Manufacturing</td><td>Germany</td><td>2400</td><td>420000000</td><td>Enterprise</td><td>2025-11-03</td></tr></tbody>
+</table>
+
+<strong><code>deals.csv</code></strong>
+<table>
+  <thead><tr><th>deal_id</th><th>account_id</th><th>deal_name</th><th>deal_stage</th><th>deal_value_eur</th><th>product</th><th>lead_source</th><th>owner_id</th><th>created_at</th><th>expected_close_date</th><th>win_probability</th><th>status</th><th>loss_reason</th></tr></thead>
+  <tbody><tr><td>D001</td><td>A001</td><td>Acme Enterprise Expansion</td><td>Negotiation</td><td>120000</td><td>Enterprise Platform</td><td>Conference</td><td>S017</td><td>2026-05-10</td><td>2026-09-30</td><td>0.75</td><td>Open</td><td>—</td></tr></tbody>
+</table>
+
+<strong><code>contacts.csv</code></strong>
+<table>
+  <thead><tr><th>contact_id</th><th>account_id</th><th>first_name</th><th>last_name</th><th>job_title</th><th>department</th><th>seniority</th><th>email</th><th>phone</th><th>is_decision_maker</th></tr></thead>
+  <tbody><tr><td>C001</td><td>A001</td><td>Anna</td><td>Keller</td><td>VP Operations</td><td>Operations</td><td>VP</td><td>anna.keller@acme.example</td><td>+49-555-0101</td><td>True</td></tr></tbody>
+</table>
+
+<strong><code>activities.csv</code></strong>
+<table>
+  <thead><tr><th>activity_id</th><th>deal_id</th><th>account_id</th><th>contact_id</th><th>activity_type</th><th>activity_at</th><th>channel</th><th>subject</th><th>sentiment</th><th>next_step</th><th>transcript_text</th></tr></thead>
+  <tbody><tr><td>ACT001</td><td>D001</td><td>A001</td><td>C001</td><td>Meeting</td><td>2026-08-28 10:00</td><td>Video</td><td>Commercial negotiation</td><td>Positive</td><td>Send revised enterprise pricing</td><td>Anna said the solution fits their operational goals, but asked for a stronger volume discount if they expand to three factories.</td></tr></tbody>
+</table>
+
+<strong><code>transcripts.csv</code></strong>
+<table>
+  <thead><tr><th>transcript_id</th><th>deal_id</th><th>account_id</th><th>contact_ids</th><th>activity_date</th><th>channel</th><th>transcript</th></tr></thead>
+  <tbody><tr><td>T001</td><td>D001</td><td>A001</td><td>C001;C002</td><td>2026-09-10</td><td>Sales Call</td><td>Sarah (Sales): Last time you mentioned that you were considering deployment across three factories…</td></tr></tbody>
+</table>
+
+<p>The <code>transcript</code> cell is one multi-line string. A snippet of <code>T001</code>:</p>
+
+<pre>Sarah (Sales): Last time you mentioned that you were considering deployment across three factories. Is that still the plan?
+Anna Keller: Yes. The first factory is basically approved internally. The main question is whether we can justify expanding to all three this year.
+Sarah: What's preventing that decision?
+Anna Keller: Mostly pricing. If we deploy at all three locations, procurement expects a better price than what is currently in the proposal.
+Markus Vogel: From my side, I also still need confirmation regarding SSO and data residency.</pre>
+
+</div>
+
+**Transcripts** — the raw call/meeting/email text (`transcript` column) plus
+metadata tying it to a deal, account and contacts. Each transcript is ingested
+three ways: into the KG (LLM extraction → RDF), into Chroma (embeddings) and
+into BM25 (keywords).
+
+> **Hardcoded assumption (current build).** The system is designed for exactly
+> this *one* CRM schema. The CSV tables and columns are static; the R2RML
+> mapping (`mappings.ttl`) hand-wires each CSV column to an ontology term; the
+> ontology itself was pregenerated and is fixed. There is **no** automatic
+> support for new tables, columns, or relationships — an unknown table name or
+> a column mismatch is rejected at ingest time (`merge_csv_files`).
+>
+> How this could be relaxed (schema/ontology discovered at ingest time instead
+> of hardcoded) is described in §14, as an experimental idea, not something the
+> prototype implements today.
+
+## 4. Questions and answers
+
+### What questions it answers
+
+The assistant answers *sales* questions grounded in the CRM data and the
+transcripts. In practice they fall into a few shapes:
+
+| Shape | Example | Primary source |
+|-------|---------|----------------|
+| Structured deal facts | "What is the current stage and value of D001?" | KG |
+| Semantic sales facts | "What is blocking D001?" / "What decision criteria exist for D007?" / "What buying signals exist for D001?" | KG |
+| Evidence / quotes | "What exactly did the customer say about security?" / "What transcript evidence supports the pricing blocker?" | KG + transcripts |
+| Topic / similarity | "Has anyone discussed anything like data sovereignty?" | semantic + lexical (+ KG) |
+| Multi-hop joins | "Which open deals have a blocker *and* a buying signal but no action addressing the blocker?" | KG |
+
+The agent picks the retrieval tools per question (see §6); it is not a fixed
+pipeline that always hits all three stores. In practice the current agent
+instructions still tell it to consult all three for every factual question,
+because the KG is incomplete.
+
+### What an answer looks like
+
+Example (question: *"What is blocking deal D001, and what's the evidence?"*):
+
+> [Deal D001](https://example.org/sales-kg/resource/Deal_D001) is at the
+> **Negotiation** stage, worth **€120,000**, with two open blockers:
+>
+> - **Pricing for a three-factory rollout** — raised by Anna Keller:
+>   *"procurement expects a better price than what is currently in the proposal"*.
+> - **SSO and data residency confirmation** — raised by Markus Vogel:
+>   *"I also still need confirmation regarding SSO and data residency"*.
+>
+> How I checked: KG SPARQL (`hasBlocker` + `supportedBy` → 2 blockers with
+> evidence), keyword search (3 hits), semantic search (2 hits).
+
+### Links into the database
+
+Entity references are **clickable and explorable**. Each one becomes a link
+into GraphDB Workbench's visual graph explorer:
+
+```
+http://localhost:7200/graphs-visualizations?uri=<encoded IRI>&role=subject
+```
+
+Opening it shows that node (deal, blocker, evidence, transcript, …) and its
+neighbourhood, so a user can click from `Deal D001` → its `Blocker`s → the
+supporting `Evidence` → the source `Transcript`. The UI also renders an
+**evidence panel** next to each answer, listing every tool call, the query it
+made and the rows/hits it returned — each row with its own link into GraphDB.
+
+## 5. Ontology
+
+The knowledge graph is described by a single, **pregenerated and fixed**
+ontology: `sales_kg_ontology_v1_llm_friendly.ttl` (the same text returned by the
+`describe_kg_schema` tool). It defines the vocabulary the agent uses to write
+SPARQL — the classes, the properties, and natural-language annotations
+(`skos:altLabel`, `queryHint`, `naturalLanguageExample`) that tell the LLM which
+term to use for a given question.
+
+At answer time the agent can read the ontology and is
+also shown a handful of worked SPARQL examples (`competency_queries.txt`).
+Because the ontology is fixed, the agent only ever queries against known terms —
+it is told *not* to invent predicates.
+
+<div style="max-height: 400px; overflow-y: auto; border: 1px solid #ccc; padding: 8px 12px;">
+@prefix crm:  <https://example.org/sales-kg/> . <br>
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> . <br>
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> . <br>
+@prefix owl:  <http://www.w3.org/2002/07/owl#> . <br>
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> . <br>
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> . <br>
+
+
+crm:SalesKnowledgeGraphOntology <br>
+    a owl:Ontology ; <br>
+    rdfs:label "Sales CRM Knowledge Graph Ontology" ; <br>
+    rdfs:comment "V1 ontology for CRM data, sales transcripts, deal intelligence and LLM-assisted recommendations." . <br>
+ <br>
+################################################################# <br>
+# Core CRM classes <br>
+################################################################# <br>
+ <br>
+crm:Account a owl:Class . <br>
+crm:Industry a owl:Class . <br>
+crm:Person a owl:Class . <br>
+ <br>
+crm:CustomerContact <br>
+    a owl:Class ; <br>
+    rdfs:subClassOf crm:Person . <br>
+ <br>
+crm:SalesRep <br>
+    a owl:Class ; <br>
+    rdfs:subClassOf crm:Person . <br>
+ <br>
+crm:Deal a owl:Class . <br>
+crm:Product a owl:Class . <br>
+ <br>
+crm:Interaction a owl:Class . <br>
+ <br>
+crm:Call <br>
+    a owl:Class ; <br>
+    rdfs:subClassOf crm:Interaction . <br>
+ <br>
+crm:Meeting <br>
+    a owl:Class ; <br>
+    rdfs:subClassOf crm:Interaction . <br>
+ <br>
+crm:Email <br>
+    a owl:Class ; <br>
+    rdfs:subClassOf crm:Interaction . <br>
+ <br>
+crm:Transcript a owl:Class . <br>
+ <br>
+</div>
+
+The full TTL lives at
+[`sales_kg_ontology_v1_llm_friendly.ttl`](sales_kg_ontology_v1_llm_friendly.ttl);
+to keep this document readable only a condensed reference is inlined above.
+
+## 6. Components
 
 ```mermaid
 flowchart LR
@@ -68,7 +252,7 @@ flowchart LR
   (Chroma), `load.py` (GraphDB).
 - **Queue** — `app/queue/core.py` + `worker.py` (Postgres `SKIP LOCKED`).
 
-## 4. Database schema
+## 7. Database schema
 
 ```mermaid
 erDiagram
@@ -111,7 +295,7 @@ erDiagram
 - `jobs.status`: `queued` | `running` | `done` | `failed`.
 - Schema is `create_all` (no Alembic) + one `ALTER` for `jobs.user_id`.
 
-## 5. Security
+## 8. Security
 
 - **Auth** — hand-rolled JWT (`PyJWT`, HS256, `sub=user_id`, 60 min). Password
   hashed with `bcrypt`. Login sets `sales_token` cookie (`HttpOnly`,
@@ -129,7 +313,7 @@ erDiagram
   registration (`GRAPHDB_AUTO_PROVISION=1`; `0` skips it, used in tests).
 - **CORS** — permissive (`*`), dev-only.
 
-## 6. Sequence — ask a question
+## 9. Sequence — ask a question
 
 ```mermaid
 sequenceDiagram
@@ -156,7 +340,7 @@ sequenceDiagram
     B-->>U: {answer, sources, meta}
 ```
 
-## 7. Sequence — register / login
+## 10. Sequence — register / login
 
 ```mermaid
 sequenceDiagram
@@ -177,7 +361,7 @@ sequenceDiagram
     B-->>U: 200 + token + Set-Cookie sales_token
 ```
 
-## 8. Sequence — ingest a CSV
+## 11. Sequence — ingest a CSV
 
 ```mermaid
 sequenceDiagram
@@ -201,7 +385,7 @@ sequenceDiagram
     B-->>U: {status: done|failed, result, error}
 ```
 
-## 9. Sequence — chat history load + clear
+## 12. Sequence — chat history load + clear
 
 ```mermaid
 sequenceDiagram
@@ -220,7 +404,85 @@ sequenceDiagram
     U->>U: clear pane + history
 ```
 
-## 10. Trade-offs (from prior sessions)
+## 13. Answerer comparison (baseline → OpenCode → PydanticAI)
+
+The answerer went through three implementations before settling:
+
+1. **Baseline** — a deterministic, template-based answerer used to lock the API
+   contract and the test net. No real reasoning; since removed.
+2. **OpenCode agent harness** — the current default. Runs `opencode run` as a
+   subprocess with a read-only MCP tool set and `system.md` grounding rules.
+3. **PydanticAI** — an attempt to get *typed, structured* outputs instead of
+   free-form markdown. Kept in the factory but never the default: it produced a
+   valid output shape, but it did **not** answer as well in practice.
+
+**Outcome:** OpenCode worked much better. The decisive difference was the
+**harness** — a real agent loop that can decide *which* tool to call, *whether*
+a result is sufficient, and *keep exploring*. PydanticAI's strength was a
+guaranteed output shape, but open-ended multi-tool exploration mattered more
+than a typed envelope.
+
+A concrete proof of that flexibility: at one point the ontology and the worked
+SPARQL examples were accidentally left out of the agent's prompt. It **still**
+answered correctly — it just took more turns and more time, because it explored
+the knowledge graph on its own (`describe_kg_schema` + trial `query_kg` calls)
+instead of being handed the schema. This hints that the system is not
+fundamentally tied to a hand-written ontology being present up front — which is
+the idea explored next.
+
+## 14. Experimental: automatic ontology discovery + flexible CSV ingestion
+
+> **Not implemented — an idea only.** This section sketches how the *current*
+> hardcoded schema (§3) could be relaxed. It is not part of the working
+> prototype.
+
+The observation from §13 — the agent can recover the schema by exploring — can
+be pushed one step further into **ingestion**. Instead of assuming a fixed
+ontology per CSV, the pipeline could ask:
+
+1. **Do we already have an ontology for this CSV?**
+   - **Yes** → use it to map the CSV and generate triples (today's behaviour).
+   - **No** → inspect the CSV, **infer the entities and relationships**,
+     generate *both* a new ontology fragment *and* the actual triples, then
+     **append** the fragment to the existing ontology.
+
+2. The schema/ontology then **evolves continuously** — no hardcoded mappings and
+   no semantic engineer hand-authoring the schema per data source. Because new
+   terms are introduced automatically, an **approval step** is almost certainly
+   required before a fragment is committed (a human reviewer or a policy gate
+   can approve, edit or reject the proposed terms).
+
+```mermaid
+sequenceDiagram
+    participant U as Upload (new CSV)
+    participant I as Ingestion pipeline
+    participant O as Ontology service
+    participant K as KG (GraphDB)
+
+    U->>I: new_table.csv (unknown shape)
+    I->>O: do we have an ontology for this shape?
+    alt ontology known (today)
+        O-->>I: yes -> reuse mappings
+        I->>I: map CSV -> RDF with known ontology
+    else ontology unknown (experimental)
+        O-->>I: no
+        I->>O: inspect CSV; propose entities + relationships (LLM)
+        O->>O: draft ontology fragment + triples
+        O->>O: approval gate (human / policy)
+        Note over O: approve / edit / reject
+        O-->>I: approved ontology fragment
+        I->>I: append ontology + generate triples
+    end
+    I->>K: load triples (+ new ontology terms)
+```
+
+This is the direction a *flexible* schema would take: the static CSV mapping
+(`mappings.ttl`) and the fixed ontology would be replaced by a small "ontology
+discovery / maintenance" component plus a review step. It would sit alongside
+the existing ingestion pipeline as a new component, leaving the current
+read-only retrieval path unchanged.
+
+## 15. Trade-offs (from prior sessions)
 
 - **Agent harness = OpenCode**, not a custom loop or LangChain/LlamaIndex.
   Reason: don't build a framework; keep the tool loop, JSON trace and grounding.
@@ -250,7 +512,7 @@ sequenceDiagram
 - **Tests offline by default** with a 60s per-test timeout; e2e uses a
   run-unique SQLite DB and an isolated `DATA_DIR` so runs never pollute or collide.
 
-## 11. Config & services
+## 16. Config & services
 
 - `app/config.py` — single place for env vars (`GRAPHDB_*`, `DATABASE_URL`,
   `JWT_*`, `PROMPT_GUARD`, `INGEST_CONCURRENCY`, `DATA_DIR`, ...).
