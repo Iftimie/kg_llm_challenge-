@@ -376,7 +376,9 @@
   }
 
   function pollJob(jobId, button, idleText) {
-    var deadline = Date.now() + 120 * 1000;
+    // Transcript ingest runs LLM extraction per transcript and can take minutes;
+    // poll up to 10 minutes before giving up (the worker keeps processing either way).
+    var deadline = Date.now() + 600 * 1000;
 
     function finish() {
       button.disabled = false;
