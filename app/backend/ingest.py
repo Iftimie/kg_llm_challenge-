@@ -139,3 +139,17 @@ async def ingest_transcript(
 
     job = enqueue(db, "ingest_transcript", {"rows": rows}, current_user.id)
     return JobAccepted(job_id=job.id, status=job.status)
+
+
+@router.post("/api/ingest/rebuild", status_code=202)
+async def rebuild_kg(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> JobAccepted:
+    """Rebuild the knowledge graph from the data already on disk (no upload).
+
+    Used after GraphDB is cleared: ``build`` re-materializes the graph from the
+    CSVs and ``load`` reloads ontology + kg.nt + extracted facts (idempotent).
+    """
+    job = enqueue(db, "rebuild_kg", {}, current_user.id)
+    return JobAccepted(job_id=job.id, status=job.status)

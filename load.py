@@ -24,11 +24,12 @@ def load(kg_nt=None, ontology=None, extracted_dir=None) -> dict:
 
     GRAPHDB = os.environ.get("GRAPHDB_URL", "http://127.0.0.1:7200")
     REPO = os.environ.get("GRAPHDB_REPO", "sales-kg")
-    # Ingest writes use admin creds via the same env vars the app reader uses.
-    # Empty GRAPHDB_USER = no auth (local dev, GraphDB security off).
-    graphdb_user = os.environ.get("GRAPHDB_USER", "")
-    graphdb_password = os.environ.get("GRAPHDB_PASSWORD", "")
-    auth = (graphdb_user, graphdb_password) if graphdb_user else None
+    # Ingest writes need a write-capable credential; the read-only "reader" user
+    # (GRAPHDB_USER/PASSWORD) cannot clear or upload graphs. Use the admin creds
+    # that scripts/graphdb_secure.py and auto-provisioning already rely on.
+    graphdb_user = os.environ.get("GRAPHDB_ADMIN_USER", "admin")
+    graphdb_password = os.environ.get("GRAPHDB_ADMIN_PASSWORD", "admin")
+    auth = (graphdb_user, graphdb_password)
 
     loaded = []
 

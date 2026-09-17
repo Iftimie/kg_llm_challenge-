@@ -166,6 +166,28 @@ def test_ingest_csv_duplicate_fails_job(tmp_path, monkeypatch, auth_headers):
     assert path.read_bytes() == before
 
 
+def test_ingest_rebuild_runs_build_and_load(tmp_path, monkeypatch, auth_headers):
+    data_dir = tmp_path / "crm"
+    data_dir.mkdir()
+    for name in ("accounts.csv", "contacts.csv", "deals.csv", "activities.csv", "transcripts.csv"):
+        (data_dir / name).write_bytes(_fixture_bytes(name))
+
+    monkeypatch.setattr(config, "DATA_DIR", data_dir)
+    monkeypatch.setenv("KG_NT", str(tmp_path / "kg.nt"))
+    monkeypatch.setattr(
+        load_mod,
+        "load",
+        lambda *args, **kwargs: {"repo": "test", "total_triples": 0, "loaded": []},
+    )
+
+    response = client.post("/api/ingest/rebuild", headers=auth_headers)
+
+    assert response.status_code == 202
+    job = _wait_job(response.json()["job_id"], auth_headers)
+    assert job["status"] == "done"
+    assert set(job["result"]) == {"build", "load"}
+
+
 def test_ingest_rejects_transcripts_csv(tmp_path, monkeypatch, auth_headers):
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
 

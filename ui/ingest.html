@@ -154,6 +154,12 @@
     <button id="submit-transcript" type="submit">Add transcript rows</button>
   </form>
 
+  <form id="rebuild-form" data-testid="rebuild-form">
+    <h2>Rebuild knowledge graph</h2>
+    <div class="hint">Re-materialize and reload GraphDB from the data already on disk. Use after clearing GraphDB.</div>
+    <button id="submit-rebuild" type="submit" data-testid="rebuild-button">Rebuild KG</button>
+  </form>
+
   <div id="result" data-testid="result" hidden></div>
 </main>
 
@@ -167,6 +173,9 @@
 
   var transcriptForm = document.getElementById("transcript-form");
   var transcriptBtn = document.getElementById("submit-transcript");
+
+  var rebuildForm = document.getElementById("rebuild-form");
+  var rebuildBtn = document.getElementById("submit-rebuild");
 
   var result = document.getElementById("result");
 
@@ -492,6 +501,12 @@
     fd.append("file", filePicked[0], filePicked[0].name);
 
     submitRequest("/api/ingest/transcript", fd, transcriptBtn, "Adding\u2026", "Add transcript rows");
+  });
+
+  rebuildForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    if (rebuildBtn.disabled) { return; }
+    submitRequest("/api/ingest/rebuild", new FormData(), rebuildBtn, "Rebuilding\u2026", "Rebuild KG");
   });
 })();
 </script>

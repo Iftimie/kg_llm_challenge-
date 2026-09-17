@@ -317,6 +317,8 @@ def process_job(job, db=None) -> dict:
     ``(filename, bytes)``, merged, then ``build`` + ``load`` run. ``ingest_transcript``
     payloads carry ``{"rows": [rowdict, ...]}``; rows are appended and ``build`` ->
     ``index`` -> ``extract`` -> ``load`` run against only the appended ids.
+    ``rebuild_kg`` carries no payload and just re-runs ``build`` + ``load``
+    against the existing data dir (used after GraphDB is cleared).
     """
     from app import config  # local import to avoid import cycles
 
@@ -339,5 +341,8 @@ def process_job(job, db=None) -> dict:
             extract_ids=appended,
         )
         return {"appended": appended, **result}
+
+    if kind == "rebuild_kg":
+        return run(config.DATA_DIR, steps=("build", "load"))
 
     raise ValueError(f"unknown job kind: {kind!r}")

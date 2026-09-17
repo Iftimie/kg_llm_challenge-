@@ -10,7 +10,7 @@ from sqlalchemy import func, or_, select
 
 from app.db.models import Job
 
-KINDS = ("ingest_csv", "ingest_transcript")
+KINDS = ("ingest_csv", "ingest_transcript", "rebuild_kg")
 STATUSES = ("queued", "running", "done", "failed")
 
 
