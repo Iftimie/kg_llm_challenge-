@@ -5,6 +5,12 @@ knowledge graph, a vector index and a keyword index.
 
 ---
 
+## Demo
+
+<video src="tutorial.mp4" controls width="720"></video>
+
+[Watch the demo tutorial](tutorial.mp4)
+
 ## 1. What it does
 
 - For this challenge, it was assumed that data has the format below, but a general solution for flexible schemas is discussed at the end.
