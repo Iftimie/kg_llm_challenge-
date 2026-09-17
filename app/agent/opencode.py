@@ -27,7 +27,6 @@ from app.backend.trace_helpers import (
 
 _ENGINE = "agent"
 _SYSTEM_PROMPT = Path(__file__).with_name("system.md")
-_OPENCODE_PROVIDER = "openrouter"
 
 # Tool names we recognize in the OpenCode event stream.
 _TOOL_NAMES = (
@@ -50,12 +49,8 @@ _COLOCATED_LINES = 3
 
 
 def _resolve_model() -> str:
-    """Return an OpenCode ``provider/model`` id, defaulting to OpenRouter."""
-    model = (config.OPENROUTER_MODEL or "").strip()
-    prefix = f"{_OPENCODE_PROVIDER}/"
-    if model.startswith(prefix):
-        return model
-    return f"{prefix}{model}"
+    """Return an OpenCode ``provider/model`` id, defaulting to DeepSeek Flash."""
+    return (config.OPENCODE_MODEL or "deepseek/deepseek-flash").strip()
 
 
 def _format_history(history) -> str:

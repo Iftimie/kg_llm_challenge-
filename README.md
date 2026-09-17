@@ -51,7 +51,8 @@ to set:
 
 | Variable | Default | Purpose |
 |----------|---------|---------|
-| `OPENROUTER_API_KEY` | *(empty)* | model provider key (required for live answers/extraction) |
+| `DEEPSEEK_APIKEY` | *(empty)* | model provider key (required for live answers/extraction) |
+| `DEEPSEEK_MODEL` | `deepseek-flash` | DeepSeek model id for answers + transcript extraction |
 | `ANSWERER` | `agent` | answerer backend: `agent` (OpenCode) or `pydantic` |
 | `GRAPHDB_URL` / `GRAPHDB_REPO` | `http://localhost:7200` / `sales-kg` | GraphDB endpoint |
 | `GRAPHDB_AUTO_SECURE` | `1` | auto-enable GraphDB security at boot (`0` to skip) |
@@ -60,6 +61,8 @@ to set:
 | `DATA_DIR` | `mock_crm_dataset` | working CSV dir (compose mounts `./data/ingest`) |
 | `PROMPT_GUARD` | `off` | `off` or `classifier` (a deterministic validator is always on) |
 | `INGEST_CONCURRENCY` | `2` | max concurrently-running ingest jobs per worker |
+| `RATE_LIMIT_CHAT_PER_MIN` | `10` | per-user chat requests/min (`0` disables) |
+| `RATE_LIMIT_AUTH_PER_MIN` | `5` | per-IP auth requests/min (`0` disables) |
 
 ## Tests
 
@@ -67,7 +70,7 @@ to set:
 # Offline Python suite (no LLM / GraphDB / Postgres); ~40s.
 python -m pytest
 
-# Live tests (opencode binary + OPENROUTER_API_KEY + GraphDB required).
+# Live tests (opencode binary + DEEPSEEK_APIKEY + GraphDB required).
 python -m pytest -m live
 
 # UI unit tests (node --test).

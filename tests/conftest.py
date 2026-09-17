@@ -25,6 +25,17 @@ def _offline_register(monkeypatch):
     monkeypatch.setattr(config, "GRAPHDB_AUTO_PROVISION", "0")
 
 
+@pytest.fixture(autouse=True)
+def _disable_rate_limit(monkeypatch):
+    """Disable in-memory rate limiting so the offline suite never 429s.
+
+    Every test registers/logs in through the ``auth_headers`` fixture from the
+    same ``testclient`` IP; the default auth limit would trip almost immediately.
+    """
+    monkeypatch.setattr(config, "RATE_LIMIT_CHAT_PER_MIN", 0)
+    monkeypatch.setattr(config, "RATE_LIMIT_AUTH_PER_MIN", 0)
+
+
 @pytest.fixture
 def session():
     """Fresh in-memory SQLite session (full schema per test, not autouse)."""

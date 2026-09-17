@@ -1,7 +1,7 @@
 ---
 description: "Restricted sales QA runtime: MCP retrieval tools only."
 mode: primary
-model: openrouter/meta/muse-spark-1.3-contributor
+model: deepseek/deepseek-flash
 temperature: 0
 permission:
   bash: deny

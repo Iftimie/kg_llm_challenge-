@@ -29,6 +29,11 @@ GRAPHDB_TIMEOUT_S = float(os.environ.get("GRAPHDB_TIMEOUT_S", "10"))
 PROMPT_GUARD = os.environ.get("PROMPT_GUARD", "off")
 MAX_PROMPT_CHARS = int(os.environ.get("MAX_PROMPT_CHARS", "4000"))
 
+# --- Rate limiting (in-memory, single instance) -------------------------------
+# 0 disables a limit. Chat is scoped per authenticated user, auth per client IP.
+RATE_LIMIT_CHAT_PER_MIN = int(os.environ.get("RATE_LIMIT_CHAT_PER_MIN", "10"))
+RATE_LIMIT_AUTH_PER_MIN = int(os.environ.get("RATE_LIMIT_AUTH_PER_MIN", "5"))
+
 # Worker concurrency cap: max concurrently-running ingest jobs per worker process.
 INGEST_CONCURRENCY = int(os.environ.get("INGEST_CONCURRENCY", "2"))
 
@@ -49,8 +54,16 @@ OPENROUTER_URL = os.environ.get("OPENROUTER_URL", "https://openrouter.ai/api/v1/
 OPENROUTER_MODEL = os.environ.get("OPENROUTER_MODEL", "meta/muse-spark-1.3-contributor")
 OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY", "")
 
+# DeepSeek (OpenAI-compatible) — the single model used for answers + extraction.
+DEEPSEEK_BASE_URL = os.environ.get("DEEPSEEK_BASE_URL", "https://api.deepseek.com/v1")
+DEEPSEEK_MODEL = os.environ.get("DEEPSEEK_MODEL", "deepseek-flash")
+DEEPSEEK_APIKEY = os.environ.get("DEEPSEEK_APIKEY", "")
+
+# OpenCode agent model id (provider/model), default DeepSeek Flash.
+OPENCODE_MODEL = os.environ.get("OPENCODE_MODEL", "deepseek/deepseek-flash")
+
 # Transcript extraction reuses the agent model unless overridden.
-EXTRACT_MODEL = os.environ.get("EXTRACT_MODEL", OPENROUTER_MODEL)
+EXTRACT_MODEL = os.environ.get("EXTRACT_MODEL", DEEPSEEK_MODEL)
 
 # PydanticAI answerer (OpenAI-compatible endpoint, default OpenRouter).
 PYDANTIC_MODEL = os.environ.get("PYDANTIC_MODEL", OPENROUTER_MODEL)
@@ -59,9 +72,6 @@ PYDANTIC_API_KEY = os.environ.get("PYDANTIC_API_KEY", os.environ.get("OPENROUTER
 
 # Answerer implementation selected by the QA/agent layer.
 ANSWERER = os.environ.get("ANSWERER", "agent")
-
-# Reserved for a future DeepSeek-backed answerer.
-DEEPSEEK_MODEL = os.environ.get("DEEPSEEK_MODEL", "")
 
 # "chroma-default" means "use ChromaDB's built-in embedding function".
 EMBEDDING_MODEL = os.environ.get("EMBEDDING_MODEL", "chroma-default")

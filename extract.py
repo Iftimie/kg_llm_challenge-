@@ -1,7 +1,7 @@
-"""Extract KG triples from transcripts with the configured OpenRouter model.
+"""Extract KG triples from transcripts with the configured DeepSeek model.
 
-Uses the same OpenRouter model as the agents (``config.EXTRACT_MODEL``, which
-defaults to ``config.OPENROUTER_MODEL``). Run: python extract.py [limit]
+Uses the same DeepSeek model as the agents (``config.EXTRACT_MODEL``, which
+defaults to ``config.DEEPSEEK_MODEL``). Run: python extract.py [limit]
 """
 import csv
 import os
@@ -46,13 +46,14 @@ def clean(turtle_text: str) -> str:
 
 
 def _generate(prompt: str) -> str:
-    """Send one extraction prompt to the configured OpenRouter model."""
-    key = config.OPENROUTER_API_KEY
+    """Send one extraction prompt to the configured DeepSeek model."""
+    key = config.DEEPSEEK_APIKEY
     if not key:
-        raise RuntimeError("OPENROUTER_API_KEY is not set")
+        raise RuntimeError("DEEPSEEK_APIKEY is not set")
 
+    url = config.DEEPSEEK_BASE_URL.rstrip("/") + "/chat/completions"
     r = requests.post(
-        config.OPENROUTER_URL,
+        url,
         headers={"Authorization": f"Bearer {key}"},
         json={
             "model": config.EXTRACT_MODEL,
@@ -64,12 +65,12 @@ def _generate(prompt: str) -> str:
     try:
         r.raise_for_status()
     except requests.HTTPError as exc:
-        raise RuntimeError(f"OpenRouter error {r.status_code}: {r.text[:1000]}") from exc
+        raise RuntimeError(f"DeepSeek error {r.status_code}: {r.text[:1000]}") from exc
     return r.json()["choices"][0]["message"]["content"]
 
 
 def extract(data_dir=None, limit=None, ids=None) -> dict:
-    """Extract KG triples from transcripts with the configured OpenRouter model.
+    """Extract KG triples from transcripts with the configured DeepSeek model.
 
     Uses the same model as the agents. ``ids``, when a non-empty list, restricts
     processing to those ``transcript_id`` values while preserving the CSV row

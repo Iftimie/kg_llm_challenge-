@@ -361,6 +361,10 @@
 
   var token = localStorage.getItem("sales_token");
 
+  // GraphDB runs on the same host as the app, on port 7200. Derive the base
+  // from the current origin so "explore" links work locally and on AWS alike.
+  var gdbBase = window.location.protocol + "//" + window.location.hostname + ":7200";
+
   function authHeaders() {
     return token ? { Authorization: "Bearer " + token } : {};
   }
@@ -517,7 +521,7 @@
 
     function visualLink(iri, display) {
       var a = document.createElement("a");
-      a.href = "http://localhost:7200/graphs-visualizations?uri=" + encodeURIComponent(iri) + "&role=subject";
+      a.href = gdbBase + "/graphs-visualizations?uri=" + encodeURIComponent(iri) + "&role=subject";
       a.title = iri;
       a.textContent = display;
       a.target = "_blank";
@@ -1340,7 +1344,7 @@
         var chip = domEl("span", "ev-chip");
         var iri = "https://example.org/sales-kg/resource/Transcript_" + id;
         var a = document.createElement("a");
-        a.href = "http://localhost:7200/graphs-visualizations?uri=" + encodeURIComponent(iri) + "&role=subject";
+        a.href = gdbBase + "/graphs-visualizations?uri=" + encodeURIComponent(iri) + "&role=subject";
         a.textContent = id;
         a.title = iri;
         a.target = "_blank";
@@ -1357,7 +1361,7 @@
       iris.forEach(function (iri) {
         var li = document.createElement("li");
         var a = document.createElement("a");
-        a.href = "http://localhost:7200/graphs-visualizations?uri=" + encodeURIComponent(iri) + "&role=subject";
+        a.href = gdbBase + "/graphs-visualizations?uri=" + encodeURIComponent(iri) + "&role=subject";
         a.textContent = friendlyLabel(iri);
         a.title = iri;
         a.target = "_blank";

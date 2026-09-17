@@ -1,4 +1,4 @@
-"""Unit tests for the OpenRouter-backed transcript extraction (``extract.py``).
+"""Unit tests for the DeepSeek-backed transcript extraction (``extract.py``).
 
 No network/model calls: ``extract.requests.post`` is always monkeypatched.
 """
@@ -28,7 +28,7 @@ class _FakeResponse:
         return {"choices": [{"message": {"content": self._content}}]}
 
 
-def test_generate_posts_openrouter(monkeypatch):
+def test_generate_posts_deepseek(monkeypatch):
     captured = {}
 
     def fake_post(url, headers=None, json=None, timeout=None):
@@ -38,19 +38,19 @@ def test_generate_posts_openrouter(monkeypatch):
         return _FakeResponse("<turtle>")
 
     monkeypatch.setattr(extract.requests, "post", fake_post)
-    monkeypatch.setattr(config, "OPENROUTER_API_KEY", "k")
-    monkeypatch.setattr(config, "EXTRACT_MODEL", "meta/muse-spark-1.3-contributor")
+    monkeypatch.setattr(config, "DEEPSEEK_APIKEY", "k")
+    monkeypatch.setattr(config, "EXTRACT_MODEL", "deepseek-flash")
 
     out = extract._generate("hi")
 
     assert out == "<turtle>"
-    assert captured["url"] == config.OPENROUTER_URL
+    assert captured["url"] == config.DEEPSEEK_BASE_URL.rstrip("/") + "/chat/completions"
     assert captured["json"]["model"] == config.EXTRACT_MODEL
     assert "k" in captured["headers"]["Authorization"]
 
 
 def test_generate_missing_key_raises(monkeypatch):
-    monkeypatch.setattr(config, "OPENROUTER_API_KEY", "")
+    monkeypatch.setattr(config, "DEEPSEEK_APIKEY", "")
 
     with pytest.raises(RuntimeError):
         extract._generate("hi")
@@ -118,11 +118,11 @@ def test_extract_loop_writes_ttl_and_failures(monkeypatch, tmp_path):
         prompt = json["messages"][0]["content"]
         if "GOODTRANSCRIPT" in prompt:
             return _FakeResponse(VALID_TURTLE)
-        raise RuntimeError("OpenRouter error 500: boom")
+        raise RuntimeError("DeepSeek error 500: boom")
 
     monkeypatch.setattr(extract, "REPO_ROOT", tmp_path)
     monkeypatch.setattr(extract.requests, "post", fake_post)
-    monkeypatch.setattr(config, "OPENROUTER_API_KEY", "k")
+    monkeypatch.setattr(config, "DEEPSEEK_APIKEY", "k")
 
     result = extract.extract(data_dir=data_dir)
 
@@ -177,7 +177,7 @@ def test_extract_ids_filters_rows(monkeypatch, tmp_path):
 
     monkeypatch.setattr(extract, "REPO_ROOT", tmp_path)
     monkeypatch.setattr(extract.requests, "post", lambda *a, **k: _FakeResponse(VALID_TURTLE))
-    monkeypatch.setattr(config, "OPENROUTER_API_KEY", "k")
+    monkeypatch.setattr(config, "DEEPSEEK_APIKEY", "k")
 
     result = extract.extract(data_dir=data_dir, ids=["T2"])
 

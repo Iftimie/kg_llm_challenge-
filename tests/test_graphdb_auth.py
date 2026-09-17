@@ -116,8 +116,8 @@ def test_load_sends_auth(monkeypatch, tmp_path):
     monkeypatch.setattr(load_module.requests, "get", fake_get)
     monkeypatch.setattr(load_module.requests, "post", fake_post)
     monkeypatch.setattr(load_module.requests, "delete", fake_delete)
-    monkeypatch.setenv("GRAPHDB_USER", "admin")
-    monkeypatch.setenv("GRAPHDB_PASSWORD", "s3cret")
+    monkeypatch.setenv("GRAPHDB_ADMIN_USER", "admin")
+    monkeypatch.setenv("GRAPHDB_ADMIN_PASSWORD", "s3cret")
 
     summary = load_module.load(
         kg_nt=kg_nt, ontology=ontology, extracted_dir=tmp_path / "nonexistent"

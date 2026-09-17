@@ -24,6 +24,7 @@ from app.db import engine as db_engine
 from app.db.models import Base, Chat, Message, User
 from app.db.session import get_db
 from app.queue.core import get_job, list_jobs
+from app.safety.rate_limit import RateLimitMiddleware
 from app.safety.validator import validate
 
 # Configure logging before defining routes so all module loggers inherit it.
@@ -82,6 +83,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Per-user chat + per-IP auth rate limiting (in-memory, single instance).
+app.add_middleware(RateLimitMiddleware)
 
 # Auth router is public (register/login/me).
 app.include_router(auth_router)

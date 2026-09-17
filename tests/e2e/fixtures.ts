@@ -3,7 +3,7 @@
 // CHAT_FIXTURE is served for POST /api/chat via page.route() so evidence/modal
 // specs are deterministic and offline. TRANSCRIPT_FIXTURE is served for
 // GET /api/transcripts/T007. VISUAL_LINK_RE is the href shape every GraphDB
-// visual link must follow: http://localhost:7200/graphs-visualizations?uri=<encoded>&role=subject.
+// visual link must follow: <host>:7200/graphs-visualizations?uri=<encoded>&role=subject.
 
 export const CHAT_FIXTURE = {
   answer:
@@ -49,6 +49,8 @@ export const TRANSCRIPT_FIXTURE = {
   transcript: "governance resolved body",
 };
 
-// Regex source string for the GraphDB visual-link href shape.
+// Regex source string for the GraphDB visual-link href shape. Host-agnostic:
+// the UI derives the host from window.location, so links work locally and on
+// the deployed host (localhost vs 127.0.0.1 vs the EC2 public IP).
 export const VISUAL_LINK_RE =
-  "localhost:7200/graphs-visualizations\\?uri=[^&\\s]+&role=subject$";
+  ":7200/graphs-visualizations\\?uri=[^&\\s]+&role=subject$";
