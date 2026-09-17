@@ -235,7 +235,13 @@ def list_jobs_endpoint(
     jobs = list_jobs(db, current_user.id)
     return {
         "jobs": [
-            {"id": j.id, "kind": j.kind, "status": j.status, "error": j.error}
+            {
+                "id": j.id,
+                "kind": j.kind,
+                "status": j.status,
+                "error": j.error,
+                "created_at": j.created_at.isoformat() if j.created_at else None,
+            }
             for j in jobs
         ]
     }
