@@ -24,11 +24,16 @@ def load(kg_nt=None, ontology=None, extracted_dir=None) -> dict:
 
     GRAPHDB = os.environ.get("GRAPHDB_URL", "http://127.0.0.1:7200")
     REPO = os.environ.get("GRAPHDB_REPO", "sales-kg")
+    # Ingest writes use admin creds via the same env vars the app reader uses.
+    # Empty GRAPHDB_USER = no auth (local dev, GraphDB security off).
+    graphdb_user = os.environ.get("GRAPHDB_USER", "")
+    graphdb_password = os.environ.get("GRAPHDB_PASSWORD", "")
+    auth = (graphdb_user, graphdb_password) if graphdb_user else None
 
     loaded = []
 
     # 1. Create repo if missing (minimal free-text config)
-    s = requests.get(f"{GRAPHDB}/rest/repositories").json()
+    s = requests.get(f"{GRAPHDB}/rest/repositories", auth=auth).json()
     if not any(r["id"] == REPO for r in s):
         config = f"""@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix rep: <http://www.openrdf.org/config/repository#> .
@@ -37,7 +42,7 @@ def load(kg_nt=None, ontology=None, extracted_dir=None) -> dict:
 [] a rep:Repository ; rep:repositoryID "{REPO}" ; rdfs:label "{REPO}" ;
    rep:repositoryImpl [ rep:repositoryType "graphdb:SailRepository" ;
      sr:sailImpl [ sail:sailType "graphdb:Sail" ] ] ."""
-        requests.post(f"{GRAPHDB}/rest/repositories",
+        requests.post(f"{GRAPHDB}/rest/repositories", auth=auth,
                       files={"config": ("repo.ttl", config)}).raise_for_status()
         print("repo created")
     else:
@@ -50,11 +55,13 @@ def load(kg_nt=None, ontology=None, extracted_dir=None) -> dict:
         requests.delete(
             f"{GRAPHDB}/repositories/{REPO}/statements",
             params={"context": f"<{ctx}>"},
+            auth=auth,
         ).raise_for_status()
         with open(path, "rb") as f:
             r = requests.post(f"{GRAPHDB}/repositories/{REPO}/statements",
                              params={"context": f"<{ctx}>"},
                              headers={"Content-Type": "application/n-triples" if str(path).endswith(".nt") else "application/x-turtle"},
+                             auth=auth,
                              data=f)
             r.raise_for_status()
             print("loaded", path, r.status_code)
@@ -67,12 +74,14 @@ def load(kg_nt=None, ontology=None, extracted_dir=None) -> dict:
         requests.delete(
             f"{GRAPHDB}/repositories/{REPO}/statements",
             params={"context": f"<{extracted_ctx}>"},
+            auth=auth,
         ).raise_for_status()
         for path in sorted(extracted_dir.glob("T*.ttl")):
             with open(path, "rb") as f:
                 r = requests.post(f"{GRAPHDB}/repositories/{REPO}/statements",
                                  params={"context": f"<{extracted_ctx}>"},
                                  headers={"Content-Type": "text/turtle"},
+                                 auth=auth,
                                  data=f)
                 r.raise_for_status()
                 print("loaded", path, r.status_code)
@@ -81,7 +90,8 @@ def load(kg_nt=None, ontology=None, extracted_dir=None) -> dict:
     # 4. Sanity check
     q = "SELECT (COUNT(*) AS ?n) WHERE { ?s ?p ?o }"
     r = requests.get(f"{GRAPHDB}/repositories/{REPO}", params={"query": q},
-                     headers={"Accept": "application/sparql-results+json"})
+                     headers={"Accept": "application/sparql-results+json"},
+                     auth=auth)
     total_triples = r.json()["results"]["bindings"][0]["n"]["value"]
     print("total triples:", total_triples)
 

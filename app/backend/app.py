@@ -17,6 +17,7 @@ from app import config
 from app.auth.deps import get_current_user
 from app.auth.routes import router as auth_router
 from app.backend.factory import get_answerer
+from app.backend.graphdb_proxy import router as graphdb_proxy_router
 from app.backend.ingest import router as ingest_router
 from app.backend.schemas import ChatRequest
 from app.db import engine as db_engine
@@ -69,6 +70,9 @@ app.add_middleware(
 
 # Auth router is public (register/login/me).
 app.include_router(auth_router)
+
+# GraphDB visual proxy (authenticated inside the endpoint via get_current_user).
+app.include_router(graphdb_proxy_router)
 
 # Ingestion router is included before the static mount so /api/ingest wins over
 # the catch-all UI mount. It is authenticated.

@@ -1,11 +1,11 @@
 services:
   graphdb:
     image: ontotext/graphdb:10.6.0
-    ports:
-      - "7200:7200"
     volumes:
       - graphdb-data:/opt/graphdb/home
+    ports: ["7200:7200"]
     restart: unless-stopped
+    # Direct Workbench access (interview challenge): published with security ON (reader/reader). Not for production.
 
   postgres:
     image: postgres:16-alpine
@@ -34,6 +34,12 @@ services:
       ANSWERER: ${ANSWERER:-agent}
       GRAPHDB_URL: http://graphdb:7200
       GRAPHDB_REPO: ${GRAPHDB_REPO:-sales-kg}
+      # Demo creds (interview challenge, not production). GRAPHDB_AUTO_SECURE=0 to skip.
+      GRAPHDB_ADMIN_PASSWORD: ${GRAPHDB_ADMIN_PASSWORD:-admin}
+      GRAPHDB_READER_PASSWORD: ${GRAPHDB_READER_PASSWORD:-reader}
+      GRAPHDB_USER: ${GRAPHDB_USER:-reader}
+      GRAPHDB_PASSWORD: ${GRAPHDB_PASSWORD:-reader}
+      GRAPHDB_AUTO_SECURE: ${GRAPHDB_AUTO_SECURE:-1}
       DATA_DIR: /app/data
       DATABASE_URL: postgresql+psycopg://sales:sales@postgres:5432/sales
     volumes:

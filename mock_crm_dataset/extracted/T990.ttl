@@ -1,2 +1,0 @@
-@prefix crm: <https://example.org/sales-kg/> .
-@prefix res: <https://example.org/sales-kg/resource/> .

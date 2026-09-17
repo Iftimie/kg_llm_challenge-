@@ -1,7 +1,7 @@
 """Auth routes: register, login and current-user lookup."""
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -28,12 +28,29 @@ def register(payload: RegisterIn, db: Session = Depends(get_db)) -> MeOut:
 
 
 @router.post("/login", response_model=TokenOut)
-def login(payload: LoginIn, db: Session = Depends(get_db)) -> TokenOut:
+def login(
+    payload: LoginIn, response: Response, db: Session = Depends(get_db)
+) -> TokenOut:
     user = db.scalar(select(User).where(User.email == payload.email))
     if user is None or not verify_password(payload.password, user.password_hash):
         raise HTTPException(status_code=401, detail="invalid credentials")
 
-    return TokenOut(access_token=create_token(user.id, user.email))
+    token = create_token(user.id, user.email)
+    # httpOnly cookie enables cookie-fallback auth for plain <a> visual links.
+    response.set_cookie(
+        key="sales_token",
+        value=token,
+        httponly=True,
+        samesite="lax",
+        path="/",
+    )
+    return TokenOut(access_token=token)
+
+
+@router.post("/logout")
+def logout(response: Response) -> dict:
+    response.delete_cookie("sales_token", path="/")
+    return {"status": "ok"}
 
 
 @router.get("/me", response_model=MeOut)

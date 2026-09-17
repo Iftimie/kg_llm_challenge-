@@ -22,4 +22,15 @@ fi
 
 mkdir -p /app/logs
 
+# --- GraphDB auto-secure (demo creds; interview challenge, not production) ---
+# Wait up to ~60s for GraphDB REST, then enable security + reader account.
+# Best-effort: never blocks app boot; failures only warn.
+if [ "${GRAPHDB_AUTO_SECURE:-1}" = "1" ]; then
+  for i in $(seq 1 30); do
+    if python -c "import urllib.request; urllib.request.urlopen('${GRAPHDB_URL:-http://graphdb:7200}/rest/security', timeout=2)" 2>/dev/null; then break; fi
+    sleep 2
+  done
+  python scripts/graphdb_secure.py || echo "WARNING: GraphDB auto-secure failed; continuing open (dev)"
+fi
+
 exec "$@"

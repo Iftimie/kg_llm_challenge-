@@ -27,7 +27,7 @@ function extractFunction(name) {
   return match[0];
 }
 
-const functionNames = ["gdbBase", "shortIri", "friendlyLabel", "formatSparql"];
+const functionNames = ["shortIri", "friendlyLabel", "formatSparql"];
 const functions = functionNames.map(extractFunction).join("\n\n");
 
 // SHORT_NAME_RE is a `var` inside renderMarkdown; lift the literal verbatim.
@@ -39,16 +39,13 @@ if (!reLine) {
 }
 const reLiteral = reLine.match(/var SHORT_NAME_RE = (.*);/)[1];
 
-// `window` is the only host object the extracted functions touch.
-const windowStub = { location: { hostname: "myhost" } };
 const factory = new Function(
-  "window",
   `${functions}
 
 var SHORT_NAME_RE = ${reLiteral};
-return { gdbBase: gdbBase, shortIri: shortIri, friendlyLabel: friendlyLabel, formatSparql: formatSparql, SHORT_NAME_RE: SHORT_NAME_RE };`
+return { shortIri: shortIri, friendlyLabel: friendlyLabel, formatSparql: formatSparql, SHORT_NAME_RE: SHORT_NAME_RE };`
 );
-const ui = factory(windowStub);
+const ui = factory();
 
 test("friendlyLabel renders a resource IRI as a human label", () => {
   assert.equal(
@@ -67,10 +64,6 @@ test("formatSparql turns a single-line query into multiple lines", () => {
   assert.match(out, /^PREFIX crm:/m);
   assert.match(out, /^SELECT/m);
   assert.match(out, /^WHERE/m);
-});
-
-test("gdbBase rewrites the compose host to the page hostname", () => {
-  assert.equal(ui.gdbBase("http://graphdb:7200"), "http://myhost:7200");
 });
 
 test("short-name regex matches a bare short name", () => {

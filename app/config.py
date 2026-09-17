@@ -12,6 +12,12 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 # --- Services -----------------------------------------------------------------
 GRAPHDB_URL = os.environ.get("GRAPHDB_URL", "http://localhost:7200")
 GRAPHDB_REPO = os.environ.get("GRAPHDB_REPO", "sales-kg")
+# GraphDB credentials. Empty = no auth (local dev, security off); compose sets
+# the read-only reader account after scripts/graphdb_secure.py enables security.
+GRAPHDB_USER = os.environ.get("GRAPHDB_USER", "")
+GRAPHDB_PASSWORD = os.environ.get("GRAPHDB_PASSWORD", "")
+# Upstream timeout (seconds) for the authenticated GraphDB visual proxy.
+GRAPHDB_TIMEOUT_S = float(os.environ.get("GRAPHDB_TIMEOUT_S", "10"))
 
 # --- Database -----------------------------------------------------------------
 # Postgres is the only supported backend; there is no SQLite fallback. Offline

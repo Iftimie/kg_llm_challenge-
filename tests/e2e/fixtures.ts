@@ -3,7 +3,7 @@
 // CHAT_FIXTURE is served for POST /api/chat via page.route() so evidence/modal
 // specs are deterministic and offline. TRANSCRIPT_FIXTURE is served for
 // GET /api/transcripts/T007. VISUAL_LINK_RE is the href shape every GraphDB
-// visual link must follow: /graphs-visualizations?uri=<encoded>&role=subject.
+// visual link must follow: http://localhost:7200/graphs-visualizations?uri=<encoded>&role=subject.
 
 export const CHAT_FIXTURE = {
   answer:
@@ -51,4 +51,4 @@ export const TRANSCRIPT_FIXTURE = {
 
 // Regex source string for the GraphDB visual-link href shape.
 export const VISUAL_LINK_RE =
-  "/graphs-visualizations\\?uri=[^&\\s]+&role=subject$";
+  "localhost:7200/graphs-visualizations\\?uri=[^&\\s]+&role=subject$";

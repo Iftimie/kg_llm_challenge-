@@ -393,6 +393,8 @@
     logoutBtn.addEventListener("click", function () {
       token = null;
       localStorage.removeItem("sales_token");
+      // Fire-and-forget: also clear the httpOnly session cookie server-side.
+      fetch("/api/auth/logout", { method: "POST" }).catch(function () {});
       refreshLoginUI();
     });
   }
@@ -405,24 +407,6 @@
   // Per-answer evidence records: {answerText, sources, meta, row}.
   var answers = [];
   var selectedIndex = -1;
-
-  function gdbBase(u) {
-    var base = String(u || "http://localhost:7200")
-      .replace(/\/+$/, "")
-      .replace("://127.0.0.1:", "://localhost:");
-    // A browser outside the container cannot resolve the compose hostname
-    // "graphdb"; rewrite the GraphDB host to the page's own hostname (keeping
-    // the port) so visual links open. In-container browsers (hostname
-    // "graphdb") keep the configured base unchanged.
-    var host = window.location.hostname;
-    if (host) {
-      var m = base.match(/^([A-Za-z][A-Za-z0-9+.-]*:\/\/)([^/:?#]+)(:\d+)?/);
-      if (m && (m[2] === "graphdb" || m[2] !== host)) {
-        base = m[1] + host + (m[3] || "");
-      }
-    }
-    return base;
-  }
 
   // HTML-escape a string (defense in depth; renderMarkdown builds DOM nodes).
   function esc(s) {
@@ -437,10 +421,9 @@
   // Render minimal XSS-safe markdown into a DocumentFragment:
   // code spans, **bold**, [label](http url), bare IRIs (GraphDB visual links),
   // and res:/crm: prefixed names. No innerHTML is used anywhere.
-  function renderMarkdown(text, gdb) {
+  function renderMarkdown(text) {
     var frag = document.createDocumentFragment();
     var raw = String(text == null ? "" : text).replace(/\r\n?/g, "\n");
-    var base = gdbBase(gdb);
 
     function addText(parent, s) {
       if (s) {
@@ -450,7 +433,7 @@
 
     function visualLink(iri, display) {
       var a = document.createElement("a");
-      a.href = base + "/graphs-visualizations?uri=" + encodeURIComponent(iri) + "&role=subject";
+      a.href = "http://localhost:7200/graphs-visualizations?uri=" + encodeURIComponent(iri) + "&role=subject";
       a.title = iri;
       a.textContent = display;
       a.target = "_blank";
@@ -603,7 +586,7 @@
     return frag;
   }
 
-  function addRow(role, text, extraClass, gdb) {
+  function addRow(role, text, extraClass) {
     var row = document.createElement("div");
     row.className = "row " + (extraClass || role.toLowerCase());
     // Assistant rows are the clickable answer cards; user rows are just turns.
@@ -625,7 +608,7 @@
     var body = document.createElement("span");
     body.className = "body";
     if (role === "Assistant") {
-      body.appendChild(renderMarkdown(text, gdb));
+      body.appendChild(renderMarkdown(text));
     } else {
       body.textContent = text;
     }
@@ -1259,15 +1242,13 @@
     summary.textContent = "Transcripts & entities \u2014 " + count + " item" + (count === 1 ? "" : "s");
     details.appendChild(summary);
 
-    var gdb = gdbBase(meta.graphdb_url);
-
     if (ids.length) {
       var chips = domEl("div", "ev-chips");
       ids.forEach(function (id) {
         var chip = domEl("span", "ev-chip");
         var iri = "https://example.org/sales-kg/resource/Transcript_" + id;
         var a = document.createElement("a");
-        a.href = gdb + "/graphs-visualizations?uri=" + encodeURIComponent(iri) + "&role=subject";
+        a.href = "http://localhost:7200/graphs-visualizations?uri=" + encodeURIComponent(iri) + "&role=subject";
         a.textContent = id;
         a.title = iri;
         a.target = "_blank";
@@ -1284,7 +1265,7 @@
       iris.forEach(function (iri) {
         var li = document.createElement("li");
         var a = document.createElement("a");
-        a.href = gdb + "/graphs-visualizations?uri=" + encodeURIComponent(iri) + "&role=subject";
+        a.href = "http://localhost:7200/graphs-visualizations?uri=" + encodeURIComponent(iri) + "&role=subject";
         a.textContent = friendlyLabel(iri);
         a.title = iri;
         a.target = "_blank";
@@ -1433,7 +1414,7 @@
 
       var data = await res.json();
       var answer = (data && data.answer) ? data.answer : "(empty answer)";
-      var row = addRow("Assistant", answer, null, data && data.meta ? data.meta.graphdb_url : null);
+      var row = addRow("Assistant", answer, null);
       row.classList.add("selectable");
 
       var record = {

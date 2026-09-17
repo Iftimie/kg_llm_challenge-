@@ -45,7 +45,7 @@ test("linkifies Deal_D007 to a GraphDB visual link", async ({ page }) => {
   await expect(link).toBeVisible({ timeout: 15000 });
 
   const expected =
-    "/graphs-visualizations?uri=" +
+    "http://localhost:7200/graphs-visualizations?uri=" +
     encodeURIComponent(
       "https://example.org/sales-kg/resource/Deal_D007"
     );

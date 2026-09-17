@@ -192,6 +192,10 @@ Kubernetes, microservices, LangChain/LlamaIndex, custom agent framework, CI/CD.
   ADD Playwright `proxy-links.spec.ts`: visual link href points at proxy (shape assertion
   survives the host/base swap).
   Verify: `python -m pytest tests/test_proxy.py tests/test_api.py -q` + `docker compose config` + `npx playwright test`.
+  M4b actual: GraphDB credentials via `scripts/graphdb_secure.py` (run inside the
+  compose net); app reads GRAPHDB_USER/PASSWORD, load.py uses admin creds via the same env vars.
+  M4c actual: auto-secure at app startup (entrypoint waits for GraphDB REST, runs graphdb_secure.py best-effort, dummy demo creds admin/admin reader/reader, GRAPHDB_AUTO_SECURE=0 to skip).
+  M4d actual: reverted to direct GraphDB links (Workbench SPA cannot be proxied single-document); 7200 re-published with security ON, UI hrefs http://localhost:7200/graphs-visualizations, proxy kept as unused authenticated alternative.
 
 - **M5 — Prompt safety (3 layers).**
   Goal: deterministic validation always on; sandbox verified; classifier optional.

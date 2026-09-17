@@ -3,6 +3,7 @@ import requests
 
 from app import config
 from app.mcp.guards import assert_readonly
+from app.retrieval import graphdb_auth
 
 _ACCEPT = "application/sparql-results+json"
 
@@ -23,6 +24,7 @@ def run_sparql(sparql, timeout=60, max_rows=100) -> dict:
             params={"query": sparql},
             headers={"Accept": _ACCEPT},
             timeout=timeout,
+            auth=graphdb_auth.auth(),
         )
     except requests.RequestException as exc:
         raise RuntimeError(f"GraphDB unreachable at {url}: {exc}") from exc
