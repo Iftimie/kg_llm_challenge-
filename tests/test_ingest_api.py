@@ -166,26 +166,24 @@ def test_ingest_csv_duplicate_fails_job(tmp_path, monkeypatch, auth_headers):
     assert path.read_bytes() == before
 
 
-def test_ingest_rebuild_runs_build_and_load(tmp_path, monkeypatch, auth_headers):
+def test_ingest_clear_wipes_data_and_graph(tmp_path, monkeypatch, auth_headers):
     data_dir = tmp_path / "crm"
     data_dir.mkdir()
     for name in ("accounts.csv", "contacts.csv", "deals.csv", "activities.csv", "transcripts.csv"):
         (data_dir / name).write_bytes(_fixture_bytes(name))
 
     monkeypatch.setattr(config, "DATA_DIR", data_dir)
-    monkeypatch.setenv("KG_NT", str(tmp_path / "kg.nt"))
-    monkeypatch.setattr(
-        load_mod,
-        "load",
-        lambda *args, **kwargs: {"repo": "test", "total_triples": 0, "loaded": []},
-    )
+    monkeypatch.setattr(load_mod, "clear", lambda: {"cleared": 3})
 
-    response = client.post("/api/ingest/rebuild", headers=auth_headers)
+    response = client.post("/api/ingest/clear", headers=auth_headers)
 
     assert response.status_code == 202
     job = _wait_job(response.json()["job_id"], auth_headers)
     assert job["status"] == "done"
-    assert set(job["result"]) == {"build", "load"}
+    assert job["result"] == {"clear": {"cleared": 3}}
+    # The source CSVs are gone, so the same files can be re-ingested.
+    assert not (data_dir / "accounts.csv").exists()
+    assert not (data_dir / "transcripts.csv").exists()
 
 
 def test_ingest_rejects_transcripts_csv(tmp_path, monkeypatch, auth_headers):

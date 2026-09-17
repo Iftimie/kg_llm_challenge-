@@ -141,15 +141,15 @@ async def ingest_transcript(
     return JobAccepted(job_id=job.id, status=job.status)
 
 
-@router.post("/api/ingest/rebuild", status_code=202)
-async def rebuild_kg(
+@router.post("/api/ingest/clear", status_code=202)
+async def clear_kg(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> JobAccepted:
-    """Rebuild the knowledge graph from the data already on disk (no upload).
+    """Clear the knowledge graph and the on-disk data (no upload).
 
-    Used after GraphDB is cleared: ``build`` re-materializes the graph from the
-    CSVs and ``load`` reloads ontology + kg.nt + extracted facts (idempotent).
+    Deletes the CSV source tables + extracted facts and empties the GraphDB
+    graphs, so the same files can be re-ingested from scratch.
     """
-    job = enqueue(db, "rebuild_kg", {}, current_user.id)
+    job = enqueue(db, "clear_kg", {}, current_user.id)
     return JobAccepted(job_id=job.id, status=job.status)

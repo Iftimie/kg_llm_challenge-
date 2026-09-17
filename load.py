@@ -99,6 +99,36 @@ def load(kg_nt=None, ontology=None, extracted_dir=None) -> dict:
     return {"repo": REPO, "total_triples": int(total_triples), "loaded": loaded}
 
 
+def clear() -> dict:
+    """Clear every named graph in the repo (keeps the repository itself).
+
+    Deletes the same contexts ``load()`` writes, so a subsequent ``load()``
+    starts from an empty graph. Uses admin creds (writes need write access).
+    """
+    GRAPHDB = os.environ.get("GRAPHDB_URL", "http://127.0.0.1:7200")
+    REPO = os.environ.get("GRAPHDB_REPO", "sales-kg")
+    graphdb_user = os.environ.get("GRAPHDB_ADMIN_USER", "admin")
+    graphdb_password = os.environ.get("GRAPHDB_ADMIN_PASSWORD", "admin")
+    auth = (graphdb_user, graphdb_password)
+
+    contexts = [
+        "http://example.org/sales-kg/graph/ontology",
+        "http://example.org/sales-kg/graph/crm",
+        "https://example.org/sales-kg/graph/extracted",
+    ]
+    # The default graph (no context) plus every named graph we write.
+    requests.delete(
+        f"{GRAPHDB}/repositories/{REPO}/statements", auth=auth
+    ).raise_for_status()
+    for ctx in contexts:
+        requests.delete(
+            f"{GRAPHDB}/repositories/{REPO}/statements",
+            params={"context": f"<{ctx}>"},
+            auth=auth,
+        ).raise_for_status()
+    return {"cleared": 1 + len(contexts)}
+
+
 def main() -> None:
     load()
 

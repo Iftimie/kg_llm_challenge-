@@ -154,10 +154,10 @@
     <button id="submit-transcript" type="submit">Add transcript rows</button>
   </form>
 
-  <form id="rebuild-form" data-testid="rebuild-form">
-    <h2>Rebuild knowledge graph</h2>
-    <div class="hint">Re-materialize and reload GraphDB from the data already on disk. Use after clearing GraphDB.</div>
-    <button id="submit-rebuild" type="submit" data-testid="rebuild-button">Rebuild KG</button>
+  <form id="clear-form" data-testid="clear-form">
+    <h2>Clear knowledge graph</h2>
+    <div class="hint">Delete the graph and the on-disk data so you can re-ingest the same files from scratch.</div>
+    <button id="submit-clear" type="submit" data-testid="clear-button">Clear KG graph</button>
   </form>
 
   <div id="result" data-testid="result" hidden></div>
@@ -174,8 +174,8 @@
   var transcriptForm = document.getElementById("transcript-form");
   var transcriptBtn = document.getElementById("submit-transcript");
 
-  var rebuildForm = document.getElementById("rebuild-form");
-  var rebuildBtn = document.getElementById("submit-rebuild");
+  var clearForm = document.getElementById("clear-form");
+  var clearBtn = document.getElementById("submit-clear");
 
   var result = document.getElementById("result");
 
@@ -503,10 +503,10 @@
     submitRequest("/api/ingest/transcript", fd, transcriptBtn, "Adding\u2026", "Add transcript rows");
   });
 
-  rebuildForm.addEventListener("submit", function (event) {
+  clearForm.addEventListener("submit", function (event) {
     event.preventDefault();
-    if (rebuildBtn.disabled) { return; }
-    submitRequest("/api/ingest/rebuild", new FormData(), rebuildBtn, "Rebuilding\u2026", "Rebuild KG");
+    if (clearBtn.disabled) { return; }
+    submitRequest("/api/ingest/clear", new FormData(), clearBtn, "Clearing\u2026", "Clear KG graph");
   });
 })();
 </script>

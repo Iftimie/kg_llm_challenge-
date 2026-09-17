@@ -10,6 +10,7 @@ import csv
 import importlib
 import io
 import logging
+import shutil
 import sys
 from pathlib import Path
 
@@ -86,6 +87,12 @@ def _run_step(step: str, data_dir: Path, extract_limit, extract_ids=None):
             failed = list(result.get("failed", []))
             logger.info("extract: ok=%s failed=%s", len(ok), len(failed))
             return {"ok": ok, "failed": failed}
+
+        if step == "clear":
+            load_mod = _import_root("load")
+            result = load_mod.clear()
+            logger.info("clear: %s graphs", result.get("cleared"))
+            return result
 
         raise ValueError(f"unknown step: {step!r}")
     except BaseException as exc:  # noqa: BLE001 - degrade per-step, never raise
@@ -317,8 +324,8 @@ def process_job(job, db=None) -> dict:
     ``(filename, bytes)``, merged, then ``build`` + ``load`` run. ``ingest_transcript``
     payloads carry ``{"rows": [rowdict, ...]}``; rows are appended and ``build`` ->
     ``index`` -> ``extract`` -> ``load`` run against only the appended ids.
-    ``rebuild_kg`` carries no payload and just re-runs ``build`` + ``load``
-    against the existing data dir (used after GraphDB is cleared).
+    ``clear_kg`` carries no payload; it deletes the on-disk CSVs + extracted
+    facts and clears the GraphDB graphs (to re-ingest the same files from scratch).
     """
     from app import config  # local import to avoid import cycles
 
@@ -342,7 +349,11 @@ def process_job(job, db=None) -> dict:
         )
         return {"appended": appended, **result}
 
-    if kind == "rebuild_kg":
-        return run(config.DATA_DIR, steps=("build", "load"))
+    if kind == "clear_kg":
+        # Wipe the source CSVs + derived transcript facts, then clear the graph.
+        for name in ("accounts.csv", "deals.csv", "contacts.csv", "activities.csv", "transcripts.csv"):
+            (config.DATA_DIR / name).unlink(missing_ok=True)
+        shutil.rmtree(config.DATA_DIR / "extracted", ignore_errors=True)
+        return run(config.DATA_DIR, steps=("clear",))
 
     raise ValueError(f"unknown job kind: {kind!r}")
