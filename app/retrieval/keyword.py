@@ -24,7 +24,7 @@ def _load():
     global _cache
     if _cache is None:
         path = config.DATA_DIR / _CSV_NAME
-        with open(path, newline="", encoding="utf-8") as f:
+        with open(path, newline="", encoding="utf-8-sig") as f:
             rows = list(csv.DictReader(f))
         corpus = [tokenize(r.get("transcript", "")) for r in rows]
         _cache = (rows, BM25Okapi(corpus))

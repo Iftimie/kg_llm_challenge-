@@ -9,7 +9,7 @@ _CSV_NAME = "transcripts.csv"
 
 def _rows():
     path = config.DATA_DIR / _CSV_NAME
-    with open(path, newline="", encoding="utf-8") as f:
+    with open(path, newline="", encoding="utf-8-sig") as f:
         return list(csv.DictReader(f))
 
 

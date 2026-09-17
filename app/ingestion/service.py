@@ -129,7 +129,7 @@ def merge_csv_files(files, target_dir) -> dict:
         key = _TABLE_KEYS[name]
 
         if isinstance(data, (bytes, bytearray)):
-            text = data.decode("utf-8", errors="replace")
+            text = data.decode("utf-8-sig", errors="replace")
         else:
             text = str(data)
         reader = csv.DictReader(io.StringIO(text))
@@ -143,7 +143,7 @@ def merge_csv_files(files, target_dir) -> dict:
             existing_header: list = []
             existing_keys: set = set()
             if path.exists():
-                with open(path, newline="", encoding="utf-8") as fh:
+                with open(path, newline="", encoding="utf-8-sig") as fh:
                     existing_reader = csv.DictReader(fh)
                     existing_header = list(existing_reader.fieldnames or [])
                     existing_keys = {
@@ -283,7 +283,7 @@ def append_transcript_rows(target_dir, rows) -> list:
     has_content = path.exists() and path.stat().st_size > 0
     existing_ids: set = set()
     if has_content:
-        with open(path, newline="", encoding="utf-8") as fh:
+        with open(path, newline="", encoding="utf-8-sig") as fh:
             reader = csv.DictReader(fh)
             if reader.fieldnames:
                 existing_ids = {r.get("transcript_id") for r in reader}

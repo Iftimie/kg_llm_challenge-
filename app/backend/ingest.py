@@ -66,7 +66,7 @@ async def ingest(
                     "(the transcript form)"
                 ),
             )
-        payload_files[filename] = data.decode("utf-8", errors="replace")
+        payload_files[filename] = data.decode("utf-8-sig", errors="replace")
 
     if unsupported:
         raise HTTPException(
@@ -100,7 +100,7 @@ async def ingest_transcript(
         )
 
     data = await file.read()
-    content = data.decode("utf-8", errors="replace")
+    content = data.decode("utf-8-sig", errors="replace")
 
     if not content.strip():
         raise HTTPException(status_code=400, detail="upload a transcripts .csv file")

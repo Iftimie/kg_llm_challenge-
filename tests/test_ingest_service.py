@@ -89,6 +89,18 @@ def test_merge_csv_files_unknown_table_raises(tmp_path):
         service.merge_csv_files([("x.csv", b"a,b\n1,2\n")], tmp_path)
 
 
+def test_merge_csv_files_accepts_utf8_bom(tmp_path):
+    # A leading UTF-8 BOM (Excel export) must not break header matching.
+    data = "\ufeffaccount_id,account_name\nA201,New Co\n".encode("utf-8")
+
+    result = service.merge_csv_files([("accounts.csv", data)], tmp_path)
+
+    assert result == {"accounts.csv": 1}
+    with open(tmp_path / "accounts.csv", newline="", encoding="utf-8-sig") as fh:
+        rows = list(csv.DictReader(fh))
+    assert rows[0]["account_id"] == "A201"
+
+
 # --- append_transcript_rows ---------------------------------------------------
 def _row(transcript_id="T101", transcript="hello", **overrides):
     row = {
