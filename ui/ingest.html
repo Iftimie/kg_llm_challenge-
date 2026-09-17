@@ -314,9 +314,91 @@
     result.appendChild(errorLine);
   }
 
+  function renderJob(jobId, status, resultObj, errorText) {
+    clear(result);
+    result.hidden = false;
+
+    var statusClass = status === "done" ? "status-ok" : (status === "failed" ? "status-bad" : null);
+    var statusHeading = el("h2", statusClass, "Status: " + status);
+    statusHeading.setAttribute("data-testid", "job-status");
+    result.appendChild(statusHeading);
+
+    var jobIdDiv = el("div", null, "Job: " + jobId);
+    jobIdDiv.setAttribute("data-testid", "job-id");
+    result.appendChild(jobIdDiv);
+
+    if (status === "done" && resultObj) {
+      result.appendChild(el("pre", null, JSON.stringify(resultObj, null, 2)));
+    }
+    if (errorText) {
+      var errorLine = el("div", "error-line", String(errorText));
+      errorLine.setAttribute("data-testid", "job-error");
+      result.appendChild(errorLine);
+    }
+  }
+
+  function pollJob(jobId, button, idleText) {
+    var deadline = Date.now() + 120 * 1000;
+
+    function finish() {
+      button.disabled = false;
+      button.textContent = idleText;
+    }
+
+    function tick() {
+      fetch("/api/jobs/" + jobId, { headers: authHeaders() })
+        .then(function (res) {
+          if (res.status === 401) {
+            showError(401, "Not authenticated \u2014 log in first.");
+            finish();
+            return null;
+          }
+          return res.json().catch(function () { return null; }).then(function (body) {
+            return { status: res.status, body: body };
+          });
+        })
+        .then(function (res) {
+          if (!res) { return; }
+          if (res.status === 404) {
+            renderJob(jobId, "unknown", null, "job not found");
+            finish();
+            return;
+          }
+          var job = res.body;
+          var status = job && job.status ? job.status : "unknown";
+          if (status === "done") {
+            renderJob(jobId, "done", job.result, null);
+            finish();
+          } else if (status === "failed") {
+            renderJob(jobId, "failed", null, job.error);
+            finish();
+          } else {
+            renderJob(jobId, status, null, null);
+            if (Date.now() >= deadline) {
+              renderJob(jobId, status, null, "job timed out");
+              finish();
+              return;
+            }
+            setTimeout(tick, 1500);
+          }
+        })
+        .catch(function (err) {
+          renderJob(jobId, "unknown", null, (err && err.message) ? err.message : err);
+          finish();
+        });
+    }
+
+    tick();
+  }
+
   function submitRequest(url, fd, button, busyText, idleText) {
     button.disabled = true;
     button.textContent = busyText;
+
+    function finish() {
+      button.disabled = false;
+      button.textContent = idleText;
+    }
 
     fetch(url, { method: "POST", body: fd, headers: authHeaders() })
       .then(function (res) {
@@ -327,20 +409,25 @@
       .then(function (res) {
         if (res.status === 401) {
           showError(401, "Not authenticated \u2014 log in first.");
+          finish();
+        } else if (res.status === 202 && res.body && res.body.job_id) {
+          var jobId = res.body.job_id;
+          renderJob(jobId, "queued", null, null);
+          pollJob(jobId, button, idleText);
         } else if (res.ok && res.body) {
           render(res.body);
+          finish();
         } else if (res.body && res.body.detail) {
           showError(res.status, res.body.detail);
+          finish();
         } else {
           showError(res.status, "Request failed (" + res.status + ")");
+          finish();
         }
       })
       .catch(function (err) {
         showError("network error", (err && err.message) ? err.message : err);
-      })
-      .then(function () {
-        button.disabled = false;
-        button.textContent = idleText;
+        finish();
       });
   }
 

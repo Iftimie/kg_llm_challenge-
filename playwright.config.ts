@@ -23,16 +23,29 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
   ],
-  webServer: {
-    command:
-      ".venv\\Scripts\\python.exe -m uvicorn app.backend.app:app --host 127.0.0.1 --port 8123",
-    url: "http://127.0.0.1:8123/health",
-    reuseExistingServer: !process.env.CI,
-    env: {
-      ANSWERER: "stub",
-      DATABASE_URL: "sqlite:///./test-e2e.db",
-      PATH: process.env.PATH,
+  webServer: [
+    {
+      command:
+        ".venv\\Scripts\\python.exe -m uvicorn app.backend.app:app --host 127.0.0.1 --port 8123",
+      url: "http://127.0.0.1:8123/health",
+      reuseExistingServer: !process.env.CI,
+      env: {
+        ANSWERER: "stub",
+        DATABASE_URL: "sqlite:///./test-e2e.db",
+        PATH: process.env.PATH,
+      },
+      timeout: 60_000,
     },
-    timeout: 60_000,
-  },
+    // Async ingestion (M9) needs the queue worker polling the same SQLite DB so
+    // enqueued jobs reach "done". No HTTP endpoint, so no url/reuse check; the
+    // worker loops (surviving the pre-schema boot race) until Playwright exits.
+    {
+      command: ".venv\\Scripts\\python.exe -m app.queue.worker",
+      env: {
+        DATABASE_URL: "sqlite:///./test-e2e.db",
+        PATH: process.env.PATH,
+      },
+      timeout: 60_000,
+    },
+  ],
 });

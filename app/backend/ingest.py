@@ -1,74 +1,52 @@
-"""Ingestion endpoints: standard CRM CSVs plus transcript-row append.
+"""Ingestion endpoints: enqueue CRM CSV and transcript-row jobs (M9 part 3).
 
 ``POST /api/ingest`` accepts only the CRM table ``.csv`` files (``accounts.csv``,
-``deals.csv``, ``contacts.csv``, ``activities.csv``). Uploaded rows are merged
-into the existing tables by primary key; a duplicate key (within the upload or
-already on disk) rejects the whole upload with ``400`` and writes nothing. The
-offline-safe ``build`` + ``load`` pipeline steps then run. ``transcripts.csv``
-must go through ``POST /api/ingest/transcript`` instead.
-``POST /api/ingest/transcript`` accepts transcript rows in the existing
-7-column ``transcripts.csv`` format as a ``.csv`` file upload, appends them to
-``transcripts.csv`` and reruns ``build`` -> ``index`` -> ``extract`` -> ``load``
-against only the newly appended transcript ids. Any step that degrades to
-``{"error": ...}`` is reported in ``errors`` while the response still returns
-``200``; only unexpected exceptions become ``500``.
+``deals.csv``, ``contacts.csv``, ``activities.csv``). Uploads are validated
+synchronously (unnamed files, non-``.csv`` files and ``transcripts.csv`` are
+rejected with ``400``), then enqueued as an ``ingest_csv`` job and answered with
+``202`` + ``{"job_id", "status"}``. ``transcripts.csv`` must go through
+``POST /api/ingest/transcript`` instead.
+
+``POST /api/ingest/transcript`` accepts transcript rows in the existing 7-column
+``transcripts.csv`` format as a ``.csv`` file upload, validates the row shape and
+``contact_ids`` synchronously, then enqueues an ``ingest_transcript`` job and
+answers with ``202`` + ``{"job_id", "status"}``. The actual pipeline
+(merge/build/index/extract/load) runs in the queue worker.
 """
 import csv
 import io
 from pathlib import Path
-from typing import Any
 
-from fastapi import APIRouter, File, HTTPException, UploadFile
-from pydantic import BaseModel, ConfigDict, Field
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from pydantic import BaseModel
+from sqlalchemy.orm import Session
 
-from app import config
+from app.auth.deps import get_current_user
+from app.db.models import User
+from app.db.session import get_db
 from app.ingestion import service
+from app.queue.core import enqueue
 
 router = APIRouter()
 
 
-class StepResult(BaseModel):
-    """Flexible holder for one ingestion step's result (accepts arbitrary keys)."""
+class JobAccepted(BaseModel):
+    """Synchronous acceptance response for an enqueued ingestion job."""
 
-    model_config = ConfigDict(extra="allow")
-
-
-class IngestResponse(BaseModel):
+    job_id: int
     status: str
-    data_dir: str
-    staged_csvs: list[str]
-    staged_transcripts: list[str]
-    steps: dict[str, Any]
-    triples: int | None = None
-    transcripts_indexed: int | None = None
-    errors: list[str] = Field(default_factory=list)
 
 
-def _step_error(value: Any) -> str | None:
-    """Return the error message when a step degraded to ``{"error": ...}``."""
-    if isinstance(value, dict) and "error" in value:
-        return str(value["error"])
-    return None
-
-
-def _collect_step_errors(result: dict) -> list[str]:
-    """Build the ordered ``errors`` list for the steps that degraded to errors."""
-    errors: list[str] = []
-
-    for step, value in result.items():
-        message = _step_error(value)
-        if message:
-            errors.append(f"{step}: {message}")
-
-    return errors
-
-
-@router.post("/api/ingest")
-async def ingest(files: list[UploadFile] = File(...)) -> IngestResponse:
+@router.post("/api/ingest", status_code=202)
+async def ingest(
+    files: list[UploadFile] = File(...),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> JobAccepted:
     if not files:
         raise HTTPException(status_code=400, detail="no files uploaded")
 
-    csv_files: list[tuple[str, bytes]] = []
+    payload_files: dict[str, str] = {}
     unsupported: list[str] = []
 
     for upload in files:
@@ -88,7 +66,7 @@ async def ingest(files: list[UploadFile] = File(...)) -> IngestResponse:
                     "(the transcript form)"
                 ),
             )
-        csv_files.append((filename, data))
+        payload_files[filename] = data.decode("utf-8", errors="replace")
 
     if unsupported:
         raise HTTPException(
@@ -99,39 +77,17 @@ async def ingest(files: list[UploadFile] = File(...)) -> IngestResponse:
             ),
         )
 
-    try:
-        merged = service.merge_csv_files(csv_files, config.DATA_DIR)
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-
-    # CSV ingestion always runs build -> load (never index/extract).
-    steps: dict[str, Any] = {"merge": merged}
-
-    try:
-        steps.update(service.run(config.DATA_DIR, steps=("build", "load")))
-    except Exception as exc:  # noqa: BLE001 - service.run is not expected to raise
-        raise HTTPException(status_code=500, detail=str(exc)) from exc
-
-    triples: int | None = None
-    build_value = steps.get("build")
-    if not _step_error(build_value) and isinstance(build_value, (tuple, list)) and build_value:
-        triples = build_value[0]
-
-    return IngestResponse(
-        status="ok",
-        data_dir=str(config.DATA_DIR),
-        staged_csvs=list(merged),
-        staged_transcripts=[],
-        steps=steps,
-        triples=triples,
-        transcripts_indexed=None,
-        errors=_collect_step_errors(steps),
-    )
+    job = enqueue(db, "ingest_csv", {"files": payload_files}, current_user.id)
+    return JobAccepted(job_id=job.id, status=job.status)
 
 
-@router.post("/api/ingest/transcript")
-async def ingest_transcript(file: UploadFile = File(...)) -> IngestResponse:
-    """Append transcript rows from a ``.csv`` upload and re-index.
+@router.post("/api/ingest/transcript", status_code=202)
+async def ingest_transcript(
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> JobAccepted:
+    """Parse a ``.csv`` transcript upload and enqueue ``ingest_transcript``.
 
     Rows use the canonical 7-column ``transcripts.csv`` layout (a header row is
     optional). ``contact_ids`` is required per row and must be non-empty.
@@ -173,32 +129,13 @@ async def ingest_transcript(file: UploadFile = File(...)) -> IngestResponse:
                     "contact_ids,activity_date,channel,transcript)"
                 ),
             )
-        rows.append(dict(zip(service._TRANSCRIPT_FIELDS, raw)))
+        row = dict(zip(service._TRANSCRIPT_FIELDS, raw))
+        if not str(row.get("contact_ids", "") or "").strip():
+            raise HTTPException(
+                status_code=400,
+                detail=f"row {position} missing contact_ids",
+            )
+        rows.append(row)
 
-    try:
-        appended = service.append_transcript_rows(config.DATA_DIR, rows)
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-
-    try:
-        result = service.run(
-            config.DATA_DIR,
-            steps=("build", "index", "extract", "load"),
-            extract_ids=appended,
-        )
-    except Exception as exc:  # noqa: BLE001 - service.run is not expected to raise
-        raise HTTPException(status_code=500, detail=str(exc)) from exc
-
-    index_value = result.get("index")
-    transcripts_indexed = index_value if isinstance(index_value, int) else None
-
-    return IngestResponse(
-        status="ok",
-        data_dir=str(config.DATA_DIR),
-        staged_csvs=[],
-        staged_transcripts=appended,
-        steps=result,
-        triples=None,
-        transcripts_indexed=transcripts_indexed,
-        errors=_collect_step_errors(result),
-    )
+    job = enqueue(db, "ingest_transcript", {"rows": rows}, current_user.id)
+    return JobAccepted(job_id=job.id, status=job.status)

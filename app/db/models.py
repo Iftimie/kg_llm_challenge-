@@ -1,8 +1,8 @@
 """SQLAlchemy 2.0 ORM models.
 
 Tables: ``users``, ``chats``, ``messages`` and ``jobs``. User/Chat and
-Chat/Message are related for unit tests; the job table is independent and
-backed by the DB queue in a later milestone.
+Chat/Message are related for unit tests; the job table is user-scoped, backed
+by the DB queue.
 """
 from __future__ import annotations
 
@@ -55,6 +55,7 @@ class Job(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     kind: Mapped[str] = mapped_column(String(64), nullable=False)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=True, index=True)
     status: Mapped[str] = mapped_column(String(32), nullable=False, index=True, default="queued")
     payload: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     result: Mapped[dict | None] = mapped_column(JSON, nullable=True)

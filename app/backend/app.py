@@ -23,6 +23,7 @@ from app.backend.schemas import ChatRequest
 from app.db import engine as db_engine
 from app.db.models import Base, Chat, Message, User
 from app.db.session import get_db
+from app.queue.core import get_job, list_jobs
 from app.safety.validator import validate
 
 # Configure logging before defining routes so all module loggers inherit it.
@@ -43,7 +44,20 @@ async def lifespan(_app: FastAPI):
     # create_all is our schema mechanism (no Alembic). Failures are logged, not
     # raised, so the app still boots offline/stub without a reachable Postgres.
     try:
-        Base.metadata.create_all(db_engine.get_engine())
+        engine = db_engine.get_engine()
+        Base.metadata.create_all(engine)
+        # Best-effort lightweight migration: create_all never ALTERs existing
+        # tables, so backfill columns added after first boot (M9: jobs.user_id).
+        if engine.dialect.name != "sqlite":
+            from sqlalchemy import text as _text
+
+            with engine.begin() as conn:
+                conn.execute(
+                    _text(
+                        "ALTER TABLE jobs ADD COLUMN IF NOT EXISTS "
+                        "user_id INTEGER REFERENCES users(id)"
+                    )
+                )
     except Exception:
         logging.getLogger(__name__).warning(
             "schema create_all failed; continuing without a live database",
@@ -195,6 +209,39 @@ def get_transcript_endpoint(
         raise HTTPException(
             status_code=404, detail=f"unknown transcript {transcript_id}"
         ) from exc
+
+
+@app.get("/api/jobs")
+def list_jobs_endpoint(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict:
+    jobs = list_jobs(db, current_user.id)
+    return {
+        "jobs": [
+            {"id": j.id, "kind": j.kind, "status": j.status, "error": j.error}
+            for j in jobs
+        ]
+    }
+
+
+@app.get("/api/jobs/{job_id}")
+def get_job_endpoint(
+    job_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict:
+    job = get_job(db, job_id, current_user.id)
+    if job is None:
+        raise HTTPException(status_code=404, detail="job not found")
+    return {
+        "id": job.id,
+        "kind": job.kind,
+        "status": job.status,
+        "payload": job.payload,
+        "result": job.result,
+        "error": job.error,
+    }
 
 
 # Mounted last so the explicit /health and /api/chat routes keep priority.

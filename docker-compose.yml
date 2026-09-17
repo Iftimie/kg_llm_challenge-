@@ -55,6 +55,37 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  worker:
+    build: .
+    image: sales-intelligence:local
+    command: python -m app.queue.worker
+    environment:
+      # Overridable from the host; stub runs need no API key.
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      ANSWERER: ${ANSWERER:-agent}
+      GRAPHDB_URL: http://graphdb:7200
+      GRAPHDB_REPO: ${GRAPHDB_REPO:-sales-kg}
+      # Demo creds (interview challenge, not production). GRAPHDB_AUTO_SECURE=0 to skip.
+      GRAPHDB_ADMIN_PASSWORD: ${GRAPHDB_ADMIN_PASSWORD:-admin}
+      GRAPHDB_READER_PASSWORD: ${GRAPHDB_READER_PASSWORD:-reader}
+      GRAPHDB_USER: ${GRAPHDB_USER:-reader}
+      GRAPHDB_PASSWORD: ${GRAPHDB_PASSWORD:-reader}
+      GRAPHDB_AUTO_SECURE: ${GRAPHDB_AUTO_SECURE:-1}
+      DATA_DIR: /app/data
+      DATABASE_URL: postgresql+psycopg://sales:sales@postgres:5432/sales
+    volumes:
+      # Persist logs on the host; chroma_db is copied into the image (~0.5 MB).
+      - ./logs:/app/logs
+      # Writable, self-contained data dir (CSVs + extracted facts) mounted clean
+      # from the host so the image never ships stale extracted demo facts.
+      - ./data/ingest:/app/data
+    depends_on:
+      graphdb:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
 volumes:
   graphdb-data:
   postgres-data:

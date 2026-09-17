@@ -299,3 +299,43 @@ def append_transcript_rows(target_dir, rows) -> list:
         writer.writerows(normalized)
 
     return [item["transcript_id"] for item in normalized]
+
+
+def process_job(job, db=None) -> dict:
+    """Dispatch a queued ingestion job to its worker action and return a summary.
+
+    ``job`` is an ORM ``Job`` (or any object exposing ``.kind`` and ``.payload``).
+    ``db`` is accepted for symmetry with the worker but is unused: this function
+    only performs the work and returns a result dict; the worker is responsible
+    for committing ``done``/``failed`` on the job. Raises ``ValueError`` for an
+    unknown ``kind``.
+
+    ``ingest_csv`` payloads carry ``{"files": {filename: text}}`` (file bytes
+    stored as UTF-8 text so the payload is JSON-safe); they are decoded back to
+    ``(filename, bytes)``, merged, then ``build`` + ``load`` run. ``ingest_transcript``
+    payloads carry ``{"rows": [rowdict, ...]}``; rows are appended and ``build`` ->
+    ``index`` -> ``extract`` -> ``load`` run against only the appended ids.
+    """
+    from app import config  # local import to avoid import cycles
+
+    kind = job.kind
+    payload = job.payload or {}
+
+    if kind == "ingest_csv":
+        files_raw = payload.get("files") or {}
+        files = [(filename, text.encode("utf-8")) for filename, text in files_raw.items()]
+        merged = merge_csv_files(files, config.DATA_DIR)
+        result = run(config.DATA_DIR, steps=("build", "load"))
+        return {"merge": merged, **result}
+
+    if kind == "ingest_transcript":
+        rows = payload.get("rows") or []
+        appended = append_transcript_rows(config.DATA_DIR, rows)
+        result = run(
+            config.DATA_DIR,
+            steps=("build", "index", "extract", "load"),
+            extract_ids=appended,
+        )
+        return {"appended": appended, **result}
+
+    raise ValueError(f"unknown job kind: {kind!r}")

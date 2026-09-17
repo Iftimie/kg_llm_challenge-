@@ -16,6 +16,7 @@ import extract
 import load as load_mod
 from app import config
 from app.backend.app import app
+from app.queue.worker import wait_for_job
 from app.retrieval import keyword
 
 FIXTURES_DIR = Path(__file__).resolve().parent / "fixtures" / "new_crm"
@@ -30,6 +31,14 @@ client = TestClient(app)
 
 def _fixture_bytes(name: str) -> bytes:
     return (FIXTURES_DIR / name).read_bytes()
+
+
+def _wait_job(job_id: int, headers: dict, user_id: int = 1, timeout_s: float = 120) -> dict:
+    """Drive the in-process worker to done/failed, then return the job JSON."""
+    wait_for_job(job_id, user_id=user_id, timeout_s=timeout_s)
+    response = client.get(f"/api/jobs/{job_id}", headers=headers)
+    assert response.status_code == 200, response.text
+    return response.json()
 
 
 @pytest.fixture(autouse=True)
@@ -101,39 +110,35 @@ def test_ingest_success(tmp_path, monkeypatch, auth_headers):
 
     response = client.post("/api/ingest", files=_crm_files(), headers=auth_headers)
 
-    assert response.status_code == 200
+    assert response.status_code == 202
     body = response.json()
-    assert body["status"] == "ok"
+    assert body["status"] == "queued"
+    job_id = body["job_id"]
+
+    job = _wait_job(job_id, auth_headers)
+    assert job["status"] == "done"
+    result = job["result"]
     # Merge is reported per table; every uploaded row is new in the empty DATA_DIR.
-    assert body["steps"]["merge"] == {
+    assert result["merge"] == {
         "accounts.csv": 1,
         "contacts.csv": 2,
         "deals.csv": 1,
         "activities.csv": 1,
     }
-    assert set(body["staged_csvs"]) == {
-        "accounts.csv",
-        "contacts.csv",
-        "deals.csv",
-        "activities.csv",
-    }
-    assert body["staged_transcripts"] == []
     # merge + build + load run; index/extract belong to other endpoints.
-    assert set(body["steps"]) == {"merge", "build", "load"}
-    assert "index" not in body["steps"]
-    assert "extract" not in body["steps"]
+    assert set(result) == {"merge", "build", "load"}
+    assert "index" not in result
+    assert "extract" not in result
 
-    build_value = body["steps"]["build"]
+    build_value = result["build"]
     assert isinstance(build_value, list) and build_value
     assert build_value[0] > 0
-    assert body["triples"] > 0
 
     # The stubbed load step still reports under its key.
-    assert "load" in body["steps"]
-    assert body["transcripts_indexed"] is None
+    assert "load" in result
 
 
-def test_ingest_csv_conflict_returns_400(tmp_path, monkeypatch, auth_headers):
+def test_ingest_csv_duplicate_fails_job(tmp_path, monkeypatch, auth_headers):
     monkeypatch.setattr(config, "DATA_DIR", tmp_path)
     monkeypatch.setenv("KG_NT", str(tmp_path / "kg.nt"))
     monkeypatch.setattr(
@@ -143,15 +148,20 @@ def test_ingest_csv_conflict_returns_400(tmp_path, monkeypatch, auth_headers):
     )
 
     first = client.post("/api/ingest", files=_crm_files(), headers=auth_headers)
-    assert first.status_code == 200
+    assert first.status_code == 202
+    first_job = _wait_job(first.json()["job_id"], auth_headers)
+    assert first_job["status"] == "done"
 
     path = tmp_path / "accounts.csv"
     before = path.read_bytes()
 
     second = client.post("/api/ingest", files=_crm_files(), headers=auth_headers)
+    assert second.status_code == 202
 
-    assert second.status_code == 400
-    assert "duplicate account_id" in second.json()["detail"]
+    second_job = _wait_job(second.json()["job_id"], auth_headers)
+    assert second_job["status"] == "failed"
+    assert "duplicate" in second_job["error"]
+    assert "account_id" in second_job["error"]
     # The rejected upload wrote nothing: the data dir file is unchanged.
     assert path.read_bytes() == before
 
@@ -228,19 +238,22 @@ def test_ingest_transcript_file_success(transcript_env, tmp_path, auth_headers):
 
     response = client.post("/api/ingest/transcript", files=files, headers=auth_headers)
 
-    assert response.status_code == 200
+    assert response.status_code == 202
     body = response.json()
-    assert body["status"] == "ok"
-    assert body["staged_transcripts"] == ["T910"]
-    assert body["errors"] == []
+    assert body["status"] == "queued"
+    job_id = body["job_id"]
+
+    job = _wait_job(job_id, auth_headers)
+    assert job["status"] == "done"
+    result = job["result"]
+    assert result["appended"] == ["T910"]
     assert (tmp_path / "chroma").exists()
 
     # The full offline pipeline runs for the newly appended transcript only.
-    assert set(body["steps"]) == {"build", "index", "extract", "load"}
-    assert isinstance(body["steps"]["index"], int)
-    assert body["steps"]["index"] >= 1
-    assert body["transcripts_indexed"] >= 1
-    assert body["steps"]["extract"] == {"ok": ["T910"], "failed": []}
+    assert set(result) == {"appended", "build", "index", "extract", "load"}
+    assert isinstance(result["index"], int)
+    assert result["index"] >= 1
+    assert result["extract"] == {"ok": ["T910"], "failed": []}
 
     rows = _read_transcripts(transcript_env)
     assert len(rows) == 1
@@ -256,13 +269,17 @@ def test_ingest_transcript_duplicate(transcript_env, tmp_path, auth_headers):
     files = {"file": ("transcripts.csv", content.encode("utf-8"), "text/csv")}
 
     first = client.post("/api/ingest/transcript", files=files, headers=auth_headers)
-    assert first.status_code == 200
+    assert first.status_code == 202
+    first_job = _wait_job(first.json()["job_id"], auth_headers)
+    assert first_job["status"] == "done"
     assert (tmp_path / "chroma").exists()
 
     second = client.post("/api/ingest/transcript", files=files, headers=auth_headers)
+    assert second.status_code == 202
 
-    assert second.status_code == 400
-    assert "duplicate transcript_id" in second.json()["detail"]
+    second_job = _wait_job(second.json()["job_id"], auth_headers)
+    assert second_job["status"] == "failed"
+    assert "duplicate transcript_id" in second_job["error"]
 
 
 def test_ingest_transcript_empty(tmp_path, monkeypatch, auth_headers):

@@ -263,6 +263,17 @@ Kubernetes, microservices, LangChain/LlamaIndex, custom agent framework, CI/CD.
   to expect `{job_id}` + drive worker via in-process `wait_for_job` helper;
   ADD Playwright `ingest-job.spec.ts`: upload -> status flips to done.
   Verify: `python -m pytest tests/test_queue.py tests/test_ingest_api.py -q` + `npx playwright test tests/e2e/ingest-job.spec.ts`.
+  M9 actual: Job.user_id FK (nullable); app/queue/{__init__,core,worker}.py
+  (enqueue/claim_next SKIP LOCKED pgsql vs sqlite, complete/fail/get_job/list_jobs,
+  worker.run_forever resilient loop + wait_for_job in-process helper); config
+  INGEST_CONCURRENCY; service.process_job dispatcher (ingest_csv / ingest_transcript);
+  ingest endpoints now 202 {job_id,status} (validation 400s stay sync); GET /api/jobs
+  + /api/jobs/{id} user-scoped; lifespan ALTER ADD COLUMN IF NOT EXISTS user_id
+  (create_all never ALTERs); compose worker service (command python -m app.queue.worker);
+  ui/ingest.html renderJob/pollJob + job-status/job-id/job-error hooks; tests/test_queue.py
+  (4); test_ingest_api.py async 202 + wait_for_job; playwright.config.ts second
+  webServer (worker, no url); ingest.spec.ts async (ingest-job.spec.ts dropped as
+  redundant duplicate).
 
 - **M10 — Retrieval performance + caching.**
   Goal: no repeated GraphDB/Chroma/LLM work for identical queries; ingest invalidates.
@@ -290,6 +301,12 @@ Kubernetes, microservices, LangChain/LlamaIndex, custom agent framework, CI/CD.
   ADD `tests/test_backfill.py`: `test_backfill_invents_c000_idempotent`;
   ADD Playwright `contacts.spec.ts`: modal shows contact_ids.
   Verify: `python -m pytest tests/test_ingest_service.py tests/test_ingest_api.py tests/test_retrieval.py tests/test_backfill.py -q` + `npx playwright test`.
+  M11 actual: contact_ids required (reject-new, empty -> ValueError "missing required
+  field: contact_ids"; ingest.py 7-col check, no "" insert); transcripts.py _FIELDS
+  +get_transcript returns contact_ids as list; scripts/backfill_contact_ids.py
+  idempotent C000 (applied to T101 in tests/fixtures + data/{new_crm,ingest});
+  ui/index.html modal Contacts + data-testid contact-ids; tests/test_backfill.py;
+  contacts.spec.ts (Playwright).
 
 - **M12 — Cleanup / dedup.**
   Goal: smaller, clearer codebase; `pydantic_ai` kept but non-default.

@@ -33,7 +33,9 @@ test("CRM CSV upload reaches /api/ingest and is staged", async ({ page }) => {
 
   const result = page.getByTestId("result");
   await expect(result).toBeVisible({ timeout: 120_000 });
-  await expect(result).toContainText("Status: ok");
+  await expect(page.getByTestId("job-status")).toHaveText("Status: done", {
+    timeout: 120_000,
+  });
   await expect(result).toContainText("accounts.csv");
 });
 
@@ -51,6 +53,9 @@ test("transcript CSV upload reaches /api/ingest/transcript", async ({
 
   const result = page.getByTestId("result");
   await expect(result).toBeVisible({ timeout: 120_000 });
+  await expect(page.getByTestId("job-status")).toHaveText("Status: done", {
+    timeout: 120_000,
+  });
   await expect(result).toContainText("T990");
 });
 

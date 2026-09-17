@@ -26,6 +26,9 @@ GRAPHDB_TIMEOUT_S = float(os.environ.get("GRAPHDB_TIMEOUT_S", "10"))
 PROMPT_GUARD = os.environ.get("PROMPT_GUARD", "off")
 MAX_PROMPT_CHARS = int(os.environ.get("MAX_PROMPT_CHARS", "4000"))
 
+# Worker concurrency cap: max concurrently-running ingest jobs per worker process.
+INGEST_CONCURRENCY = int(os.environ.get("INGEST_CONCURRENCY", "2"))
+
 # --- Database -----------------------------------------------------------------
 # Postgres is the only supported backend; there is no SQLite fallback. Offline
 # tests override this via env/monkeypatch to an in-memory SQLite engine.
