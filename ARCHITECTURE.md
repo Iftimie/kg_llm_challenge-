@@ -385,26 +385,7 @@ sequenceDiagram
     B-->>U: {status: done|failed, result, error}
 ```
 
-## 12. Sequence — chat history load + clear
-
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant B as Backend
-    participant P as Postgres
-
-    U->>B: GET /api/chats (on page load)
-    B->>P: list user's chats + messages
-    B-->>U: {chats:[{id, messages:[{role, content}]}]}
-    U->>U: render turns, seed history
-
-    U->>B: DELETE /api/chats (Clear chat)
-    B->>P: delete messages + chats
-    B-->>U: {cleared: n}
-    U->>U: clear pane + history
-```
-
-## 13. Answerer comparison (baseline → OpenCode → PydanticAI)
+## 12. Answerer comparison (baseline → OpenCode → PydanticAI)
 
 The answerer went through three implementations before settling:
 
@@ -430,7 +411,7 @@ instead of being handed the schema. This hints that the system is not
 fundamentally tied to a hand-written ontology being present up front — which is
 the idea explored next.
 
-## 14. Experimental: automatic ontology discovery + flexible CSV ingestion
+## 13. Experimental: automatic ontology discovery + flexible CSV ingestion
 
 > **Not implemented — an idea only.** This section sketches how the *current*
 > hardcoded schema (§3) could be relaxed. It is not part of the working
@@ -482,7 +463,7 @@ discovery / maintenance" component plus a review step. It would sit alongside
 the existing ingestion pipeline as a new component, leaving the current
 read-only retrieval path unchanged.
 
-## 15. Trade-offs (from prior sessions)
+## 14. Trade-offs (from prior sessions)
 
 - **Agent harness = OpenCode**, not a custom loop or LangChain/LlamaIndex.
   Reason: don't build a framework; keep the tool loop, JSON trace and grounding.
@@ -490,33 +471,4 @@ read-only retrieval path unchanged.
   tool use is "model writes + executes Python" (CodeAct), which is a security
   downgrade vs our structured read-only MCP tools. Its typed-output win is
   already covered by PydanticAI, which we already ship.
-- **Auth = hand-rolled JWT + bcrypt** (no passlib — unmaintained). Cookie
-  fallback exists only so GraphDB visual links stay authenticated.
-- **GraphDB security ON with demo creds**, published on `7200` for direct
-  Workbench links. The authenticated proxy is kept but unused.
-- **Auto-provision on register is best-effort and gated** — the HTTP round-trip
-  to GraphDB made tests slow, so `GRAPHDB_AUTO_PROVISION=0` in the offline suite.
-- **Safety = deterministic deny-list always on, classifier optional.** A
-  deterministic validator is testable and fails closed; an ML classifier is not.
-- **Three retrieval sources, consult all.** The KG is incomplete (3 of 10
-  transcripts never extracted), so the agent must also check keyword + vector.
-- **Pure refusals skip the checklist** and the "How I checked" line (no tools,
-  no trace) — a refusal is a policy decision, not a fact to ground.
-- **Ingestion is async (job queue).** Chosen to stop uploads writing directly to
-  the live data dir and to cap concurrency. `SKIP LOCKED` on Postgres, plain
-  poll on SQLite.
-- **contact_ids required, reject-new + backfill C000.** Chose reject-new over
-  auto-inventing on write; backfilled existing T101 rows.
-- **Skipped MinIO (M7) and persistence (M8)** — local CSV/`kg.nt`/`chroma_db`
-  files are enough for the prototype.
-- **Tests offline by default** with a 60s per-test timeout; e2e uses a
-  run-unique SQLite DB and an isolated `DATA_DIR` so runs never pollute or collide.
 
-## 16. Config & services
-
-- `app/config.py` — single place for env vars (`GRAPHDB_*`, `DATABASE_URL`,
-  `JWT_*`, `PROMPT_GUARD`, `INGEST_CONCURRENCY`, `DATA_DIR`, ...).
-- `docker-compose.yml` — `graphdb` (7200), `postgres` (internal), `app` (8000),
-  `worker`.
-- Data on disk — `DATA_DIR/*.csv`, `kg.nt`, `chroma_db/`, `extracted/*.ttl`,
-  `logs/mcp_calls.jsonl`.
