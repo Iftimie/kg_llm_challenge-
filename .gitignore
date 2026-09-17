@@ -6,4 +6,4 @@ data/
 node_modules/
 test-results/
 playwright-report/
-test-e2e.db*
+test-e2e*

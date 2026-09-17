@@ -278,7 +278,7 @@
 </header>
 
 <div id="workspace">
-  <main id="chat" aria-live="polite"></main>
+  <main id="chat" aria-live="polite" data-testid="chat-history"></main>
   <aside id="evidence" aria-label="Evidence">
     <div class="ev-title">Evidence</div>
     <div id="evidence-hint" class="ev-hint">No answer selected yet.</div>
@@ -383,6 +383,7 @@
         localStorage.setItem("sales_token", token);
         loginPassword.value = "";
         refreshLoginUI();
+        loadHistory();
       }).catch(function (err) {
         loginStatus.textContent = (err && err.message) ? err.message : String(err);
       });
@@ -395,6 +396,7 @@
       localStorage.removeItem("sales_token");
       // Fire-and-forget: also clear the httpOnly session cookie server-side.
       fetch("/api/auth/logout", { method: "POST" }).catch(function () {});
+      clearChat();
       refreshLoginUI();
     });
   }
@@ -407,6 +409,38 @@
   // Per-answer evidence records: {answerText, sources, meta, row}.
   var answers = [];
   var selectedIndex = -1;
+
+  function clearChat() {
+    while (chat.firstChild) { chat.removeChild(chat.firstChild); }
+    history = [];
+    answers = [];
+    selectedIndex = -1;
+  }
+
+  // Restore the persisted conversation from GET /api/chats into the pane.
+  function loadHistory() {
+    if (!token) { return; }
+    fetch("/api/chats", { headers: authHeaders() })
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (data) {
+        if (!data || !Array.isArray(data.chats) || !data.chats.length) { return; }
+        clearChat();
+        // The backend appends every exchange to the user's first chat; render
+        // all chats' messages in order so nothing is dropped.
+        var messages = [];
+        data.chats.forEach(function (c) {
+          (c.messages || []).forEach(function (m) { messages.push(m); });
+        });
+        messages.forEach(function (m) {
+          var role = m.role === "assistant" ? "Assistant" : "User";
+          addRow(role, m.content || "", null);
+          history.push({ role: m.role, content: m.content });
+        });
+      })
+      .catch(function () {
+        // History load is best-effort; the chat still works without it.
+      });
+  }
 
   // HTML-escape a string (defense in depth; renderMarkdown builds DOM nodes).
   function esc(s) {
@@ -1464,6 +1498,9 @@
 
   // Initial pane state; replaced when the first assistant answer arrives.
   renderEvidence(null);
+
+  // Restore the persisted conversation when the page loads already logged in.
+  loadHistory();
 
   // Show the configured answerer as the initial retrieval-engine hint.
   fetch("/health")
