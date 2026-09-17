@@ -1,6 +1,8 @@
 """Auth routes: register, login and current-user lookup."""
 from __future__ import annotations
 
+import logging
+
 from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -24,6 +26,12 @@ def register(payload: RegisterIn, db: Session = Depends(get_db)) -> MeOut:
     db.add(user)
     db.commit()
     db.refresh(user)
+    try:
+        from app.auth.graphdb_provision import provision_user
+
+        provision_user(payload.email, payload.password)
+    except Exception:
+        logging.warning("graphdb provision failed; continuing", exc_info=True)
     return MeOut(id=user.id, email=user.email)
 
 

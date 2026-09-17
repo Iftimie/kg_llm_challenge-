@@ -196,6 +196,7 @@ Kubernetes, microservices, LangChain/LlamaIndex, custom agent framework, CI/CD.
   compose net); app reads GRAPHDB_USER/PASSWORD, load.py uses admin creds via the same env vars.
   M4c actual: auto-secure at app startup (entrypoint waits for GraphDB REST, runs graphdb_secure.py best-effort, dummy demo creds admin/admin reader/reader, GRAPHDB_AUTO_SECURE=0 to skip).
   M4d actual: reverted to direct GraphDB links (Workbench SPA cannot be proxied single-document); 7200 re-published with security ON, UI hrefs http://localhost:7200/graphs-visualizations, proxy kept as unused authenticated alternative.
+  M4e actual: register auto-provisions GraphDB user (email as username, app plaintext password, READ_REPO_sales-kg, best-effort warn-and-continue).
 
 - **M5 — Prompt safety (3 layers).**
   Goal: deterministic validation always on; sandbox verified; classifier optional.
@@ -209,7 +210,15 @@ Kubernetes, microservices, LangChain/LlamaIndex, custom agent framework, CI/CD.
   `test_prompt_guard_off_and_classifier_modes` (classifier stubbed offline);
   sandbox check = static assertion that `sales` agent exposes only MCP tools + fail-closed
   smoke (real headless agent run is manual, not in default suite).
-  Verify: `PROMPT_GUARD=off python -m pytest tests/test_safety.py tests/test_guards.py -q`, repeat with `=classifier`.
+   Verify: `PROMPT_GUARD=off python -m pytest tests/test_safety.py tests/test_guards.py -q`, repeat with `=classifier`.
+   M5 actual: app/safety/validator.py (always-on MAX_PROMPT_CHARS=4000 cap, jailbreak
+   blocklist, case-sensitive SPARQL-write regex reusing guards.BLOCKED) + classifier.py
+   (offline keyword stub); config PROMPT_GUARD=off|classifier + MAX_PROMPT_CHARS;
+   /api/chat validates before get_answerer and gates the optional classifier (unknown
+   value -> 500); system.md grounding rules appended; ui chat-error data-testid hook;
+   tests/test_safety.py (length/jailbreak/sparql-before-answerer/guard modes/5-tool surface).
+   M5b actual: system.md policy-refusal carve-out (pure refusals skip the 3-tool
+   checklist and omit "How I checked:"; embedded-instruction refusals keep tools+trace).
 
 - **M6 — Upload + rate hardening.**
   Goal: bounded uploads and chat rate; malicious cells rejected.

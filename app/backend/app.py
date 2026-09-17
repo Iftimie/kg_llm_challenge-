@@ -23,6 +23,7 @@ from app.backend.schemas import ChatRequest
 from app.db import engine as db_engine
 from app.db.models import Base, Chat, Message, User
 from app.db.session import get_db
+from app.safety.validator import validate
 
 # Configure logging before defining routes so all module loggers inherit it.
 config.LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
@@ -128,6 +129,20 @@ def chat(
     message = (request.message or "").strip()
     if not message:
         raise HTTPException(status_code=400, detail="message must be a non-empty string")
+
+    try:
+        validate(message)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    guard = config.PROMPT_GUARD
+    if guard not in ("off", "classifier"):
+        raise HTTPException(status_code=500, detail="misconfigured PROMPT_GUARD")
+    if guard == "classifier":
+        from app.safety.classifier import classify
+
+        if not classify(message):
+            raise HTTPException(status_code=400, detail="message blocked by prompt classifier")
 
     try:
         response = get_answerer().answer(message, request.history)

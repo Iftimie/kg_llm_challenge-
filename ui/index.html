@@ -593,7 +593,9 @@
     // The transient "Thinking…" placeholder (extraClass contains "pending") is
     // not the real answer, so it gets its own testid. Every other assistant row
     // is "assistant-answer"; non-assistant rows are "message-row".
-    if (role === "Assistant" && (extraClass || "").indexOf("pending") !== -1) {
+    if ((extraClass || "").indexOf("error") !== -1) {
+      row.setAttribute("data-testid", "chat-error");
+    } else if (role === "Assistant" && (extraClass || "").indexOf("pending") !== -1) {
       row.setAttribute("data-testid", "assistant-pending");
     } else if (role === "Assistant") {
       row.setAttribute("data-testid", "assistant-answer");

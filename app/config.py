@@ -16,8 +16,15 @@ GRAPHDB_REPO = os.environ.get("GRAPHDB_REPO", "sales-kg")
 # the read-only reader account after scripts/graphdb_secure.py enables security.
 GRAPHDB_USER = os.environ.get("GRAPHDB_USER", "")
 GRAPHDB_PASSWORD = os.environ.get("GRAPHDB_PASSWORD", "")
+# Admin creds for auto-provisioning a GraphDB user per app registration (interview challenge, not production)
+GRAPHDB_ADMIN_USER = os.environ.get("GRAPHDB_ADMIN_USER", "admin")
+GRAPHDB_ADMIN_PASSWORD = os.environ.get("GRAPHDB_ADMIN_PASSWORD", "admin")
 # Upstream timeout (seconds) for the authenticated GraphDB visual proxy.
 GRAPHDB_TIMEOUT_S = float(os.environ.get("GRAPHDB_TIMEOUT_S", "10"))
+
+# off|classifier; deterministic validator always on, classifier optional; unknown value fails closed (500)
+PROMPT_GUARD = os.environ.get("PROMPT_GUARD", "off")
+MAX_PROMPT_CHARS = int(os.environ.get("MAX_PROMPT_CHARS", "4000"))
 
 # --- Database -----------------------------------------------------------------
 # Postgres is the only supported backend; there is no SQLite fallback. Offline
